@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <BaseOutputPath>$(SolutionDir)\bin\ </BaseOutputPath>
+	  <OutputPath>$(SolutionDir)\bin\</OutputPath>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	  <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+	  <RootNamespace>Dal</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DalFacade\DalFacade.csproj" />
+  </ItemGroup>
+
+</Project>
