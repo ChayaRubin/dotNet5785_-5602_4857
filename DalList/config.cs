@@ -9,6 +9,7 @@ namespace Dal;
 /// <param name="NextAssignmentId">The identifier for the next assignment instance between a volunteer and a call. Increments by 1 with each new assignment</param>
 /// <param name="Clock"> A time range after which a call is considered at risk, nearing its required end time.</param>
 /// <param name="RiskRange"> A time range after which a call is considered at risk, nearing its required end time.</param>
+
 internal static class Config
 {
     internal const int firstCallId = 1000;
