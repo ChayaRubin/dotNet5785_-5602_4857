@@ -1,4 +1,4 @@
-﻿using System.Windows.Media.Animation;
+﻿
 
 namespace Dal;
 /// <summary>
@@ -10,16 +10,16 @@ namespace Dal;
 /// <param name="Clock"> A time range after which a call is considered at risk, nearing its required end time.</param>
 /// <param name="RiskRange"> A time range after which a call is considered at risk, nearing its required end time.</param>
 
-internal static class Config
+public static class Config
 {
-    internal const int firstCallId = 1000;
-    private static int NextCallId = firstCallId;
-    internal static int NextAssignmentId { get => NextCallId++; }
-    internal static DateTime Clock { get; set; } = DateTime.Now;
+    public const int firstCallId = 1000;
+    public static int NextCallId = firstCallId;
+    public static int NextAssignmentId { get => NextCallId++; }
+    public static DateTime Clock { get; set; } = DateTime.Now;
 
-    internal static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
+    public static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
 
-    internal static void Reset()
+    public static void Reset()
     {
         NextCallId = firstCallId;
         Clock = DateTime.Now;

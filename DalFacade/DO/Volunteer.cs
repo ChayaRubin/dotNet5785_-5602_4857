@@ -1,10 +1,4 @@
-﻿using System.Net;
-using System.Numerics;
-using System.Xml.Linq;
-using System;
-
-namespace DO;
-
+﻿namespace DO;
 
 /// <summary>
 /// Student Entity represents a student with all its props
@@ -23,8 +17,7 @@ namespace DO;
 ///  <param name="TypeOfDistince">Enum representing the unit or type of distance (e.g., by bus, planw...)</param>
 ///  
 
-
-public class Volunteer
+public record Volunteer
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -37,7 +30,13 @@ public class Volunteer
     public PositionEnum Position { get; set; }
     public bool Active { get; set; }
     public double? MaxResponseDistance { get; set; }
-    public DistanceTypeEnum TypeOfDistince { get; set; } = DistanceTypeEnum.AirDistance; // ברירת מחדל: מרחק אווירי
+    public DistanceTypeEnum TypeOfDistince { get; set; } = DistanceTypeEnum.AirDistance;
+
+
+    /// <summary>
+    /// Default constructor for stage 3
+    /// </summary>
+    public Volunteer() : this(0, "", "", "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
 
     /// <summary>
     /// Custom constructor with specific values for all fields.
