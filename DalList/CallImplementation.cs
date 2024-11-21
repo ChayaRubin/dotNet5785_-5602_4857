@@ -35,11 +35,13 @@ public class CallImplementation : ICall
 
     public List<Call> ReadAll()
     {
-        throw new NotImplementedException();
+            return new List<Call>(DataSource.Calls); 
     }
 
     public void Update(Call item)
     {
-        throw new NotImplementedException();
+        Call? callToRemove = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == item.RadioCallId);
+        if (callToRemove != null) DataSource.Calls.Remove(callToRemove);
+        DataSource.Calls.Add(item);
     }
 }

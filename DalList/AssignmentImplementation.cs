@@ -1,37 +1,50 @@
 ﻿using DalApi;
 using DO;
-
+using System.Collections.Generic;
 namespace Dal;
 
 public class AssignmentImplementation : IAssignment
 {
     public void Create(Assignment item)
     {
-        throw new NotImplementedException();
-    }
 
-    public void Delete(int id)
+        if (DataSource.Assignments.Any(a => a?.Id == item.Id))
+        {  //*//
+            throw new Exception($"Assignment with Id {item.Id} already exists.");
+        }
+        DataSource.Assignments.Add(item);
+    }
+    public void Delete(int id)//gpt
     {
-        throw new NotImplementedException();
+        Assignment? AssignmentToRemove = DataSource.Assignments.FirstOrDefault(a => a?.Id == id);
+        if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
+        else throw new Exception($"Call with Id {id} not found.");
     }
 
     public void DeleteAll()
     {
-        throw new NotImplementedException();
+        if (!DataSource.Assignments.Any()) return; // אם הרשימה ריקה, אין צורך להפעיל כלום
+        DataSource.Assignments.Clear(); // מסיר את כל האלמנטים ברשימה
     }
+
 
     public Assignment? Read(int id)
     {
-        throw new NotImplementedException();
+        Assignment? AssignmentToRead = DataSource.Assignments.FirstOrDefault(a => a?.Id == id);
+        return (AssignmentToRead);
     }
 
     public List<Assignment> ReadAll()
     {
-        throw new NotImplementedException();
+        return new List<Assignment>(DataSource.Assignments);
     }
 
     public void Update(Assignment item)
     {
-        throw new NotImplementedException();
+        Assignment? AssignmentToRemove = DataSource.Assignments.FirstOrDefault(c => c?.Id == item.Id);
+        if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
+        DataSource.Volunteers.Add(item);
     }
 }
+
+
