@@ -5,7 +5,7 @@ namespace Targil0
     {
         static void Main(string[] args)
         {
-            Welcome5602();
+            Welcome5602(); ;
             Welcome4857();
             Console.ReadKey();
         }
