@@ -42,8 +42,8 @@ public class AssignmentImplementation : IAssignment
     public void Update(Assignment item)
     {
         Assignment? AssignmentToRemove = DataSource.Assignments.FirstOrDefault(c => c?.Id == item.Id);
-        if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
-        DataSource.Volunteers.Add(item);
+        //if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
+        //DataSource.Volunteers.Add(item);
     }
 }
 

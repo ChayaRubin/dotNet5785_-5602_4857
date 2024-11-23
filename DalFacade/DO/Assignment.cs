@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace DO;
+﻿namespace DO;
 
 /// <summary>
 /// Assignment Entity represents a link between a call and a volunteer
