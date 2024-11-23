@@ -1,6 +1,6 @@
-﻿
-
-namespace Dal;
+﻿namespace Dal;
+//using DO;
+//using System.Collections.Generic;
 /// <summary>
 /// configity Entity 
 /// </summary>

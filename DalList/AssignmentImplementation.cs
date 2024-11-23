@@ -12,13 +12,14 @@ public class AssignmentImplementation : IAssignment
         {  //*//
             throw new Exception($"Assignment with Id {item.Id} already exists.");
         }
+        //item.Id = Config.NextAssignmentId;
         DataSource.Assignments.Add(item);
     }
     public void Delete(int id)//gpt
     {
         Assignment? AssignmentToRemove = DataSource.Assignments.FirstOrDefault(a => a?.Id == id);
         if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
-        else throw new Exception($"Call with Id {id} not found.");
+        else throw new Exception($"Assignment with this Id {id} does not exists.");
     }
 
     public void DeleteAll()
@@ -42,8 +43,9 @@ public class AssignmentImplementation : IAssignment
     public void Update(Assignment item)
     {
         Assignment? AssignmentToRemove = DataSource.Assignments.FirstOrDefault(c => c?.Id == item.Id);
-        //if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
-        //DataSource.Volunteers.Add(item);
+        if (AssignmentToRemove != null) DataSource.Assignments.Remove(AssignmentToRemove);
+        else throw new Exception($"Assignment with this Id {item.Id} does not exists.");
+        DataSource.Assignments.Add(item);
     }
 }
 

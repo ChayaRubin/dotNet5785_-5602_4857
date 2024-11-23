@@ -9,7 +9,8 @@ public class CallImplementation : ICall
     {
 
         if (DataSource.Calls.Any(c => c?.RadioCallId == item.RadioCallId)
-        {  //*//
+        {  
+            throw new Exception($"Call with Id {item.RadioCallId} already exists.");
         }
         DataSource.Calls.Add(item);
     }
@@ -17,7 +18,7 @@ public class CallImplementation : ICall
     {
             Call? callToRemove = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == id);
             if (callToRemove != null) DataSource.Calls.Remove(callToRemove);
-            else throw new Exception($"Call with RadioCallId {id} not found.");
+            else throw new Exception($"Call with RadioCallId {id} does not exists.");
     }
 
     public void DeleteAll()
@@ -42,6 +43,7 @@ public class CallImplementation : ICall
     {
         Call? callToRemove = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == item.RadioCallId);
         if (callToRemove != null) DataSource.Calls.Remove(callToRemove);
+        else throw new Exception($"Call with this Id {item.RadioCallId} does not exists.");
         DataSource.Calls.Add(item);
     }
 }
