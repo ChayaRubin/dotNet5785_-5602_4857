@@ -1,6 +1,6 @@
 ﻿namespace Dal;
-//using DO;
-//using System.Collections.Generic;
+using DO;
+using System.Collections.Generic;
 /// <summary>
 /// configity Entity 
 /// </summary>
@@ -12,8 +12,8 @@
 
 public static class Config
 {
-    public const int firstCallId = 1000;
-    public static int NextCallId = firstCallId;
+    public const int firstCallId = 1000; // מזהה קריאה התחלתי
+    public static int NextCallId = firstCallId; // מזהה קריאה התחלתי
     public static int NextAssignmentId { get => NextCallId++; }
     public static DateTime Clock { get; set; } = DateTime.Now;
 

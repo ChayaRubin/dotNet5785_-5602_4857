@@ -7,11 +7,10 @@ public class VolunteerImplementation : IVolunteer
 {
     public void Create(Volunteer item)
     {
-
-        if (DataSource.Volunteers.Any(c => c?.Id == item.Id)
-        {
+        
+        if (DataSource.Volunteers.Any(c => c?.Id == item.Id))
             throw new Exception($"Volunteer with Id {item.Id} already exists.");
-        }
+       
         DataSource.Volunteers.Add(item);
     }
     public void Delete(int id)//gpt

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 
 namespace DO
 {
@@ -13,10 +14,10 @@ namespace DO
     /// <param name="myStartTime">The start time of the call.</param>
     /// <param name="myExpiredTime">The expiration time of the call.</param>
     ///
-    public record Call
+    public class Call
     {
         public int RadioCallId { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
         public CallType CallType { get; set; }
         public string Address { get; set; }
         public double Latitude { get; set; }
@@ -25,23 +26,25 @@ namespace DO
         public DateTime ExpiredTime { get; set; }
 
         /// <summary>
-        /// Default constructor
+        /// Default constructor that initializes the object with default values.
         /// </summary>
-        //public Call() : this(Config.NextAssignmentId, "", "", 0, 0, DateTime.MinValue, DateTime.MinValue) { }
+        public Call() : this(1, "Default Description", CallType.Emergency, "Default Address", 0.0, 0.0, DateTime.Now, DateTime.Now.AddHours(1)) { }
 
         /// <summary>
-        /// Custom constructor with specific values for all fields.
+        /// Custom constructor with specific values for all properties.
         /// </summary>
-        public Call(int MyRadioCallId, string MyDescription, string MyAddress, double MyLatitude, double MyLongitude, DateTime MyStartTime,
-        DateTime MyExpiredTime)
+        public Call(int radioCallId, string description, CallType callType, string address, double latitude, double longitude, DateTime startTime, DateTime expiredTime)
         {
-            RadioCallId = MyRadioCallId;
-            Description = MyDescription;
-            Address = MyAddress;
-            Latitude = MyLatitude;
-            Longitude = MyLongitude;
-            StartTime = MyStartTime;
-            ExpiredTime = MyExpiredTime;
+            RadioCallId = radioCallId;
+            Description = description;
+            CallType = callType;
+            Address = address;
+            Latitude = latitude;
+            Longitude = longitude;
+            StartTime = startTime;
+            ExpiredTime = expiredTime;
         }
     }
 }
+
+

@@ -1,6 +1,4 @@
 ﻿namespace DO;
-<<<<<<< HEAD
-=======
 
 public enum DistanceTypeEnum
 {
@@ -28,5 +26,6 @@ public enum CallResolutionStatus
 
 public enum CallType
 {
-   
+    Emergency,
+    nonEmergency
 }

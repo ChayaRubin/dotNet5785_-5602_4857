@@ -14,10 +14,10 @@
 ///  <param name="Position">Enum indicating rather it's a volunteer or head.</param>
 ///  <param name="Active">Indicates if the volunteer is active</param>
 ///  <param name="MaxResponseDistance">Maximum distance (in meters, for example) the volunteer is willing to travel to respond (nullable)</param>
-///  <param name="TypeOfDistince">Enum representing the unit or type of distance (e.g., by bus, planw...)</param>
+///  <param name="TypeOfDistance">Enum representing the unit or type of distance (e.g., by bus, planw...)</param>
 ///  
 
-public record Volunteer
+public class Volunteer
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -30,7 +30,7 @@ public record Volunteer
     public PositionEnum Position { get; set; }
     public bool Active { get; set; }
     public double? MaxResponseDistance { get; set; }
-    public DistanceTypeEnum TypeOfDistince { get; set; } = DistanceTypeEnum.AirDistance;
+    public DistanceTypeEnum TypeOfDistance { get; set; }
 
 
     /// <summary>
@@ -42,12 +42,12 @@ public record Volunteer
     /// Custom constructor with specific values for all fields.
     /// </summary>
     public Volunteer(int MyId, string MyName, string MyPhone, string MyEmail, string? MyPassword, string? MyAddress,
-    double? MyLatitude, double? MyLongitude, PositionEnum MyPosition, bool MyActive, double? MyMaxResponseDistance, DistanceTypeEnum MyTypeOfDistince = DistanceTypeEnum.AirDistance)
+    double? MyLatitude, double? MyLongitude, PositionEnum MyPosition, bool MyActive, double? MyMaxResponseDistance, DistanceTypeEnum MyTypeOfDistance/* = DistanceTypeEnum.AirDistance*/)
     {
-        if (!IsValidPassword(MyPassword))
-        {
-            return;
-        }
+        //if (!IsValidPassword(MyPassword))
+        //{
+        //    return;
+        //}
 
         Id = MyId;
         Name = MyName;
@@ -60,16 +60,16 @@ public record Volunteer
         Position = MyPosition;
         Active = MyActive;
         MaxResponseDistance = MyMaxResponseDistance;
-        TypeOfDistince = MyTypeOfDistince;
+        TypeOfDistance = MyTypeOfDistance;
     }
 
-    private bool IsValidPassword(string? password)
-    {
-        if (password == null)
-            return false;
+    //private bool IsValidPassword(string? password)
+    //{
+    //    if (password == null)
+    //        return false;
 
-        return password.Length >= 8 && password.Any(char.IsDigit) && password.Any(char.IsLetter);
-    }
+    //    return password.Length >= 8 && password.Any(char.IsDigit) && password.Any(char.IsLetter);
+    //}
 }
 
 
