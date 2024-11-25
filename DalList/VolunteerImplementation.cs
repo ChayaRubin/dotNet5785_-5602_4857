@@ -22,8 +22,8 @@ public class VolunteerImplementation : IVolunteer
 
     public void DeleteAll()
     {
-        if (!DataSource.Volunteers.Any()) return; // אם הרשימה ריקה, אין צורך להפעיל כלום
-        DataSource.Volunteers.Clear(); // מסיר את כל האלמנטים ברשימה
+        if (!DataSource.Volunteers.Any()) return; 
+        DataSource.Volunteers.Clear(); 
     }
 
 

@@ -1,9 +1,10 @@
-﻿
-namespace DalTest;
+﻿namespace DalTest;
 using DalApi;
 using DO;
 
+
 //נעזרנו בגיפיטי בקשר למילוי המערכים וכוונו אותו לפונקציות מסוימות.
+
 public static class Initialization
 {
     private static IVolunteer? s_dalVolunteer; 
@@ -53,13 +54,14 @@ public static class Initialization
                 do
                 {
                     id = rand.Next(MIN_ID, MAX_ID);
-                } while (s_dalVolunteer!.Read(id) != null); 
+                } while (s_dalVolunteer!.Read(id) != null);
 
                 string phoneNumber;
                 do
                 {
                     phoneNumber = "05" + rand.Next(1000000, 9999999).ToString();
-                } while (s_dalVolunteer.GetAll().Any(v => v.Phone == phoneNumber)); 
+                } while (s_dalVolunteer.Read(phoneNumber) != null); // אם יש מתנדב עם המספר הזה, ניצור חדשבדיקה שהטלפון אינו בשימוש
+
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -255,10 +257,64 @@ public static class Initialization
                     ExpiredTime = MyExpiredTime,
                     callType = MyCallType,
                 };
+
+                s_dalCall.Create(call); 
             }
         }
     }
+    private static void CreateAssignment(int id)
+    {
+        List<Call>? callsList = s_dalCall.ReadAll();
+        List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
+        DateTime start = new DateTime(s_dalConfig.Clock.Year, s_dalConfig.Clock.Month, s_dalConfig.Clock.Day, s_dalConfig.Clock.Hour - 7, 0, 0);
+
+
+        DateTime minTime = callsList[i].MyStartTime;
+        DateTime maxTime = (DateTime)callsList[i].MyExpiredTime!;
+        TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
+        DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+        Assignment assignment = new Assignment
+        {
+            Id = Config.getNextAssignmentId,
+            CallId = callsList[i].RadioCallId,
+            VolunteerId = id,
+            EntryTime = randomTime,
+            ActualCompletionTime = config.Clock,
+            callResolutionStatus = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)))
+        };
+        s_dalAssignment.Create(assignment);
+
+    }
+
+    public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) //stage 1
+    {
+        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!");                                                                                             //.
+        s_dalCall = dalCall ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+
+        Console.WriteLine("Resetting configuration...");
+        s_dalConfig.Reset();
+
+        Console.WriteLine("Clearing all data...");
+        s_dalVolunteer.DeleteAll();
+        s_dalCall.DeleteAll();
+        s_dalAssignment.DeleteAll();
+
+        Console.WriteLine("Initializing Volunteers...");
+        createVolunteers();
+
+        Console.WriteLine("Initializing Calls...");
+        createCalls();
+
+        Console.WriteLine("Initializing Assignments...");
+        createAssignments();
+
+
+    }
+
 }
+
 
 
 

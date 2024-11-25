@@ -17,6 +17,8 @@ public class Assignment
     public DateTime EntryTime { get; set; }
     public DateTime? ActualCompletionTime { get; set; }
 
+    public CallResolutionStatus callResolutionStatus { get; set; }
+
     //public Assignment() : this(Config.,Call.MyRadioCallId, , "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
 
 }
