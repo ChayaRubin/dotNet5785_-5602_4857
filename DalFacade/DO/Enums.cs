@@ -26,6 +26,8 @@ public enum CallResolutionStatus
 
 public enum CallType
 {
-    Emergency,
-    nonEmergency
+    Urgent,
+    Medium_Urgency,
+    General_Assistance,
+    Non_Urgent,
 }

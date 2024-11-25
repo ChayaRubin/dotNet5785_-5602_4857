@@ -4,6 +4,11 @@ using DalApi;
 using DO;
 public static class Initialization
 {
+    private static IVolunteer? s_dalVolunteer; //stage 1
+    private static ICall? s_dalCall; //stage 1
+    private static IAssignment? s_dalAssignment; //stage 1
+    private static IConfig? s_dalConfig; //stage 1
+    private static readonly Random s_rand = new();
     public class createVolunteer
     {
         private static string[] names = {
@@ -33,24 +38,36 @@ public static class Initialization
 
         private static void CreateVolunteerEntries()
         {
-            Random rand = new Random();
+
             int MIN_ID = 100000000;
             int MAX_ID = 999999999;
             int MAX_DISTANCE = 50;
-            HashSet<string> usedPhoneNumbers = new HashSet<string>(); // ודא שהטלפונים יהיו ייחודיים
 
             for (int i = 0; i < 16; i++)
             {
-                string name = names[rand.Next(names.Length)];
-                int id = rand.Next(MIN_ID, MAX_ID);
+                string name = names[i];
+
+                // יצירת ID ייחודי
+                int id;
+                do
+                {
+                    id = rand.Next(MIN_ID, MAX_ID);
+                } while (s_dalVolunteer!.Read(id) != null); // בדיקה מול ה-DAL שה-ID אינו בשימוש
+
+                // יצירת מספר טלפון ייחודי
+                string phoneNumber;
+                do
+                {
+                    phoneNumber = "05" + rand.Next(1000000, 9999999).ToString();
+                } while (s_dalVolunteer.GetAll().Any(v => v.Phone == phoneNumber)); // בדיקה שהטלפון אינו בשימוש
+
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
-                string phoneNumber = GenerateUniquePhoneNumber(rand, usedPhoneNumbers);
-                string address = addresses[rand.Next(addresses.Length)];
-                double latitude = latitudes[rand.Next(latitudes.Length)];
-                double longitude = longitudes[rand.Next(longitudes.Length)];
+                string address = addresses[i];
+                double latitude = latitudes[i];
+                double longitude = longitudes[i];
                 PositionEnum position = i == 0 ? PositionEnum.Manager : PositionEnum.Volunteer;
                 string password = GenerateStrongPassword();
-                string encryptedPassword = EncryptPassword(password);
+                string encryptedPassword = Encrypt(password);
 
                 Volunteer volunteer = new Volunteer
                 {
@@ -67,23 +84,11 @@ public static class Initialization
                     TypeOfDistince = DistanceTypeEnum.AirDistance,
                     Password = encryptedPassword
                 };
-
+                s_dalVolunteer.Create(volunteer); // יצירת המתנדב ב-DAL
                 Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
             }
         }
 
-        // פונקציה להבטיח מספר טלפון ייחודי-gpt
-        private static string GenerateUniquePhoneNumber(Random rand, HashSet<string> usedPhoneNumbers)
-        {
-            string phoneNumber;
-            do
-            {
-                phoneNumber = "05" + rand.Next(1000000, 9999999).ToString();
-            } while (usedPhoneNumbers.Contains(phoneNumber));
-
-            usedPhoneNumbers.Add(phoneNumber);
-            return phoneNumber;
-        }
 
         // פונקציה ליצירת סיסמה חזקה--gpt
         private static string GenerateStrongPassword()
@@ -97,19 +102,25 @@ public static class Initialization
             }
             return password.ToString();
         }
-
-        // פונקציה להצפנת סיסמה ב-SHA256-gpt
-        private static string EncryptPassword(string password)
+        //הצפנה בAES
+        public static string Encrypt(string plainText)
         {
-            using (SHA256 sha256 = SHA256.Create())
+            using (Aes aesAlg = Aes.Create())
             {
-                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                StringBuilder hashStringBuilder = new StringBuilder();
-                foreach (byte b in hashBytes)
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    hashStringBuilder.Append(b.ToString("x2"));
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(plainText);
+                    }
+                    return Convert.ToBase64String(msEncrypt.ToArray());
                 }
-                return hashStringBuilder.ToString();
             }
         }
 
@@ -165,44 +176,128 @@ public static class Initialization
 
         string[] callDescriptions = new string[]
         {
-            "Car Breakdown", "Accident Assistance", "Flat Tire", "Fuel Assistance", "Stuck in Traffic",
-            "Engine Overheating", "Battery Issues", "Lockout Assistance", "Lost Keys", "Emergency Towing",
-            "Medical Emergency", "Mechanical Repair", "Driving Assistance", "Flat Battery", "Stuck Vehicle",
-            "Traffic Incident", "Vehicle Recovery", "Vehicle Jumpstart", "Fuel Delivery", "Accident Help",
-            "Emergency Response", "Breakdown Help", "Tire Change", "Vehicle Inspection", "Parking Assistance",
-            "Stalled Vehicle", "Safety Check", "Battery Jumpstart", "Accident Coordination", "Emergency Cleanup",
-            "Tow Truck Dispatch", "Tire Puncture", "Car Repair Advice", "Fuel Running Low", "Engine Check",
-            "Motorcycle Breakdown", "Vehicle Stuck in Mud", "Vehicle Lockout", "Emergency Tow", "Speeding Violation",
-            "Driving Safety", "Insurance Assistance", "Emergency Roadside Service", "Vehicle Inspection Service", "Call for Help",
-            "Late Night Assistance", "Urgent Breakdown", "Nighttime Recovery", "Heavy Traffic", "Accident Avoidance"
+            // High Urgency (Immediate and Critical):
+            "Medical Emergency", "Accident Assistance", "Vehicle Recovery", "Emergency Towing", "Stuck in Mud",
+            "Engine Overheating", "Heavy Accident", "Emergency Tow", "Battery Issues", "Fire in Vehicle",
+
+            // Medium Urgency (Urgent but less critical):
+            "Fuel Assistance", "Flat Tire", "Lockout Assistance", "Vehicle Breakdown", "Flat Battery",
+            "Vehicle Stuck in Traffic", "Accident Help", "Lost Keys", "Driving Assistance", "Tire Puncture",
+    
+            // General Assistance (Everyday issues or less urgent):
+            "Driving Safety", "Parking Assistance", "Car Repair Advice", "Vehicle Inspection", "Insurance Assistance",
+            "Vehicle Jumpstart", "Call for Help", "Car Service Appointment", "Windshield Repair", "Lost Wallet",
+            "Fuel Running Low", "Battery Jumpstart", "Car Alarm Issues", "Motorcycle Breakdown", "Lost GPS Navigation",
+            "Roadside Assistance", "Headlight Malfunction", "Engine Check", "Car Wash", "Flat Tire Change",
+
+            // General or Non-Urgent Assistance:
+            "Road Advice", "Car Repair Consultation", "Driving Safety Tips", "Insurance Policy Questions", "Basic Vehicle Maintenance",
+            "Navigation Assistance", "Towing Insurance", "Tire Pressure Check", "Late Night Assistance", "General Car Troubleshooting"
         };
+
 
         private static void CreateCallEntries()
         {
-            int currentIndex = 0;
+
+
+            Random rand = new Random();
+            DateTime now = DateTime.Now;
+            DateTime twoHoursAgo = now.AddHours(-2);
+            int totalMinutesRange = (int)(now - twoHoursAgo).TotalMinutes;
+            int randomMinutes = rand.Next(totalMinutesRange);
+            DateTime MyStartTime = twoHoursAgo.AddMinutes(randomMinutes);
+
+
+
             for (int i = 0; i < 50; i++)
             {
-                int MyRadioCallId = Config.NextCallId;//????????
-                string MyDescription = callDescriptions[currentIndex];
-                string MyAddress = callAddresses[currentIndex];
-                double MyLatitude = callLatitudes[currentIndex];
-                double MyLongitude = callLongitudes[currentIndex];
+                int MyRadioCallId = Config.NextCallId;
+                string MyDescription = callDescriptions[i];
+                string MyAddress = callAddresses[i];
+                double MyLatitude = callLatitudes[i];
+                double MyLongitude = callLongitudes[i];
+                DateTime MyExpiredTime;
+                CallType MyCallType;
 
-                currentIndex++;
+                switch (i)
+                {
+                    case int n when (n < 10): // High Urgency (Index 0-9)
+                        MyCallType = CallType.Urgent;
+                        MyExpiredTime = MyStartTime.AddMinutes(15); // 15 minutes for Urgent
+                        break;
 
-                //Calls.Add(new Call(Config.NextAssignmentId, addresses[i], coordinates[i].Latitude, coordinates[i].Longitude, Config.Clock, callTypes[rand.Next(callTypes.Length)]));
-                call call = new call
+                    case int n when (n >= 10 && n < 20): // Medium Urgency (Index 10-19)
+                        MyCallType = CallType.Medium_Urgency;
+                        MyExpiredTime = MyStartTime.AddMinutes(30); // 30 minutes (0.5 hour) for Medium Urgency
+                        break;
+
+                    case int n when (n >= 20 && n < 40): // General Assistance (Index 20-39)
+                        MyCallType = CallType.General_Assistance;
+                        MyExpiredTime = MyStartTime.AddHours(1); // 1 hour for General Assistance
+                        break;
+
+                    case int n when (n >= 40 && n < 50): // Non-Urgent (Index 40-49)
+                        MyCallType = CallType.Non_Urgent;
+                        MyExpiredTime = MyStartTime.AddHours(2); // 2 hours for Non-Urgent
+                        break;
+
+                    default:
+                        return;
+                }
+
+                Call call = new Call
                 {
                     RadioCallId = MyRadioCallId,
                     Description = MyDescription,
+                    Address = MyAddress,
                     Address = MyAddress,
                     Latitude = MyLatitude,
                     Longitude = MyLongitude,
                     StartTime = MyStartTime,
                     ExpiredTime = MyExpiredTime,
-
-            };
+                    callType = MyCallType,
+                };
             }
         }
-    }   
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//פענוח
+//public static string Decrypt(string cipherText)
+//{
+//    using (Aes aesAlg = Aes.Create())
+//    {
+//        aesAlg.Key = Encoding.UTF8.GetBytes(key);
+//        aesAlg.IV = Encoding.UTF8.GetBytes(iv);
+
+//        ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+//        using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+//        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+//        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+//        {
+//            return srDecrypt.ReadToEnd();
+//        }
+//    }
+//}
+
+
+

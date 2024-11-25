@@ -8,7 +8,7 @@ public class CallImplementation : ICall
     public void Create(Call item)
     {
 
-        if (DataSource.Calls.Any(c => c?.RadioCallId == item.RadioCallId)
+        if (DataSource.Calls.Any(c => c?.RadioCallId == item.RadioCallId))
         {  
             throw new Exception($"Call with Id {item.RadioCallId} already exists.");
         }

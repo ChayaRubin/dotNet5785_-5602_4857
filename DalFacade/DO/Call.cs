@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System;
+using DO;
+
 
 namespace DO
 {
@@ -28,7 +30,7 @@ namespace DO
         /// <summary>
         /// Default constructor that initializes the object with default values.
         /// </summary>
-        public Call() : this(1, "Default Description", CallType.Emergency, "Default Address", 0.0, 0.0, DateTime.Now, DateTime.Now.AddHours(1)) { }
+        public Call() : this(1, "Default Description", CallType.General_Assistance, "Default Address", 0.0, 0.0, DateTime.Now, DateTime.Now.AddHours(1)) { }
 
         /// <summary>
         /// Custom constructor with specific values for all properties.
