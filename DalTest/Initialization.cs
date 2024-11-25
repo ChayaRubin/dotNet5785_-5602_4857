@@ -201,8 +201,30 @@ public static class Initialization
                     StartTime = MyStartTime,
                     ExpiredTime = MyExpiredTime,
 
-            };
+                };
             }
         }
-    }   
+    }
+
+    private static void CreateAssignment()
+    {
+        List<Call>? callsList = s_dalCall.ReadAll();
+        List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
+        DateTime start = new DateTime(s_dalConfig.Clock.Year, s_dalConfig.Clock.Month, s_dalConfig.Clock.Day, s_dalConfig.Clock.Hour - 7, 0, 0);
+        for (int i = 0; i < 50; i++)
+        {
+            DateTime minTime = callsList[i].MyStartTime;
+            DateTime maxTime = (DateTime)callsList[i].MyExpiredTime!;
+            TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
+            DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+            s_dalAssignment!.Create(new Assignment(
+                callsList[i].RadioCallId,
+                volunteersList[s_rand.Next(callsList.Count)].Id,//?
+                randomTime,
+                randomTime.AddHours(2),
+                (EndingTimeType)s_rand.Next(Enum.GetValues(typeof(EndingTimeType)).Length - 1)
+            ));
+        }
+    }
+
 }
