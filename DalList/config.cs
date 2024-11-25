@@ -13,8 +13,12 @@ using System.Collections.Generic;
 public static class Config
 {
     public const int firstCallId = 1000; // מזהה קריאה התחלתי
-    public static int NextCallId = firstCallId; // מזהה קריאה התחלתי
-    public static int NextAssignmentId { get => NextCallId++; }
+    public static int NextCallId = firstCallId;
+    public static int getNextCallId { get => NextCallId++; }
+ 
+    public const int firstAssignmentId = 1000; // מזהה קריאה התחלתי
+    public static int NextAssignmentId = firstAssignmentId;
+    public static int getNextAssignmentId { get => NextAssignmentId++; }
     public static DateTime Clock { get; set; } = DateTime.Now;
 
     public static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
@@ -24,7 +28,6 @@ public static class Config
         NextCallId = firstCallId;
         Clock = DateTime.Now;
         RiskRange = TimeSpan.Zero;
-        Clock = DateTime.Now;
     }
 
 }
