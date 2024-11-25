@@ -2,12 +2,14 @@
 namespace DalTest;
 using DalApi;
 using DO;
+
+//נעזרנו בגיפיטי בקשר למילוי המערכים וכוונו אותו לפונקציות מסוימות.
 public static class Initialization
 {
-    private static IVolunteer? s_dalVolunteer; //stage 1
-    private static ICall? s_dalCall; //stage 1
-    private static IAssignment? s_dalAssignment; //stage 1
-    private static IConfig? s_dalConfig; //stage 1
+    private static IVolunteer? s_dalVolunteer; 
+    private static ICall? s_dalCall; 
+    private static IAssignment? s_dalAssignment; 
+    private static IConfig? s_dalConfig;
     private static readonly Random s_rand = new();
     public class createVolunteer
     {
@@ -47,19 +49,17 @@ public static class Initialization
             {
                 string name = names[i];
 
-                // יצירת ID ייחודי
                 int id;
                 do
                 {
                     id = rand.Next(MIN_ID, MAX_ID);
-                } while (s_dalVolunteer!.Read(id) != null); // בדיקה מול ה-DAL שה-ID אינו בשימוש
+                } while (s_dalVolunteer!.Read(id) != null); 
 
-                // יצירת מספר טלפון ייחודי
                 string phoneNumber;
                 do
                 {
                     phoneNumber = "05" + rand.Next(1000000, 9999999).ToString();
-                } while (s_dalVolunteer.GetAll().Any(v => v.Phone == phoneNumber)); // בדיקה שהטלפון אינו בשימוש
+                } while (s_dalVolunteer.GetAll().Any(v => v.Phone == phoneNumber)); 
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -84,13 +84,12 @@ public static class Initialization
                     TypeOfDistince = DistanceTypeEnum.AirDistance,
                     Password = encryptedPassword
                 };
-                s_dalVolunteer.Create(volunteer); // יצירת המתנדב ב-DAL
+                s_dalVolunteer.Create(volunteer);
                 Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
             }
         }
 
 
-        // פונקציה ליצירת סיסמה חזקה--gpt
         private static string GenerateStrongPassword()
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()";
@@ -221,24 +220,24 @@ public static class Initialization
 
                 switch (i)
                 {
-                    case int n when (n < 10): // High Urgency (Index 0-9)
+                    case int n when (n < 10): 
                         MyCallType = CallType.Urgent;
-                        MyExpiredTime = MyStartTime.AddMinutes(15); // 15 minutes for Urgent
+                        MyExpiredTime = MyStartTime.AddMinutes(15); 
                         break;
 
-                    case int n when (n >= 10 && n < 20): // Medium Urgency (Index 10-19)
+                    case int n when (n >= 10 && n < 20): 
                         MyCallType = CallType.Medium_Urgency;
-                        MyExpiredTime = MyStartTime.AddMinutes(30); // 30 minutes (0.5 hour) for Medium Urgency
+                        MyExpiredTime = MyStartTime.AddMinutes(30);
                         break;
 
-                    case int n when (n >= 20 && n < 40): // General Assistance (Index 20-39)
+                    case int n when (n >= 20 && n < 40): 
                         MyCallType = CallType.General_Assistance;
-                        MyExpiredTime = MyStartTime.AddHours(1); // 1 hour for General Assistance
+                        MyExpiredTime = MyStartTime.AddHours(1);
                         break;
 
-                    case int n when (n >= 40 && n < 50): // Non-Urgent (Index 40-49)
+                    case int n when (n >= 40 && n < 50): 
                         MyCallType = CallType.Non_Urgent;
-                        MyExpiredTime = MyStartTime.AddHours(2); // 2 hours for Non-Urgent
+                        MyExpiredTime = MyStartTime.AddHours(2); 
                         break;
 
                     default:
@@ -249,7 +248,6 @@ public static class Initialization
                 {
                     RadioCallId = MyRadioCallId,
                     Description = MyDescription,
-                    Address = MyAddress,
                     Address = MyAddress,
                     Latitude = MyLatitude,
                     Longitude = MyLongitude,
