@@ -24,7 +24,7 @@
             Create,
             Read,
             ReadAll,
-            UpDate,
+            Update,
             Delete,
             DeleteAll
         }
@@ -188,7 +188,7 @@
                             ReadAll(choice);
                             break;
 
-                        case ActionMenu.UpDate:
+                        case ActionMenu.Update:
                             Update(choice);
                             break;
 
@@ -217,6 +217,20 @@
             }
         }
 
+        private static void DisplayAllData()
+        {
+            ReadAll("VolunteerSubmenu");
+            ReadAll("CallSubmenu");
+            ReadAll("AssignmentSubmenu");
+        }
+
+        private static void ResetDatabase()
+        {
+            s_dalConfig.Reset(); 
+            s_dalVolunteer.DeleteAll();
+            s_dalCall.DeleteAll();
+            s_dalAssignment.DeleteAll();
+        }
 
         static void Main(string[] args)
         {
@@ -252,7 +266,7 @@
                                 break;
 
                             case MainMenuOption.ConfigMenu:
-                                ConfigSubMenu();
+                                ConfigMenu();
                                 break;
 
                             case MainMenuOption.ResetDatabase:
