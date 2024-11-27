@@ -15,7 +15,7 @@ public class Assignment
     public int CallId { get; set; }
     public int VolunteerId { get; set; }
     public DateTime EntryTime { get; set; }
-    public DateTime? ActualCompletionTime { get; set; }
+    public DateTime? finishCompletionTime { get; set; }
 
     public CallResolutionStatus callResolutionStatus { get; set; }
 

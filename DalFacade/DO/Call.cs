@@ -38,8 +38,8 @@ namespace DO
         public Call(int radioCallId, string description, CallType callType, string address, double latitude, double longitude, DateTime startTime, DateTime expiredTime)
         {
             RadioCallId = radioCallId;
-            Description = description;
             CallType = callType;
+            Description = description;
             Address = address;
             Latitude = latitude;
             Longitude = longitude;

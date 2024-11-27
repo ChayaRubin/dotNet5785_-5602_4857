@@ -262,7 +262,7 @@ public static class Initialization
             }
         }
     }
-    private static void CreateAssignment(int id)
+    private static void CreateAssignment(int id, int callId)
     {
         List<Call>? callsList = s_dalCall.ReadAll();
         List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
@@ -276,7 +276,7 @@ public static class Initialization
         Assignment assignment = new Assignment
         {
             Id = Config.getNextAssignmentId,
-            CallId = callsList[i].RadioCallId,
+            CallId = callId,
             VolunteerId = id,
             EntryTime = randomTime,
             ActualCompletionTime = config.Clock,
