@@ -1,4 +1,6 @@
-﻿namespace DO;
+﻿using System.Net;
+
+namespace DO;
 
 /// <summary>
 /// Assignment Entity represents a link between a call and a volunteer
@@ -18,8 +20,19 @@ public class Assignment
     public DateTime? FinishCompletionTime { get; set; }
     public CallResolutionStatus callResolutionStatus { get; set; }
 
-    Assignment assignment2 = new Assignment(0, 0, 0, DateTime.Now, null, CallResolutionStatus.Treated);
+    //Assignment assignment2 = new Assignment(0, 0, 0, DateTime.Now, null, CallResolutionStatus.Treated);
 
+    //public Assignment(0, 0, 0, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus callResolutionStatus)
+
+    public Assignment()
+    {
+        Id = 0;  // ערך ברירת מחדל ל-Id
+        CallId = 0;  // ערך ברירת מחדל ל-CallId
+        VolunteerId = 0;  // ערך ברירת מחדל ל-VolunteerId
+        EntryTime = DateTime.Now;  // ערך ברירת מחדל ל-EntryTime
+        FinishCompletionTime = null;  // ערך ברירת מחדל ל-FinishCompletionTime
+        callResolutionStatus = CallResolutionStatus.Treated;  // ערך ברירת מחדל ל-CallResolutionStatus
+    }
     public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus callResolutionStatus)
     {
         Id = id;
@@ -30,6 +43,10 @@ public class Assignment
         this.callResolutionStatus = callResolutionStatus;
     }
 
+    public override string ToString()
+    {
+        return $"Id: {Id}, CallId: {CallId}, VolunteerId: {VolunteerId}, EntryTime: {EntryTime}, FinishCompletionTime: {FinishCompletionTime}, callResolutionStatus: {callResolutionStatus}";
+    }
     //public Assignment() : this(Config.,Call.MyRadioCallId, , "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
 }
 

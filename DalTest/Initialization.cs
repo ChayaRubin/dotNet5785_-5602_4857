@@ -56,7 +56,7 @@ public static class Initialization
             int MAX_ID = 999999999;
             int MAX_DISTANCE = 50;
 
-            for (int i = 0; i < names.Length; i++)
+            for (int i = 0; i < addresses.Length-1; i++)
             {
                 string name = names[i];
                 int id;
@@ -72,12 +72,8 @@ public static class Initialization
                 do
                 {
                     phoneNumber = $"05{rand.Next(1000000, 10000000)}";
-                    phoneNumberInt = int.Parse(phoneNumber);  // המרה מ-string ל-int
-                } while (s_dalVolunteer.Read(phoneNumberInt) != null);  // קריאה עם int
-                                                                        // קריאה עם string
-                                                                        // קריאה עם אינט
-                                                                        // מוודא שהמספר לא קיים בבסיס הנתונים
-                                                                        // Ensure unique phone number
+                    phoneNumberInt = int.Parse(phoneNumber);  
+                } while (s_dalVolunteer.Read(phoneNumberInt) != null);  
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -104,7 +100,7 @@ public static class Initialization
                 };
 
                 s_dalVolunteer.Create(volunteer);
-                Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
+                //Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
             }
         }
 
@@ -310,22 +306,58 @@ public static class Initialization
 
     //}
 
-    private static void createAssignment()
+    /*פrivate static void createAssignment()*/
+    //{
+    //    List<Call>? calls = s_dalCall!.ReadAll();
+    //    for (int i = 0; i < 50; i++)
+    //    {
+    //        DateTime minTime = calls[i].StartTime;
+    //        DateTime maxTime = (DateTime)calls[i].ExpiredTime!;
+    //        TimeSpan difference = maxTime - minTime - TimeSpan.FromHours(2);
+    //        DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)difference.TotalMinutes));
+
+    //        s_dalAssignment!.Create(new Assignment(
+    //            randomTime,
+    //            randomTime.AddHours(2),
+    //         (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length - 1)));
+    //    }
+    //}
+
+    
+   private static void createAssignments()
     {
-        List<Call>? calls = s_dalCall!.ReadAll();
+        List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
+        List<Call>? callsList = s_dalCall.ReadAll();
+
         for (int i = 0; i < 50; i++)
         {
-            DateTime minTime = calls[i].StartTime;
-            DateTime maxTime = (DateTime)calls[i].ExpiredTime!;
-            TimeSpan difference = maxTime - minTime - TimeSpan.FromHours(2);
-            DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)difference.TotalMinutes));
+            DateTime minTime = callsList[i].StartTime;
+            DateTime maxTime = (DateTime)callsList[i].ExpiredTime;
+            TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
+            DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
 
+            CallResolutionStatus typeOfEndTime;
+            if (i < 5)
+            {
+                typeOfEndTime = CallResolutionStatus.Expired;
+            }
+            else
+            {
+                typeOfEndTime = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length);
+            }
+
+            // עדכון קריאה ל-Create כך שיכנסו הערכים המתאימים ל-EntryTime ו-FinishCompletionTime
             s_dalAssignment!.Create(new Assignment(
-                randomTime,
-                randomTime.AddHours(2),
-             (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length - 1)));
+                0, // Id
+                callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId
+                volunteersList[s_rand.Next(volunteersList.Count)].Id, // VolunteerId
+                randomTime, // EntryTime
+                randomTime.AddHours(2), // FinishCompletionTime
+                typeOfEndTime // CallResolutionStatus
+            ));
         }
     }
+
 
     public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) //stage 1
     {
@@ -349,7 +381,7 @@ public static class Initialization
         CreateCall.CreateCallEntries();
 
         Console.WriteLine("Initializing Assignments...");
-        CreateAssignments(id, callId);
+        createAssignments();
 
 
     }

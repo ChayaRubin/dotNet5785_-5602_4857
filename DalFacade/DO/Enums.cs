@@ -1,5 +1,8 @@
 ﻿namespace DO;
 
+/// <summary>
+/// Enum for Distance TypeEnum
+/// </summary>
 public enum DistanceTypeEnum
 {
     AirDistance,
@@ -7,6 +10,9 @@ public enum DistanceTypeEnum
     DrivingDistance
 }
 
+/// <summary>
+/// Enum for PositionEnum Status
+/// </summary>
 public enum PositionEnum
 {
     Manager,
@@ -24,6 +30,9 @@ public enum CallResolutionStatus
     Expired        
 }
 
+/// <summary>
+/// Enum for Call Type
+/// </summary>
 public enum CallType
 {
     Urgent,

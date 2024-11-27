@@ -1,4 +1,7 @@
-﻿namespace DO;
+﻿using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace DO;
 
 /// <summary>
 /// Student Entity represents a student with all its props
@@ -63,6 +66,10 @@ public class Volunteer
         TypeOfDistance = MyTypeOfDistance;
     }
 
+    public override string ToString()
+    {
+        return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
+    }
     //private bool IsValidPassword(string? password)
     //{
     //    if (password == null)

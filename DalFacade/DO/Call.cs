@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using DO;
+using System.Numerics;
+using System.Xml.Linq;
 
 
 namespace DO
@@ -45,6 +47,10 @@ namespace DO
             Longitude = longitude;
             StartTime = startTime;
             ExpiredTime = expiredTime;
+        }
+        public override string ToString()
+        {
+            return $"Id: {RadioCallId}, CallType: {CallType}, Description: {Description}, Address: {Address}, Latitude: {Latitude}, Longitude: {Longitude},StartTime:{StartTime},ExpiredTime:{ExpiredTime}";
         }
     }
 }

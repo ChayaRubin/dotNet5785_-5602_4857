@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 public static class Config
 {
-    public const int firstCallId = 1000; // מזהה קריאה התחלתי
+    public const int firstCallId = 2000; // מזהה קריאה התחלתי
     public static int NextCallId = firstCallId;
     public static int getNextCallId { get => NextCallId++; }
  
@@ -25,10 +25,11 @@ public static class Config
 
     public static void Reset()
     {
-        NextCallId = firstCallId;
-        Clock = DateTime.Now;
-        RiskRange = TimeSpan.Zero;
+        NextCallId = firstCallId;  
+        Clock = DateTime.Now;     
+        RiskRange = TimeSpan.Zero; 
     }
+
 
 }
 

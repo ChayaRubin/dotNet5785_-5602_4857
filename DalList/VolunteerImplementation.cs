@@ -13,7 +13,7 @@ public class VolunteerImplementation : IVolunteer
        
         DataSource.Volunteers.Add(item);
     }
-    public void Delete(int id)//gpt
+    public void Delete(int id)
     {
         Volunteer? VolunteerToRemove = DataSource.Volunteers.FirstOrDefault(c => c?.Id == id);
         if (VolunteerToRemove != null) DataSource.Volunteers.Remove(VolunteerToRemove);

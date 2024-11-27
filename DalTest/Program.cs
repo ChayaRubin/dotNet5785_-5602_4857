@@ -80,13 +80,13 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    s_dalVolunteer.Read(id);
+                    Console.WriteLine( s_dalVolunteer.Read(id));
                     break;
                 case "CallMenu":
-                    s_dalCall.Read(id);
+                    Console.WriteLine(s_dalCall.Read(id));
                     break;
                 case "AssignmentMenu":
-                    s_dalAssignment.Read(id);
+                    Console.WriteLine(s_dalAssignment.Read(id));
                     break;
             }
         }
@@ -278,10 +278,10 @@ namespace DalTest
                                 break;
 
                             default:
-                                Console.WriteLine("בחירה לא חוקית, נסה שנית.");
+                                Console.WriteLine("Try again");
                                 break;
                         }
-                        Console.WriteLine("Enter a number:");
+                        //Console.WriteLine("Enter a number:");
                         Enum.TryParse(Console.ReadLine(), out choice);
                     }
 
@@ -407,9 +407,10 @@ namespace DalTest
             return new Assignment(AssignmentId, CallId, volunteerId, EntryTime, FinishCompletionTime, status);
         }
 
+
+
         private static void ConfigMenuFunction()
         {
-
             Console.WriteLine("Config Menu:");
             foreach (ConfigMenu option in Enum.GetValues(typeof(ConfigMenu)))
             {
@@ -450,20 +451,37 @@ namespace DalTest
                         Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
                         if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
                             throw new FormatException("Invalid time format.");
-                        Config.RiskRange = newRiskRange;
+                        s_dalConfig.RiskRange = newRiskRange;
                         break;
 
                     case ConfigMenu.DisplayRiskRange:
+                        Console.WriteLine($"Risk Range: {s_dalConfig.RiskRange}");
                         break;
 
                     case ConfigMenu.Reset:
                         s_dalConfig.Reset();
                         break;
+
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
+                }
+
+                // הצגת התפריט מחדש
+                Console.WriteLine("\nConfig Menu:");
+                foreach (ConfigMenu option in Enum.GetValues(typeof(ConfigMenu)))
+                {
+                    Console.WriteLine($"{(int)option}. {option}");
+                }
+                Console.Write("Select an option: ");
+                while (!Enum.TryParse(Console.ReadLine(), out Input) || !Enum.IsDefined(typeof(ConfigMenu), Input))
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    Console.Write("Select an option: ");
                 }
             }
-
-
         }
+
 
     }
 }
