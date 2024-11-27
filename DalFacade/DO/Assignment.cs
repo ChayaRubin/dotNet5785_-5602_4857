@@ -15,13 +15,24 @@ public class Assignment
     public int CallId { get; set; }
     public int VolunteerId { get; set; }
     public DateTime EntryTime { get; set; }
-    public DateTime? finishCompletionTime { get; set; }
-
+    public DateTime? FinishCompletionTime { get; set; }
     public CallResolutionStatus callResolutionStatus { get; set; }
 
-    //public Assignment() : this(Config.,Call.MyRadioCallId, , "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
+    Assignment assignment2 = new Assignment(0, 0, 0, DateTime.Now, null, CallResolutionStatus.Treated);
 
+    public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus callResolutionStatus)
+    {
+        Id = id;
+        CallId = callId;
+        VolunteerId = volunteerId;
+        EntryTime = entryTime;
+        FinishCompletionTime = finishCompletionTime;
+        this.callResolutionStatus = callResolutionStatus;
+    }
+
+    //public Assignment() : this(Config.,Call.MyRadioCallId, , "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
 }
+
 
 
 

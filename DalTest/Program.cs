@@ -8,35 +8,7 @@ namespace DalTest
     {
 
 
-        static Call CreateCallFromUserInput(int Id)
-        {
-
-            int RadioCallId = Id;
-
-            console.WriteLine("Enter the call description (optinal)");
-            string? Description = console.ReadLine();
-
-            Console.WriteLine("Enter Call type, 1 for Urgent, 2 for Medium_Urgency, 3 for General_Assistance, 4 for Non_Urgent");
-            int callType = int.TryParse(Console.ReadLine(), out int temp) ? temp : throw new FormatException("Invalid call type.");
-
-            console.WriteLine("Enter the event address");
-            string Address = console.ReadLine();
-
-            console.WriteLine("Enter the event latitude");
-            double Latitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
-
-            console.WriteLine("Enter the event longitude");
-            double Longitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid longitude.");
-
-            Console.WriteLine("enter the Start Time of the event (in format dd/mm/yy hh:mm:ss): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime st)) throw new FormatException("event date is invalid!");
-            DateTime StartTime = Console.WriteLine(st);
-
-            Console.WriteLine("enter the Expired Time of the call (in format dd/mm/yy hh:mm:ss): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime et)) throw new FormatException("event date is invalid!");
-            DateTime ExpiredTime = Console.WriteLine(et);
-
-            return new Call(RadioCallId, Description, CallType, Address, Latitude, Longitude, StartTime, ExpiredTime);
+     
 
         private static IStudent? s_dalStudent = new StudentImplementation(); //stage 1
         private static ICourse? s_dalCourse = new CourseImplementation(); //stage 1
@@ -73,8 +45,8 @@ namespace DalTest
             AdvanceClockByMonth,
             AdvanceClockByYear,
             DisplayClock,
-            ChangeClockOrRiskRange,
-            DisplayConfigVar,
+            ChangeRiskRange,
+            DisplayRiskRange,
             Reset
         }
 
@@ -88,11 +60,11 @@ namespace DalTest
                 switch (choice)
                 {
                     case "VolunteerMenu":
-                        Volunteer currentVol = CreateVolunteer(myId);
+                        Volunteer currentVol = CreateVolunteerFromUserInput(myId);
                         s_dalVolunteer.Create(currentVol);
                         break;
                     case "CallMenu":
-                        Call currentCall = CreateCall(myId);
+                        Call currentCall = CreateCallFromUserInput(myId);
                         s_dalCall.Create(currentCall);
                         break;
                     case "AssignmentMenu":
@@ -149,7 +121,7 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    Volunteer currentVol = CreateVolunteer(myId);
+                    Volunteer currentVol = CreateVolunteerFromUserInput(myId);
                     s_dalVolunteer.Update(currentVol);
                     break;
                 case "CallMenu":
@@ -230,8 +202,8 @@ namespace DalTest
 
                         case ActionMenu.Delete:
                             Console.WriteLine("Enter ID");
-                            int myId = int.Parse(Console.ReadLine()!);
-                            Delete(choice, myId);
+                            int myIdToDelete = int.Parse(Console.ReadLine()!);
+                            Delete(choice, myIdToDelete);
                             break;
 
                         case ActionMenu.DeleteAll:
@@ -331,51 +303,87 @@ namespace DalTest
 
         static Call CreateVolunteerFromUserInput(int Id)
         {
-            int Id = Id;
+            int VolunteerId = Id;
 
-            console.WriteLine("Enter your name");
-            string Name = console.ReadLine();
+            Console.WriteLine("Enter your name");
+            string Name = Console.ReadLine();
 
-            console.WriteLine("Enter your phone number");
-            string Phone = console.ReadLine();
+            Console.WriteLine("Enter your phone number");
+            string Phone = Console.ReadLine();
 
-            console.WriteLine("Enter your email address");
-            string Email = console.ReadLine();
+            Console.WriteLine("Enter your email address");
+            string Email = Console.ReadLine();
 
-            console.WriteLine("Enter your password (optinal)");
-            string? Password = console.ReadLine();
+            Console.WriteLine("Enter your password (optinal)");
+            string? Password = Console.ReadLine();
 
-            console.WriteLine("Enter your address (optinal)");
-            string? Address = console.ReadLine();
+            Console.WriteLine("Enter your address (optinal)");
+            string? Address = Console.ReadLine();
 
-            console.WriteLine("Enter your Latitude (optinal)");
+            Console.WriteLine("Enter your Latitude (optinal)");
             double? Latitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
 
 
-            console.WriteLine("Enter your Longitude (optinal)");
-            double? Longitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
+            Console.WriteLine("Enter your Longitude (optinal)");
+            double? Longitude = double.TryParse(Console.ReadLine(), out double temp2) ? temp2 : throw new FormatException("Invalid latitude");
 
 
             Console.WriteLine("Enter position type, 1 for Manager, 2 for Volunteer");
-            PositionEnum Position = console.ReadLine();
-            int.TryParse(Console.ReadLine(), out int temp) ? temp : throw new FormatException("Invalid Position.");
+            PositionEnum Position = Console.ReadLine();
+            int.TryParse(Console.ReadLine(), out int temp3) ? temp3 : throw new FormatException("Invalid Position.");
 
             Console.WriteLine("Enter true or false for Active status:");
             bool Active = bool.TryParse(Console.ReadLine(), out Active) && Active;
 
             Console.WriteLine("Enter max response distance (optinal)");
-            double? MaxResponseDistance = console.ReadLine();
+            double? MaxResponseDistance = Console.ReadLine();
 
-            return new Volunteer(Id, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance);
+            return new Volunteer(VolunteerId, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance);
 
         }
 
+        static Call CreateCallFromUserInput(int Id)
+        {
+
+            int RadioCallId = Id;
+
+            Console.WriteLine("Enter the call description (optinal)");
+            string? Description = Console.ReadLine();
+
+            Console.WriteLine("Enter Call type, 1 for Urgent, 2 for Medium_Urgency, 3 for General_Assistance, 4 for Non_Urgent");
+            CallType callType = int.TryParse(Console.ReadLine(), out int temp) ? temp : throw new FormatException("Invalid call type.");
+
+            Console.WriteLine("Enter the event address");
+            string Address = Console.ReadLine();
+
+            Console.WriteLine("Enter the event latitude");
+            double Latitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
+
+            Console.WriteLine("Enter the event longitude");
+            double Longitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid longitude.");
+
+            Console.WriteLine("Enter the Start Time of the event (in format dd/mm/yy hh:mm:ss): ");
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime st))
+                throw new FormatException("Event date is invalid!");
+            Console.WriteLine(st);
+
+
+            Console.WriteLine("Enter the Expired Time of the call (in format dd/mm/yy hh:mm:ss): ");
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime ExpiredTime))
+                throw new FormatException("Event date is invalid!");
+            Console.WriteLine(ExpiredTime);
+
+
+            return new Call(RadioCallId, Description, callType, Address, Latitude, Longitude, StartTime, ExpiredTime);
+        }
+
+
         static Call CreateAssignmentFromUserInput(int Id)
         {
-            int Id = config.getNextAssignmentId;
+            int AssignmentId = Config.getNextAssignmentId;
 
             Console.Write("Enter Call Id: ");
-            int callId = int.Parse(Console.ReadLine()!);
+            int CallId = int.Parse(Console.ReadLine()!);
 
             Console.Write("Enter Volunteer Id: ");
             int volunteerId = int.Parse(Console.ReadLine()!);
@@ -391,19 +399,19 @@ namespace DalTest
             Console.WriteLine("Enter CallResolutionStatus type, 1 for Treated, 2 for SelfCanceled, 3 for AdminCanceled, 4 for Expired");
             CallResolutionStatus CallResolutionStatus = Console.WriteLine();
 
-            return new Assignment(Id, CallId, EntryTime, FinishCompletionTime, CallResolutionStatus);
+            return new Assignment(AssignmentId, CallId, volunteerId, EntryTime, FinishCompletionTime, CallResolutionStatus);
         }
 
-        private static void ConfigMenu()
+        private static void ConfigMenuFunction()
         {
 
             Console.WriteLine("Config Menu:");
-            foreach (ConfigSubmenu option in Enum.GetValues(typeof(ConfigMenu)))
+            foreach (ConfigMenu option in Enum.GetValues(typeof(ConfigMenu)))
             {
                 Console.WriteLine($"{(int)option}. {option}");
             }
             Console.Write("Select an option: ");
-            if (!Enum.TryParse(Console.ReadLine(), out ConfigSubmenu userInput)) throw new FormatException("Invalid choice");
+            if (!Enum.TryParse(Console.ReadLine(), out ConfigMenu Input)) throw new FormatException("Invalid choice");
 
             while (Input is not ConfigMenu.Exit)
             {
@@ -417,7 +425,7 @@ namespace DalTest
                         s_dalConfig.Clock = s_dalConfig.Clock.AddHours(1);
                         break;
 
-                    case ConfigMenu.AdvanceClockByHour:
+                    case ConfigMenu.AdvanceClockByDay:
                         s_dalConfig.Clock = s_dalConfig.Clock.AddDays(1);
                         break;
 
@@ -425,26 +433,26 @@ namespace DalTest
                         s_dalConfig.Clock = s_dalConfig.Clock.AddMonths(1);
                         break;
 
-                    case ConfigMenu.AdvanceClockByHour:
+                    case ConfigMenu.AdvanceClockByYear:
                         s_dalConfig.Clock = s_dalConfig.Clock.AddYears(1);
                         break;
 
                     case ConfigMenu.DisplayClock:
-                        Console.WriteLine($"Clock: {s_dal.Config.Clock()}");
+                        Console.WriteLine($"Clock: {s_dalConfig.Clock()}");
                         break;
 
-                    case ConfigMenu.ChangeSpan:
+                    case ConfigMenu.ChangeRiskRange:
                         Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
                         if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
                             throw new FormatException("Invalid time format.");
                         Config.RiskRange = newRiskRange;
                         break;
 
-                    case ConfigMenu.DisplaySpan:
+                    case ConfigMenu.DisplayRiskRange:
                         break;
 
                     case ConfigMenu.Reset:
-                        s_dal.Config.Reset();
+                        s_dalConfig.Reset();
                         break;
                 }
             }

@@ -1,18 +1,23 @@
 ﻿namespace DalTest;
+
+using Dal;
 using DalApi;
 using DO;
+using System.Security.Cryptography;
+using System.Text;
 
 
 //נעזרנו בגיפיטי בקשר למילוי המערכים וכוונו אותו לפונקציות מסוימות.
 
 public static class Initialization
 {
-    private static IVolunteer? s_dalVolunteer; 
-    private static ICall? s_dalCall; 
-    private static IAssignment? s_dalAssignment; 
-    private static IConfig? s_dalConfig;
+    private static IVolunteer? s_dalVolunteer= new VolunteerImplementation(); 
+    private static ICall? s_dalCall= new CallImplementation(); 
+    private static IAssignment? s_dalAssignment= new AssignmentImplementation(); 
+    private static IConfig? s_dalConfig= new ConfigImplementation();
     private static readonly Random s_rand = new();
-    public class createVolunteer
+
+    public class CreateVolunteer
     {
         private static string[] names = {
         "Yaakov Cohen", "Miriam Levy", "Avraham Ben-David", "Sarah Shalom", "Chaim Adler", "Ruth Klein",
@@ -41,27 +46,25 @@ public static class Initialization
 
         private static void CreateVolunteerEntries()
         {
-
             int MIN_ID = 100000000;
             int MAX_ID = 999999999;
             int MAX_DISTANCE = 50;
 
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < names.Length; i++)
             {
                 string name = names[i];
-
                 int id;
+
                 do
                 {
-                    id = rand.Next(MIN_ID, MAX_ID);
-                } while (s_dalVolunteer!.Read(id) != null);
+                    id = s_rand.Next(MIN_ID, MAX_ID);
+                } while (s_dalVolunteer!.Read(id) != null);  // Ensure unique ID
 
                 string phoneNumber;
                 do
                 {
-                    phoneNumber = "05" + rand.Next(1000000, 9999999).ToString();
-                } while (s_dalVolunteer.Read(phoneNumber) != null); // אם יש מתנדב עם המספר הזה, ניצור חדשבדיקה שהטלפון אינו בשימוש
-
+                    phoneNumber = "05" + s_rand.Next(1000000, 9999999).ToString();
+                } while (s_dalVolunteer.Read(phoneNumber) != null);  // Ensure unique phone number
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -82,10 +85,11 @@ public static class Initialization
                     Longitude = longitude,
                     Position = position,
                     Active = true,
-                    MaxResponseDistance = rand.NextDouble() * MAX_DISTANCE,
-                    TypeOfDistince = DistanceTypeEnum.AirDistance,
+                    MaxResponseDistance = s_rand.NextDouble() * MAX_DISTANCE,
+                    TypeOfDistance = DistanceTypeEnum.AirDistance,
                     Password = encryptedPassword
                 };
+
                 s_dalVolunteer.Create(volunteer);
                 Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
             }
@@ -95,17 +99,22 @@ public static class Initialization
         private static string GenerateStrongPassword()
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()";
-            Random rand = new Random();
             StringBuilder password = new StringBuilder(12);
+
             for (int i = 0; i < 12; i++)
             {
-                password.Append(validChars[rand.Next(validChars.Length)]);
+                password.Append(validChars[s_rand.Next(validChars.Length)]);
             }
+
             return password.ToString();
         }
-        //הצפנה בAES
+
+        // Encrypt the password using AES
         public static string Encrypt(string plainText)
         {
+            string key = "0123456789abcdef";  // Example key, replace with a secure key
+            string iv = "abcdef9876543210";   // Example IV, replace with a secure IV
+
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Encoding.UTF8.GetBytes(key);
@@ -120,17 +129,17 @@ public static class Initialization
                     {
                         swEncrypt.Write(plainText);
                     }
+
                     return Convert.ToBase64String(msEncrypt.ToArray());
                 }
             }
         }
-
     }
 
 
-    public class createCall
+    public class CreateCall
     {
-        string[] callAddresses = new string[]
+        string[] CallAddresses = new string[]
         {
             "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
             "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
@@ -147,7 +156,7 @@ public static class Initialization
             "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem"
         };
 
-        double[] callLongitudes = new double[]
+        double[] CallLongitudes = new double[]
         {
             35.225721, 35.217133, 35.229169, 35.230535, 35.225939,
             35.224211, 35.219538, 35.224968, 35.226063, 35.219375,
@@ -161,7 +170,7 @@ public static class Initialization
             35.222590, 35.222579, 35.222869, 35.226072, 35.221711
         };
 
-        double[] callLatitudes = new double[]
+        double[] CallLatitudes = new double[]
         {
             31.776545, 31.771675, 31.767727, 31.771267, 31.768520,
             31.785228, 31.786335, 31.769799, 31.773315, 31.786812,
@@ -175,7 +184,7 @@ public static class Initialization
             31.776597, 31.785040, 31.772628, 31.776763, 31.780179
         };
 
-        string[] callDescriptions = new string[]
+        string[] CallDescriptions = new string[]
         {
             // High Urgency (Immediate and Critical):
             "Medical Emergency", "Accident Assistance", "Vehicle Recovery", "Emergency Towing", "Stuck in Mud",
@@ -213,10 +222,10 @@ public static class Initialization
             for (int i = 0; i < 50; i++)
             {
                 int MyRadioCallId = Config.NextCallId;
-                string MyDescription = callDescriptions[i];
-                string MyAddress = callAddresses[i];
-                double MyLatitude = callLatitudes[i];
-                double MyLongitude = callLongitudes[i];
+                string MyDescription = CallDescriptions[i];
+                string MyAddress = CallAddresses[i];
+                double MyLatitude = CallLatitudes[i];
+                double MyLongitude = CallLongitudes[i];
                 DateTime MyExpiredTime;
                 CallType MyCallType;
 
@@ -255,7 +264,7 @@ public static class Initialization
                     Longitude = MyLongitude,
                     StartTime = MyStartTime,
                     ExpiredTime = MyExpiredTime,
-                    callType = MyCallType,
+                    CallType = MyCallType,
                 };
 
                 s_dalCall.Create(call); 
@@ -279,7 +288,7 @@ public static class Initialization
             CallId = callId,
             VolunteerId = id,
             EntryTime = randomTime,
-            ActualCompletionTime = config.Clock,
+            FinishCompletionTime = Config.Clock,
             callResolutionStatus = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)))
         };
         s_dalAssignment.Create(assignment);
@@ -302,13 +311,13 @@ public static class Initialization
         s_dalAssignment.DeleteAll();
 
         Console.WriteLine("Initializing Volunteers...");
-        createVolunteers();
+        CreateVolunteerEntries();
 
         Console.WriteLine("Initializing Calls...");
-        createCalls();
+        CreateCallsEntries();
 
         Console.WriteLine("Initializing Assignments...");
-        createAssignments();
+        CreateAssignments();
 
 
     }

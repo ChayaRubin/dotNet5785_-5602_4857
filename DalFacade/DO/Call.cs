@@ -19,7 +19,7 @@ namespace DO
     public class Call
     {
         public int RadioCallId { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public CallType CallType { get; set; }
         public string Address { get; set; }
         public double Latitude { get; set; }
