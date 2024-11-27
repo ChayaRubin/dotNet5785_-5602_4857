@@ -6,13 +6,9 @@ namespace DalTest
 {
     internal class Program
     {
-
-
-     
-
-        private static IStudent? s_dalStudent = new StudentImplementation(); //stage 1
-        private static ICourse? s_dalCourse = new CourseImplementation(); //stage 1
-        private static ILink? s_dalLink = new LinkImplementation(); //stage 1
+        private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); //stage 1
+        private static ICall? s_dalCall = new CallImplementation(); //stage 1
+        private static IAssignment? s_dalAssignment = new AssignmentImplementation(); //stage 1
         private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
 
         private enum MainMenuOption
@@ -68,7 +64,7 @@ namespace DalTest
                         s_dalCall.Create(currentCall);
                         break;
                     case "AssignmentMenu":
-                        Assignment currentAss = CreateAssignment(myId);
+                        Assignment currentAss = CreateAssignmentFromUserInput(myId);
                         s_dalAssignment.Create(currentAss);
                         break;
                 }
@@ -125,11 +121,11 @@ namespace DalTest
                     s_dalVolunteer.Update(currentVol);
                     break;
                 case "CallMenu":
-                    Call currentCall = CreateCall(myId);
+                    Call currentCall = CreateCallFromUserInput(myId);
                     s_dalCall.Update(currentCall);
                     break;
                 case "AssignmentMenu":
-                    Assignment currentAss = CreateAssignment(myId);
+                    Assignment currentAss = CreateAssignmentFromUserInput(myId);
                     s_dalAssignment.Update(currentAss);
                     break;
             }
@@ -172,7 +168,7 @@ namespace DalTest
             try
             {
                 Console.WriteLine("Enter a number:");
-                foreach (Submenu option in Enum.GetValues(typeof(Submenu)))
+                foreach (ActionMenu option in Enum.GetValues(typeof(ActionMenu)))
                 {
                     Console.WriteLine($"{(int)option}. {option}");
                 }
@@ -215,7 +211,7 @@ namespace DalTest
                             break;
                     }
                     Console.WriteLine("Enter a number:");
-                    Enum.TryParse(Console.ReadLine(), out subChoice);
+                    Enum.TryParse(Console.ReadLine(), out actionChoice);
                 }
 
             }
@@ -274,7 +270,7 @@ namespace DalTest
                                 break;
 
                             case MainMenuOption.ConfigMenu:
-                                ConfigMenu();
+                                ConfigMenuFunction();
                                 break;
 
                             case MainMenuOption.ResetDatabase:
@@ -301,7 +297,7 @@ namespace DalTest
 
         }
 
-        static Call CreateVolunteerFromUserInput(int Id)
+        static Volunteer CreateVolunteerFromUserInput(int Id)
         {
             int VolunteerId = Id;
 
@@ -321,24 +317,28 @@ namespace DalTest
             string? Address = Console.ReadLine();
 
             Console.WriteLine("Enter your Latitude (optinal)");
-            double? Latitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
+            double Latitude = double.TryParse(Console.ReadLine(), out Latitude) ? Latitude : throw new FormatException("Invalid latitude");
 
 
             Console.WriteLine("Enter your Longitude (optinal)");
-            double? Longitude = double.TryParse(Console.ReadLine(), out double temp2) ? temp2 : throw new FormatException("Invalid latitude");
+            double Longitude = double.TryParse(Console.ReadLine(), out  Longitude) ? Longitude : throw new FormatException("Invalid latitude");
 
 
             Console.WriteLine("Enter position type, 1 for Manager, 2 for Volunteer");
-            PositionEnum Position = Console.ReadLine();
-            int.TryParse(Console.ReadLine(), out int temp3) ? temp3 : throw new FormatException("Invalid Position.");
+            PositionEnum Position;
+            Position = PositionEnum.TryParse(Console.ReadLine(), out Position) ? Position : throw new FormatException("Invalid Position.");
 
             Console.WriteLine("Enter true or false for Active status:");
             bool Active = bool.TryParse(Console.ReadLine(), out Active) && Active;
 
             Console.WriteLine("Enter max response distance (optinal)");
-            double? MaxResponseDistance = Console.ReadLine();
+            double? MaxResponseDistance = double.TryParse(Console.ReadLine(), out var distance) ? (double?)distance : null;
 
-            return new Volunteer(VolunteerId, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance);
+            Console.WriteLine("Enter type of distance, 1 for air distance, 2 for walking distance,3 for driving distance");
+            DistanceTypeEnum typeOfDistance;
+            typeOfDistance = DistanceTypeEnum.TryParse(Console.ReadLine(), out typeOfDistance) ? typeOfDistance : throw new FormatException("Invalid Position.");
+            
+            return new Volunteer(VolunteerId, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance , typeOfDistance);
 
         }
 
@@ -351,21 +351,21 @@ namespace DalTest
             string? Description = Console.ReadLine();
 
             Console.WriteLine("Enter Call type, 1 for Urgent, 2 for Medium_Urgency, 3 for General_Assistance, 4 for Non_Urgent");
-            CallType callType = int.TryParse(Console.ReadLine(), out int temp) ? temp : throw new FormatException("Invalid call type.");
+            CallType callType = CallType.TryParse(Console.ReadLine(), out callType) ? callType : throw new FormatException("Invalid call type.");
 
             Console.WriteLine("Enter the event address");
             string Address = Console.ReadLine();
 
             Console.WriteLine("Enter the event latitude");
-            double Latitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid latitude");
+            double Latitude = double.TryParse(Console.ReadLine(), out Latitude) ? Latitude : throw new FormatException("Invalid latitude");
 
             Console.WriteLine("Enter the event longitude");
-            double Longitude = double.TryParse(Console.ReadLine(), out double temp) ? temp : throw new FormatException("Invalid longitude.");
+            double Longitude = double.TryParse(Console.ReadLine(), out  Longitude) ? Longitude : throw new FormatException("Invalid longitude.");
 
             Console.WriteLine("Enter the Start Time of the event (in format dd/mm/yy hh:mm:ss): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime st))
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime StartTime))
                 throw new FormatException("Event date is invalid!");
-            Console.WriteLine(st);
+            Console.WriteLine(StartTime);
 
 
             Console.WriteLine("Enter the Expired Time of the call (in format dd/mm/yy hh:mm:ss): ");
@@ -378,7 +378,7 @@ namespace DalTest
         }
 
 
-        static Call CreateAssignmentFromUserInput(int Id)
+        static Assignment CreateAssignmentFromUserInput(int Id)
         {
             int AssignmentId = Config.getNextAssignmentId;
 
@@ -389,17 +389,22 @@ namespace DalTest
             int volunteerId = int.Parse(Console.ReadLine()!);
 
             Console.Write("Enter Start Time of complain (YYYY-MM-DD HH:MM): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime et)) throw new FormatException("event date is invalid!");
-            DateTime EntryTime = Console.WriteLine(et);
+            DateTime EntryTime = DateTime.TryParse(Console.ReadLine(), out DateTime et) ? et : throw new FormatException("Event date is invalid!");
+            Console.WriteLine($"Entry Time: {EntryTime}");
 
             Console.Write("Enter finish Time of complain (YYYY-MM-DD HH:MM): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime fct)) throw new FormatException("event date is invalid!");
-            DateTime FinishCompletionTime = Console.WriteLine(fct);
+            DateTime FinishCompletionTime = DateTime.TryParse(Console.ReadLine(), out DateTime fct) ? fct : throw new FormatException("Event date is invalid!");
+            Console.WriteLine($"Finish Completion Time: {FinishCompletionTime}");
 
-            Console.WriteLine("Enter CallResolutionStatus type, 1 for Treated, 2 for SelfCanceled, 3 for AdminCanceled, 4 for Expired");
-            CallResolutionStatus CallResolutionStatus = Console.WriteLine();
+            Console.Write("Enter CallResolutionStatus type, 1 for Treated, 2 for SelfCanceled, 3 for AdminCanceled, 4 for Expired: ");
+            if (!Enum.TryParse<CallResolutionStatus>(Console.ReadLine(), out CallResolutionStatus status) ||
+                !Enum.IsDefined(typeof(CallResolutionStatus), status))
+            {
+                throw new FormatException("Invalid CallResolutionStatus value!");
+            }
+            Console.WriteLine($"Call Resolution Status: {status}");
 
-            return new Assignment(AssignmentId, CallId, volunteerId, EntryTime, FinishCompletionTime, CallResolutionStatus);
+            return new Assignment(AssignmentId, CallId, volunteerId, EntryTime, FinishCompletionTime, status);
         }
 
         private static void ConfigMenuFunction()
@@ -438,7 +443,7 @@ namespace DalTest
                         break;
 
                     case ConfigMenu.DisplayClock:
-                        Console.WriteLine($"Clock: {s_dalConfig.Clock()}");
+                        Console.WriteLine($"Clock: {s_dalConfig.Clock}");
                         break;
 
                     case ConfigMenu.ChangeRiskRange:
