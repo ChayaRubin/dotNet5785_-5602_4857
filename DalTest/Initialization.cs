@@ -44,7 +44,7 @@ public static class Initialization
         31.7705, 31.7795, 31.7720
     };
 
-        private static void CreateVolunteerEntries()
+        public static void CreateVolunteerEntries()
         {
             int MIN_ID = 100000000;
             int MAX_ID = 999999999;
@@ -63,7 +63,7 @@ public static class Initialization
                 string phoneNumber;
                 do
                 {
-                    phoneNumber = "05" + s_rand.Next(1000000, 9999999).ToString();
+                    phoneNumber = $"05{rand.Next(1000000, 9999999)}";
                 } while (s_dalVolunteer.Read(phoneNumber) != null);  // Ensure unique phone number
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
@@ -206,7 +206,7 @@ public static class Initialization
         };
 
 
-        private static void CreateCallEntries()
+        public static void CreateCallEntries()
         {
 
 
@@ -269,30 +269,47 @@ public static class Initialization
 
                 s_dalCall.Create(call); 
             }
-        }
     }
-    private static void CreateAssignment(int id, int callId)
+}
+    //public static void CreateAssignments(int id, int callId)
+    //{
+
+    //    List<Call>? callsList = s_dalCall.ReadAll();
+    //    List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
+    //    DateTime start = new DateTime(s_dalConfig.Clock.Year, s_dalConfig.Clock.Month, s_dalConfig.Clock.Day, s_dalConfig.Clock.Hour - 7, 0, 0);
+
+    //    DateTime minTime = callsList[i].MyStartTime;
+    //    DateTime maxTime = (DateTime)callsList[i].MyExpiredTime!;
+    //    TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
+    //    DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+    //    Assignment assignment = new Assignment
+    //    {
+    //        Id = Config.getNextAssignmentId,
+    //        CallId = callId,
+    //        VolunteerId = id,
+    //        EntryTime = randomTime,
+    //        FinishCompletionTime = Config.Clock,
+    //        callResolutionStatus = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)))
+    //    };
+    //    s_dalAssignment.Create(assignment);
+
+    //}
+
+    private static void createAssignment()
     {
-        List<Call>? callsList = s_dalCall.ReadAll();
-        List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
-        DateTime start = new DateTime(s_dalConfig.Clock.Year, s_dalConfig.Clock.Month, s_dalConfig.Clock.Day, s_dalConfig.Clock.Hour - 7, 0, 0);
-
-
-        DateTime minTime = callsList[i].MyStartTime;
-        DateTime maxTime = (DateTime)callsList[i].MyExpiredTime!;
-        TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-        DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
-        Assignment assignment = new Assignment
+        List<Call>? calls = s_dalCall!.ReadAll();
+        for (int i = 0; i < 50; i++)
         {
-            Id = Config.getNextAssignmentId,
-            CallId = callId,
-            VolunteerId = id,
-            EntryTime = randomTime,
-            FinishCompletionTime = Config.Clock,
-            callResolutionStatus = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)))
-        };
-        s_dalAssignment.Create(assignment);
+            DateTime minTime = calls[i].StartTime;
+            DateTime maxTime = (DateTime)calls[i].MyExpiredTime!;
+            TimeSpan difference = maxTime - minTime - TimeSpan.FromHours(2);
+            DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)difference.TotalMinutes));
 
+            s_dalAssignment!.Create(new Assignment(
+                randomTime,
+                randomTime.AddHours(2),
+             (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length - 1)));
+        }
     }
 
     public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) //stage 1
@@ -311,13 +328,13 @@ public static class Initialization
         s_dalAssignment.DeleteAll();
 
         Console.WriteLine("Initializing Volunteers...");
-        CreateVolunteerEntries();
+        CreateVolunteer.CreateVolunteerEntries();
 
         Console.WriteLine("Initializing Calls...");
-        CreateCallsEntries();
+        CreateCall.CreateCallEntries();
 
         Console.WriteLine("Initializing Assignments...");
-        CreateAssignments();
+        CreateAssignments( id, callId);
 
 
     }
