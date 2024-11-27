@@ -105,65 +105,60 @@ namespace DalTest
 
         private static void ConfigMenu()
         {
-            try
+
+            Console.WriteLine("Config Menu:");
+            foreach (ConfigSubmenu option in Enum.GetValues(typeof(ConfigMenu)))
             {
-                Console.WriteLine("Config Menu:");
-                foreach (ConfigSubmenu option in Enum.GetValues(typeof(ConfigMenu)))
+                Console.WriteLine($"{(int)option}. {option}");
+            }
+            Console.Write("Select an option: ");
+            if (!Enum.TryParse(Console.ReadLine(), out ConfigSubmenu userInput)) throw new FormatException("Invalid choice");
+
+            while (Input is not ConfigMenu.Exit)
+            {
+                switch (Input)
                 {
-                    Console.WriteLine($"{(int)option}. {option}");
-                }
-                Console.Write("Select an option: ");
-                if (!Enum.TryParse(Console.ReadLine(), out ConfigSubmenu userInput)) throw new FormatException("Invalid choice");
+                    case ConfigMenu.AdvanceClockByMinute:
+                        s_dalConfig.Clock = s_dalConfig.Clock.AddMinutes(1);
+                        break;
 
-                while (Input is not ConfigMenu.Exit)
-                {
-                    switch (Input)
-                    {
-                        case ConfigMenu.AdvanceClockByMinute:
-                            s_dalConfig.Clock = s_dalConfig.Clock.AddMinutes(1);
-                            break;
+                    case ConfigMenu.AdvanceClockByHour:
+                        s_dalConfig.Clock = s_dalConfig.Clock.AddHours(1);
+                        break;
 
-                        case ConfigMenu.AdvanceClockByHour:
-                            s_dalConfig.Clock = s_dalConfig.Clock.AddHours(1);
-                            break;
+                    case ConfigMenu.AdvanceClockByHour:
+                        s_dalConfig.Clock = s_dalConfig.Clock.AddDays(1);
+                        break;
 
-                        case ConfigMenu.AdvanceClockByHour:
-                            s_dalConfig.Clock = s_dalConfig.Clock.AddDays(1);
-                            break;
+                    case ConfigMenu.AdvanceClockByMonth:
+                        s_dalConfig.Clock = s_dalConfig.Clock.AddMonths(1);
+                        break;
 
-                        case ConfigMenu.AdvanceClockByMonth:
-                            s_dalConfig.Clock = s_dalConfig.Clock.AddMonths(1);
-                            break;
+                    case ConfigMenu.AdvanceClockByHour:
+                        s_dalConfig.Clock = s_dalConfig.Clock.AddYears(1);
+                        break;
 
-                        case ConfigMenu.AdvanceClockByHour:
-                            s_dalConfig.Clock = s_dalConfig.Clock.AddYears(1);
-                            break;
+                    case ConfigMenu.DisplayClock:
+                        Console.WriteLine($"Clock: {s_dal.Config.Clock()}");
+                        break;
 
-                        case ConfigMenu.DisplayClock:
-                            Console.WriteLine($"Clock: {s_dal.Config.Clock()}");
-                            break;
+                    case ConfigMenu.ChangeSpan:
+                        Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
+                        if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
+                            throw new FormatException("Invalid time format.");
+                        Config.RiskRange = newRiskRange;
+                        break;
 
-                        case ConfigMenu.ChangeSpan:
-                            Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
-                            if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
-                                throw new FormatException("Invalid time format.");
-                            Config.RiskRange = newRiskRange;
-                            break;
+                    case ConfigMenu.DisplaySpan:
+                        break;
 
-                        case ConfigMenu.DisplaySpan:
-                            Console.WriteLine($"RiskRange updated to: {s_dalConfig.GetRiskRange()}");
-                            break;
-
-                        case ConfigMenu.Reset:
-                            s_dal.Config.Reset();
-                            break;
-                    }
+                    case ConfigMenu.Reset:
+                        s_dal.Config.Reset();
+                        break;
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in ConfigSubmenu function: {ex.Message}");
-            }
+
+
         }
 
     }
