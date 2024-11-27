@@ -8,11 +8,11 @@ using System.Collections.Generic;
 /// <param name="NextCallId">The identifier for the next incoming call. Automatically increments by 1 with each new call</param>
 /// <param name="NextAssignmentId">The identifier for the next assignment instance between a volunteer and a call. Increments by 1 with each new assignment</param>
 /// <param name="Clock"> A time range after which a call is considered at risk, nearing its required end time.</param>
-/// <param name="RiskRange"> A time range after which a call is considered at risk, nearing its required end time.</param>
+/// <param name="RiskRange"> a time range after which a call is considered at risk, nearing its required end time.</param>
 
 public static class Config
 {
-    public const int firstCallId = 2000; // מזהה קריאה התחלתי
+    public const int firstCallId = 1000; // מזהה קריאה התחלתי
     public static int NextCallId = firstCallId;
     public static int getNextCallId { get => NextCallId++; }
  
