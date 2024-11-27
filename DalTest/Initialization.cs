@@ -11,34 +11,40 @@ using System.Text;
 
 public static class Initialization
 {
-    private static IVolunteer? s_dalVolunteer= new VolunteerImplementation(); 
-    private static ICall? s_dalCall= new CallImplementation(); 
-    private static IAssignment? s_dalAssignment= new AssignmentImplementation(); 
-    private static IConfig? s_dalConfig= new ConfigImplementation();
+    private static IVolunteer? s_dalVolunteer = new VolunteerImplementation();
+    private static ICall? s_dalCall = new CallImplementation();
+    private static IAssignment? s_dalAssignment = new AssignmentImplementation();
+    private static IConfig? s_dalConfig = new ConfigImplementation();
     private static readonly Random s_rand = new();
 
     public class CreateVolunteer
     {
-        private static string[] names = {
+
+        public static string[] names = new string[] {
+
         "Yaakov Cohen", "Miriam Levy", "Avraham Ben-David", "Sarah Shalom", "Chaim Adler", "Ruth Klein",
         "David Katz", "Esther Goldstein", "Moshe Fogel", "Tova Levi", "Yitzhak Mizrahi", "Naomi Rosen",
         "Yehuda Friedman", "Shoshana Cohen", "Eliezer Glick", "Chava Shapiro", "Yonatan Weiss", "Leah Schwartz",
         "Ezra Cohen", "Rachel Abramovitch", "Shimon Ben-Tov", "Malkah Lieberman", "Tzvi Segal", "Chana Rubin",
         "Binyamin Stein", "Hannah Golan", "Simcha Kaplan", "Tamar Halperin", "Menachem Schneider", "Yaara Berman"
     };
-        private static string[] addresses = {
+
+        public static string[] addresses = new string[] {
+
         "Atsil 13, Jerusalem", "King David Street 7, Jerusalem", "Ben Yehuda Street 45, Jerusalem",
         "Jaffa Street 56, Jerusalem", "Agrippas Street 22, Jerusalem", "Shmuel Hanavi Street 5, Jerusalem",
         "Yehuda Halevi Street 3, Jerusalem", "Hillel Street 19, Jerusalem", "Ramban Street 9, Jerusalem",
         "Strauss Street 12, Jerusalem", "Yafo Road 34, Jerusalem", "Kehilat Yaakov Street 8, Jerusalem",
         "Mordechai Ben Hillel Street 11, Jerusalem", "Keren Hayesod Street 16, Jerusalem", "Shazar Boulevard 21, Jerusalem"
     };
-        private static double[] longitudes = {
+        public static double[] longitudes = new double[] {
+
         35.2080, 35.2130, 35.2215, 35.2160, 35.2250, 35.2205,
         35.2225, 35.2270, 35.2290, 35.2135, 35.2100, 35.2295,
         35.2240, 35.2265, 35.2175
     };
-        private static double[] latitudes = {
+        public static double[] latitudes = new double[] {
+
         31.7735, 31.7685, 31.7760, 31.7810, 31.7730, 31.7800,
         31.7775, 31.7745, 31.7790, 31.7715, 31.7755, 31.7730,
         31.7705, 31.7795, 31.7720
@@ -60,11 +66,18 @@ public static class Initialization
                     id = s_rand.Next(MIN_ID, MAX_ID);
                 } while (s_dalVolunteer!.Read(id) != null);  // Ensure unique ID
 
+                Random rand = new Random();
                 string phoneNumber;
+                int phoneNumberInt;
                 do
                 {
-                    phoneNumber = $"05{rand.Next(1000000, 9999999)}";
-                } while (s_dalVolunteer.Read(phoneNumber) != null);  // Ensure unique phone number
+                    phoneNumber = $"05{rand.Next(1000000, 10000000)}";
+                    phoneNumberInt = int.Parse(phoneNumber);  // המרה מ-string ל-int
+                } while (s_dalVolunteer.Read(phoneNumberInt) != null);  // קריאה עם int
+                                                                        // קריאה עם string
+                                                                        // קריאה עם אינט
+                                                                        // מוודא שהמספר לא קיים בבסיס הנתונים
+                                                                        // Ensure unique phone number
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -139,7 +152,8 @@ public static class Initialization
 
     public class CreateCall
     {
-        string[] CallAddresses = new string[]
+
+        public static string[] CallAddresses = new string[]
         {
             "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
             "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
@@ -156,7 +170,7 @@ public static class Initialization
             "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem"
         };
 
-        double[] CallLongitudes = new double[]
+        public static double[] CallLongitudes = new double[]
         {
             35.225721, 35.217133, 35.229169, 35.230535, 35.225939,
             35.224211, 35.219538, 35.224968, 35.226063, 35.219375,
@@ -170,7 +184,7 @@ public static class Initialization
             35.222590, 35.222579, 35.222869, 35.226072, 35.221711
         };
 
-        double[] CallLatitudes = new double[]
+        public static double[] CallLatitudes = new double[]
         {
             31.776545, 31.771675, 31.767727, 31.771267, 31.768520,
             31.785228, 31.786335, 31.769799, 31.773315, 31.786812,
@@ -184,7 +198,8 @@ public static class Initialization
             31.776597, 31.785040, 31.772628, 31.776763, 31.780179
         };
 
-        string[] CallDescriptions = new string[]
+        public static string[] CallDescriptions = new string[]
+
         {
             // High Urgency (Immediate and Critical):
             "Medical Emergency", "Accident Assistance", "Vehicle Recovery", "Emergency Towing", "Stuck in Mud",
@@ -231,24 +246,24 @@ public static class Initialization
 
                 switch (i)
                 {
-                    case int n when (n < 10): 
+                    case int n when (n < 10):
                         MyCallType = CallType.Urgent;
-                        MyExpiredTime = MyStartTime.AddMinutes(15); 
+                        MyExpiredTime = MyStartTime.AddMinutes(15);
                         break;
 
-                    case int n when (n >= 10 && n < 20): 
+                    case int n when (n >= 10 && n < 20):
                         MyCallType = CallType.Medium_Urgency;
                         MyExpiredTime = MyStartTime.AddMinutes(30);
                         break;
 
-                    case int n when (n >= 20 && n < 40): 
+                    case int n when (n >= 20 && n < 40):
                         MyCallType = CallType.General_Assistance;
                         MyExpiredTime = MyStartTime.AddHours(1);
                         break;
 
-                    case int n when (n >= 40 && n < 50): 
+                    case int n when (n >= 40 && n < 50):
                         MyCallType = CallType.Non_Urgent;
-                        MyExpiredTime = MyStartTime.AddHours(2); 
+                        MyExpiredTime = MyStartTime.AddHours(2);
                         break;
 
                     default:
@@ -267,10 +282,10 @@ public static class Initialization
                     CallType = MyCallType,
                 };
 
-                s_dalCall.Create(call); 
+                s_dalCall.Create(call);
             }
+        }
     }
-}
     //public static void CreateAssignments(int id, int callId)
     //{
 
@@ -301,7 +316,7 @@ public static class Initialization
         for (int i = 0; i < 50; i++)
         {
             DateTime minTime = calls[i].StartTime;
-            DateTime maxTime = (DateTime)calls[i].MyExpiredTime!;
+            DateTime maxTime = (DateTime)calls[i].ExpiredTime!;
             TimeSpan difference = maxTime - minTime - TimeSpan.FromHours(2);
             DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)difference.TotalMinutes));
 
@@ -334,7 +349,7 @@ public static class Initialization
         CreateCall.CreateCallEntries();
 
         Console.WriteLine("Initializing Assignments...");
-        CreateAssignments( id, callId);
+        CreateAssignments(id, callId);
 
 
     }
