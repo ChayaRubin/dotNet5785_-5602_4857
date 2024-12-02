@@ -3,7 +3,7 @@ using DO;
 using System.Collections.Generic;
 namespace Dal;
 
-public class CallImplementation : ICall
+internal class CallImplementation : ICall
 {
     public void Create(Call item)
     {

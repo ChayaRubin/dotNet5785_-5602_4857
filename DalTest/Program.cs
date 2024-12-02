@@ -240,15 +240,15 @@ namespace DalTest
 
         static void Main(string[] args)
         {
-            //try
-            //{
+            try
+            {
                 Console.WriteLine("Enter a number:");
                 foreach (MainMenuOption option in Enum.GetValues(typeof(MainMenuOption)))
                 {
                     Console.WriteLine($"{(int)option}. {option}");
                 }
 
-                MainMenuOption choice;
+            MainMenuOption choice;
                 Enum.TryParse(Console.ReadLine(), out choice);
 
                 {
@@ -283,7 +283,7 @@ namespace DalTest
                                 Console.WriteLine("Try again");
                                 break;
                         }
-                        //Console.WriteLine("Enter a number:");
+                        Console.WriteLine("Enter a number:");
                         Enum.TryParse(Console.ReadLine(), out choice);
                     }
 
@@ -291,11 +291,11 @@ namespace DalTest
 
                 }
 
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine($"An error occurred: {e.Message}");
-            //}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An error occurred: {e.Message}");
+            }
 
         }
 

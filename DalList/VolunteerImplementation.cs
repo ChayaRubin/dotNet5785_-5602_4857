@@ -3,7 +3,7 @@ using DO;
 using System.Collections.Generic;
 namespace Dal;
 
-public class VolunteerImplementation : IVolunteer
+internal class VolunteerImplementation : IVolunteer
 {
     public void Create(Volunteer item)
     {

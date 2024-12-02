@@ -2,7 +2,7 @@
 using DO;
 namespace Dal;
 
-public class ConfigImplementation : IConfig
+internal class ConfigImplementation : IConfig
 {
     public int FirstCallId => Config.firstCallId;
     public int NextCallId
