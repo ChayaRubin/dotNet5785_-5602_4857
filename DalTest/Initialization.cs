@@ -11,6 +11,10 @@ using System.Text;
 
 public static class Initialization
 {
+
+
+
+
     private static IVolunteer? s_dalVolunteer = new VolunteerImplementation();
     private static ICall? s_dalCall = new CallImplementation();
     private static IAssignment? s_dalAssignment = new AssignmentImplementation();
@@ -24,9 +28,7 @@ public static class Initialization
 
         "Yaakov Cohen", "Miriam Levy", "Avraham Ben-David", "Sarah Shalom", "Chaim Adler", "Ruth Klein",
         "David Katz", "Esther Goldstein", "Moshe Fogel", "Tova Levi", "Yitzhak Mizrahi", "Naomi Rosen",
-        "Yehuda Friedman", "Shoshana Cohen", "Eliezer Glick", "Chava Shapiro", "Yonatan Weiss", "Leah Schwartz",
-        "Ezra Cohen", "Rachel Abramovitch", "Shimon Ben-Tov", "Malkah Lieberman", "Tzvi Segal", "Chana Rubin",
-        "Binyamin Stein", "Hannah Golan", "Simcha Kaplan", "Tamar Halperin", "Menachem Schneider", "Yaara Berman"
+        "Yehuda Friedman", "Shoshana Cohen", "Eliezer Glick", "Chava Shapiro",
     };
 
         public static string[] addresses = new string[] {
@@ -35,28 +37,30 @@ public static class Initialization
         "Jaffa Street 56, Jerusalem", "Agrippas Street 22, Jerusalem", "Shmuel Hanavi Street 5, Jerusalem",
         "Yehuda Halevi Street 3, Jerusalem", "Hillel Street 19, Jerusalem", "Ramban Street 9, Jerusalem",
         "Strauss Street 12, Jerusalem", "Yafo Road 34, Jerusalem", "Kehilat Yaakov Street 8, Jerusalem",
-        "Mordechai Ben Hillel Street 11, Jerusalem", "Keren Hayesod Street 16, Jerusalem", "Shazar Boulevard 21, Jerusalem"
+        "Mordechai Ben Hillel Street 11, Jerusalem", "Keren Hayesod Street 16, Jerusalem", "Shazar Boulevard 21, Jerusalem", "25 Shlomzion Hamalka Street, Jerusalem:"
     };
         public static double[] longitudes = new double[] {
 
         35.2080, 35.2130, 35.2215, 35.2160, 35.2250, 35.2205,
         35.2225, 35.2270, 35.2290, 35.2135, 35.2100, 35.2295,
-        35.2240, 35.2265, 35.2175
+        35.2240, 35.2265, 35.2175, 35.2045
     };
         public static double[] latitudes = new double[] {
 
         31.7735, 31.7685, 31.7760, 31.7810, 31.7730, 31.7800,
         31.7775, 31.7745, 31.7790, 31.7715, 31.7755, 31.7730,
-        31.7705, 31.7795, 31.7720
+        31.7705, 31.7795, 31.7720, 31.7765
     };
 
+  
         public static void CreateVolunteerEntries()
         {
             int MIN_ID = 100000000;
             int MAX_ID = 999999999;
             int MAX_DISTANCE = 50;
 
-            for (int i = 0; i < addresses.Length-1; i++)
+            int minLength = Math.Min(Math.Min(names.Length, addresses.Length), Math.Min(latitudes.Length, longitudes.Length));
+            for (int i = 0; i < minLength; i++)
             {
                 string name = names[i];
                 int id;
@@ -72,8 +76,8 @@ public static class Initialization
                 do
                 {
                     phoneNumber = $"05{rand.Next(1000000, 10000000)}";
-                    phoneNumberInt = int.Parse(phoneNumber);  
-                } while (s_dalVolunteer.Read(phoneNumberInt) != null);  
+                    phoneNumberInt = int.Parse(phoneNumber);
+                } while (s_dalVolunteer.Read(phoneNumberInt) != null);
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];
@@ -230,8 +234,9 @@ public static class Initialization
 
 
 
-            for (int i = 0; i < 50; i++)
-            {
+           // for (int i = 0; i < 50; i++)
+                for (int i = 0; i < CallAddresses.Length; i++)
+                {
                 int MyRadioCallId = Config.getNextCallId;
                 string MyDescription = CallDescriptions[i];
                 string MyAddress = CallAddresses[i];
@@ -283,8 +288,8 @@ public static class Initialization
         }
     }
 
-    
-   private static void createAssignments()
+
+    private static void createAssignments()
     {
         List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
         List<Call>? callsList = s_dalCall.ReadAll();
@@ -306,7 +311,6 @@ public static class Initialization
                 typeOfEndTime = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length);
             }
 
-            // עדכון קריאה ל-Create כך שיכנסו הערכים המתאימים ל-EntryTime ו-FinishCompletionTime
             s_dalAssignment!.Create(new Assignment(
                 0, // Id
                 callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId

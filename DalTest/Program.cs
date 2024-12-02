@@ -6,10 +6,10 @@ namespace DalTest
 {
     internal class Program
     {
-        private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); //stage 1
-        private static ICall? s_dalCall = new CallImplementation(); //stage 1
-        private static IAssignment? s_dalAssignment = new AssignmentImplementation(); //stage 1
-        private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
+        private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); 
+        private static ICall? s_dalCall = new CallImplementation(); 
+        private static IAssignment? s_dalAssignment = new AssignmentImplementation(); 
+        private static IConfig? s_dalConfig = new ConfigImplementation(); 
 
         private enum MainMenuOption
         {
@@ -238,8 +238,8 @@ namespace DalTest
 
         static void Main(string[] args)
         {
-            try
-            {
+            //try
+            //{
                 Console.WriteLine("Enter a number:");
                 foreach (MainMenuOption option in Enum.GetValues(typeof(MainMenuOption)))
                 {
@@ -289,11 +289,11 @@ namespace DalTest
 
                 }
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"An error occurred: {e.Message}");
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine($"An error occurred: {e.Message}");
+            //}
 
         }
 

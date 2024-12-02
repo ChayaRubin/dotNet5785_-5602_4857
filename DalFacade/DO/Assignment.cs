@@ -47,7 +47,6 @@ public class Assignment
     {
         return $"Id: {Id}, CallId: {CallId}, VolunteerId: {VolunteerId}, EntryTime: {EntryTime}, FinishCompletionTime: {FinishCompletionTime}, callResolutionStatus: {callResolutionStatus}";
     }
-    //public Assignment() : this(Config.,Call.MyRadioCallId, , "", null, null, null, null, PositionEnum.Volunteer, false, null, DistanceTypeEnum.AirDistance) { }
 }
 
 
