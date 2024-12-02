@@ -326,6 +326,7 @@ public static class Initialization
 
     public static void Do(IDal? dal) //stage 2
     {
+        //s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!");
         s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
 
         Console.WriteLine("Reset Configuration values and List values...");
