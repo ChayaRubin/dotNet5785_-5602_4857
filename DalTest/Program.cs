@@ -6,8 +6,7 @@ namespace DalTest
 {
     internal class Program
     {
-        private static IDal? s_dal; //stage 2
-
+        static readonly IDal s_dal = new DalList(); //stage 2
         private enum MainMenuOption
         {
             Exit,
