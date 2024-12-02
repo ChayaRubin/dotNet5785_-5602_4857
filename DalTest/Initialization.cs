@@ -52,7 +52,7 @@ public static class Initialization
         31.7705, 31.7795, 31.7720, 31.7765
     };
 
-  
+
         public static void CreateVolunteerEntries()
         {
             int MIN_ID = 100000000;
@@ -154,48 +154,54 @@ public static class Initialization
     {
 
         public static string[] CallAddresses = new string[]
-        {
-            "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
-            "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
-            "Neve Yaakov St 17, Jerusalem", "Shmuel HaNavi St 12, Jerusalem", "Yechiel St 3, Jerusalem",
-            "Rav Kook St 4, Jerusalem", "Talmud Torah St 8, Jerusalem", "Sanhedria St 18, Jerusalem",
-            "Kiryat Moshe St 6, Jerusalem", "Achad Ha'am St 2, Jerusalem", "Bar Ilan St 7, Jerusalem",
-            "City Center St 14, Jerusalem", "Rechov Yechiel 3, Jerusalem", "Giv'at Shaul St 7, Jerusalem",
-            "Nachlaot St 7, Jerusalem", "Rav Kook St 5, Jerusalem", "Har Nof St 18, Jerusalem",
-            "Ramat Shlomo St 15, Jerusalem", "Sderot Yitzhak Rabin St 5, Jerusalem", "Har Hatzofim St 8, Jerusalem",
-            "Giv'at HaMivtar St 6, Jerusalem", "Tefilat Yisrael St 14, Jerusalem", "Malkhei Yisrael St 10, Jerusalem",
-            "Kiryat Tzahal St 6, Jerusalem", "Nachal Noach St 17, Jerusalem", "Maalot Dafna St 6, Jerusalem",
-            "Har HaMor St 3, Jerusalem", "Ramat HaSharon St 2, Jerusalem", "Yakar St 3, Jerusalem",
-            "Rav Haim Ozer St 9, Jerusalem", "Yehoshua Ben-Nun St 5, Jerusalem", "Meir Schauer St 12, Jerusalem",
-            "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem"
-        };
+  {
+
+    "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
+    "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
+    "Neve Yaakov St 17, Jerusalem", "Shmuel HaNavi St 12, Jerusalem", "Yechiel St 3, Jerusalem",
+    "Rav Kook St 4, Jerusalem", "Talmud Torah St 8, Jerusalem", "Sanhedria St 18, Jerusalem",
+    "Kiryat Moshe St 6, Jerusalem", "Achad Ha'am St 2, Jerusalem", "Bar Ilan St 7, Jerusalem",
+    "City Center St 14, Jerusalem", "Rechov Yechiel 3, Jerusalem", "Giv'at Shaul St 7, Jerusalem",
+    "Nachlaot St 7, Jerusalem", "Rav Kook St 5, Jerusalem", "Har Nof St 18, Jerusalem",
+    "Ramat Shlomo St 15, Jerusalem", "Sderot Yitzhak Rabin St 5, Jerusalem", "Har Hatzofim St 8, Jerusalem",
+    "Giv'at HaMivtar St 6, Jerusalem", "Tefilat Yisrael St 14, Jerusalem", "Malkhei Yisrael St 10, Jerusalem",
+    "Kiryat Tzahal St 6, Jerusalem", "Nachal Noach St 17, Jerusalem", "Maalot Dafna St 6, Jerusalem",
+    "Har HaMor St 3, Jerusalem", "Ramat HaSharon St 2, Jerusalem", "Yakar St 3, Jerusalem",
+    "Rav Haim Ozer St 9, Jerusalem", "Yehoshua Ben-Nun St 5, Jerusalem", "Meir Schauer St 12, Jerusalem",
+    "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem",
+    "Hadar St 3, Jerusalem", "Maharal St 8, Jerusalem", "Yosef Schwartz St 4, Jerusalem",
+    "Jabotinsky St 7, Jerusalem", "Shazar St 5, Jerusalem", "Gonenim St 12, Jerusalem",
+    "Talpiot St 14, Jerusalem", "Bilu St 9, Jerusalem", "Yovel St 2, Jerusalem",
+    "Herzl St 3, Jerusalem", "Hashmonai St 6, Jerusalem", "Ramot St 17, Jerusalem",
+    "Shalom Aleichem St 10, Jerusalem", "Eli Cohen St 4, Jerusalem", "Shlomo HaMelech St 7, Jerusalem"
+   };
 
         public static double[] CallLongitudes = new double[]
-        {
-            35.225721, 35.217133, 35.229169, 35.230535, 35.225939,
-            35.224211, 35.219538, 35.224968, 35.226063, 35.219375,
-            35.213736, 35.217712, 35.229053, 35.217509, 35.220429,
-            35.222809, 35.222797, 35.226436, 35.221255, 35.220655,
-            35.229191, 35.222992, 35.227074, 35.221162, 35.227591,
-            35.225712, 35.220829, 35.223016, 35.219865, 35.230012,
-            35.220076, 35.221336, 35.228300, 35.221133, 35.224713,
-            35.227271, 35.219754, 35.226358, 35.225099, 35.228086,
-            35.228418, 35.222438, 35.221694, 35.223145, 35.221228,
-            35.222590, 35.222579, 35.222869, 35.226072, 35.221711
-        };
+{
+    35.225721, 35.217133, 35.229169, 35.230535, 35.225939,
+    35.224211, 35.219538, 35.224968, 35.226063, 35.219375,
+    35.213736, 35.217712, 35.229053, 35.217509, 35.220429,
+    35.222809, 35.222797, 35.226436, 35.221255, 35.220655,
+    35.229191, 35.222992, 35.227074, 35.221162, 35.227591,
+    35.225712, 35.220829, 35.223016, 35.219865, 35.230012,
+    35.220076, 35.221336, 35.228300, 35.221133, 35.224713,
+    35.227271, 35.219754, 35.226358, 35.225099, 35.228086,
+    35.228418, 35.222438, 35.221694, 35.223145, 35.221228,
+    35.222590, 35.222579, 35.222869, 35.226072, 35.221711
+};
 
         public static double[] CallLatitudes = new double[]
         {
-            31.776545, 31.771675, 31.767727, 31.771267, 31.768520,
-            31.785228, 31.786335, 31.769799, 31.773315, 31.786812,
-            31.776216, 31.773144, 31.764577, 31.767558, 31.774280,
-            31.782129, 31.784256, 31.779211, 31.783858, 31.783022,
-            31.774607, 31.773122, 31.782645, 31.783712, 31.773770,
-            31.779614, 31.767658, 31.785070, 31.778488, 31.766734,
-            31.780314, 31.783537, 31.775809, 31.773657, 31.781039,
-            31.779433, 31.771505, 31.770824, 31.774722, 31.776229,
-            31.773940, 31.777524, 31.774912, 31.770963, 31.777611,
-            31.776597, 31.785040, 31.772628, 31.776763, 31.780179
+    31.776346, 31.777594, 31.777009, 31.776115, 31.776034,
+    31.768798, 31.779074, 31.778777, 31.777356, 31.772628,
+    31.777441, 31.768927, 31.775993, 31.781968, 31.778674,
+    31.780973, 31.779477, 31.780509, 31.782150, 31.776243,
+    31.782617, 31.775681, 31.775062, 31.776265, 31.774854,
+    31.776105, 31.779306, 31.776027, 31.773822, 31.772712,
+    31.777875, 31.777619, 31.779239, 31.779170, 31.779692,
+    31.779158, 31.779050, 31.778736, 31.781393, 31.781827,
+    31.773728, 31.776413, 31.773155, 31.773418, 31.774642,
+    31.775249, 31.777264, 31.779530, 31.776292, 31.775522
         };
 
         public static string[] CallDescriptions = new string[]
@@ -234,9 +240,9 @@ public static class Initialization
 
 
 
-           // for (int i = 0; i < 50; i++)
-                for (int i = 0; i < CallAddresses.Length; i++)
-                {
+            // for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
+            {
                 int MyRadioCallId = Config.getNextCallId;
                 string MyDescription = CallDescriptions[i];
                 string MyAddress = CallAddresses[i];
@@ -294,12 +300,12 @@ public static class Initialization
         List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
         List<Call>? callsList = s_dalCall.ReadAll();
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 49; i++)
         {
             DateTime minTime = callsList[i].StartTime;
             DateTime maxTime = (DateTime)callsList[i].ExpiredTime;
             TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-           // DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+            // DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
             DateTime randomTime = minTime.AddMinutes(s_rand.Next(Math.Abs((int)diff.TotalMinutes)));
 
 

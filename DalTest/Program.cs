@@ -223,9 +223,11 @@ namespace DalTest
 
         private static void DisplayAllData()
         {
-            ReadAll("VolunteerSubmenu");
-            ReadAll("CallSubmenu");
-            ReadAll("AssignmentSubmenu");
+            ReadAll("VolunteerMenu");
+            Console.WriteLine();
+            ReadAll("CallMenu");
+            Console.WriteLine();
+            ReadAll("AssignmentMenu");
         }
 
         private static void ResetDatabase()
