@@ -232,7 +232,7 @@ public static class Initialization
 
             for (int i = 0; i < 50; i++)
             {
-                int MyRadioCallId = Config.NextCallId;
+                int MyRadioCallId = Config.getNextCallId;
                 string MyDescription = CallDescriptions[i];
                 string MyAddress = CallAddresses[i];
                 double MyLatitude = CallLatitudes[i];
@@ -282,46 +282,6 @@ public static class Initialization
             }
         }
     }
-    //public static void CreateAssignments(int id, int callId)
-    //{
-
-    //    List<Call>? callsList = s_dalCall.ReadAll();
-    //    List<Volunteer>? volunteersList = s_dalVolunteer.ReadAll();
-    //    DateTime start = new DateTime(s_dalConfig.Clock.Year, s_dalConfig.Clock.Month, s_dalConfig.Clock.Day, s_dalConfig.Clock.Hour - 7, 0, 0);
-
-    //    DateTime minTime = callsList[i].MyStartTime;
-    //    DateTime maxTime = (DateTime)callsList[i].MyExpiredTime!;
-    //    TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-    //    DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
-    //    Assignment assignment = new Assignment
-    //    {
-    //        Id = Config.getNextAssignmentId,
-    //        CallId = callId,
-    //        VolunteerId = id,
-    //        EntryTime = randomTime,
-    //        FinishCompletionTime = Config.Clock,
-    //        callResolutionStatus = (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)))
-    //    };
-    //    s_dalAssignment.Create(assignment);
-
-    //}
-
-    /*פrivate static void createAssignment()*/
-    //{
-    //    List<Call>? calls = s_dalCall!.ReadAll();
-    //    for (int i = 0; i < 50; i++)
-    //    {
-    //        DateTime minTime = calls[i].StartTime;
-    //        DateTime maxTime = (DateTime)calls[i].ExpiredTime!;
-    //        TimeSpan difference = maxTime - minTime - TimeSpan.FromHours(2);
-    //        DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)difference.TotalMinutes));
-
-    //        s_dalAssignment!.Create(new Assignment(
-    //            randomTime,
-    //            randomTime.AddHours(2),
-    //         (CallResolutionStatus)s_rand.Next(Enum.GetValues(typeof(CallResolutionStatus)).Length - 1)));
-    //    }
-    //}
 
     
    private static void createAssignments()
