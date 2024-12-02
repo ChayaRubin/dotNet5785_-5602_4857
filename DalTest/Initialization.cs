@@ -299,7 +299,9 @@ public static class Initialization
             DateTime minTime = callsList[i].StartTime;
             DateTime maxTime = (DateTime)callsList[i].ExpiredTime;
             TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-            DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+           // DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
+            DateTime randomTime = minTime.AddMinutes(s_rand.Next(Math.Abs((int)diff.TotalMinutes)));
+
 
             CallResolutionStatus typeOfEndTime;
             if (i < 5)
@@ -312,7 +314,7 @@ public static class Initialization
             }
 
             s_dalAssignment!.Create(new Assignment(
-                0, // Id
+                Config.getNextAssignmentId,
                 callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId
                 volunteersList[s_rand.Next(volunteersList.Count)].Id, // VolunteerId
                 randomTime, // EntryTime
