@@ -1,7 +1,7 @@
 ﻿namespace DalApi;
 using DO;
 
-public interface IConfig
+public interface IConfig 
 {
     int FirstCallId { get; }
     int NextCallId { get; set; }

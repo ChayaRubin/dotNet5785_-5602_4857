@@ -6,10 +6,7 @@ namespace DalTest
 {
     internal class Program
     {
-        private static IVolunteer? s_dalVolunteer = new VolunteerImplementation(); 
-        private static ICall? s_dalCall = new CallImplementation(); 
-        private static IAssignment? s_dalAssignment = new AssignmentImplementation(); 
-        private static IConfig? s_dalConfig = new ConfigImplementation(); 
+        private static IDal? s_dal; //stage 2
 
         private enum MainMenuOption
         {
@@ -57,15 +54,15 @@ namespace DalTest
                 {
                     case "VolunteerMenu":
                         Volunteer currentVol = CreateVolunteerFromUserInput(myId);
-                        s_dalVolunteer.Create(currentVol);
+                        s_dal.Volunteer.Create(currentVol);
                         break;
                     case "CallMenu":
                         Call currentCall = CreateCallFromUserInput(myId);
-                        s_dalCall.Create(currentCall);
+                        s_dal.Call.Create(currentCall);
                         break;
                     case "AssignmentMenu":
                         Assignment currentAss = CreateAssignmentFromUserInput(myId);
-                        s_dalAssignment.Create(currentAss);
+                        s_dal.Assignment.Create(currentAss);
                         break;
                 }
             }
@@ -80,13 +77,13 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    Console.WriteLine( s_dalVolunteer.Read(id));
+                    Console.WriteLine( s_dal.Volunteer.Read(id));
                     break;
                 case "CallMenu":
-                    Console.WriteLine(s_dalCall.Read(id));
+                    Console.WriteLine(s_dal.Call.Read(id));
                     break;
                 case "AssignmentMenu":
-                    Console.WriteLine(s_dalAssignment.Read(id));
+                    Console.WriteLine(s_dal.Assignment.Read(id));
                     break;
             }
         }
@@ -95,15 +92,15 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    foreach (var item in s_dalVolunteer!.ReadAll())
+                    foreach (var item in s_dal!.Volunteer.ReadAll())
                         Console.WriteLine(item);
                     break;
                 case "CallMenu":
-                    foreach (var item in s_dalCall!.ReadAll())
+                    foreach (var item in s_dal!.Call.ReadAll())
                         Console.WriteLine(item);
                     break;
                 case "AssignmentMenu":
-                    foreach (var item in s_dalAssignment!.ReadAll())
+                    foreach (var item in s_dal!.Assignment.ReadAll())
                         Console.WriteLine(item);
                     break;
             }
@@ -118,15 +115,15 @@ namespace DalTest
             {
                 case "VolunteerMenu":
                     Volunteer currentVol = CreateVolunteerFromUserInput(myId);
-                    s_dalVolunteer.Update(currentVol);
+                    s_dal.Volunteer.Update(currentVol);
                     break;
                 case "CallMenu":
                     Call currentCall = CreateCallFromUserInput(myId);
-                    s_dalCall.Update(currentCall);
+                    s_dal.Call.Update(currentCall);
                     break;
                 case "AssignmentMenu":
                     Assignment currentAss = CreateAssignmentFromUserInput(myId);
-                    s_dalAssignment.Update(currentAss);
+                    s_dal.Assignment.Update(currentAss);
                     break;
             }
         }
@@ -136,13 +133,13 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    s_dalVolunteer.Delete(id);
+                    s_dal.Volunteer.Delete(id);
                     break;
                 case "CallMenu":
-                    s_dalCall.Delete(id);
+                    s_dal.Call.Delete(id);
                     break;
                 case "AssignmentMenu":
-                    s_dalAssignment.Delete(id);
+                    s_dal.Assignment.Delete(id);
                     break;
             }
         }
@@ -152,13 +149,13 @@ namespace DalTest
             switch (choice)
             {
                 case "VolunteerMenu":
-                    s_dalVolunteer.DeleteAll();
+                    s_dal.Volunteer.DeleteAll();
                     break;
                 case "CallMenu":
-                    s_dalCall.DeleteAll();
+                    s_dal.Call.DeleteAll();
                     break;
                 case "AssignmentMenu":
-                    s_dalAssignment.DeleteAll();
+                    s_dal.Assignment.DeleteAll();
                     break;
             }
         }
@@ -230,13 +227,6 @@ namespace DalTest
             ReadAll("AssignmentMenu");
         }
 
-        private static void ResetDatabase()
-        {
-            s_dalConfig.Reset(); 
-            s_dalVolunteer.DeleteAll();
-            s_dalCall.DeleteAll();
-            s_dalAssignment.DeleteAll();
-        }
 
         static void Main(string[] args)
         {
@@ -264,7 +254,7 @@ namespace DalTest
                                 break;
 
                             case MainMenuOption.InitializeData:
-                                Initialization.Do(s_dalVolunteer, s_dalCall, s_dalAssignment, s_dalConfig);
+                                Initialization.Do(s_dal); //stage 2
                                 break;
 
                             case MainMenuOption.DisplayAllData:
@@ -276,7 +266,7 @@ namespace DalTest
                                 break;
 
                             case MainMenuOption.ResetDatabase:
-                                ResetDatabase();
+                                s_dal.ResetDB();//stage 2
                                 break;
 
                             default:
@@ -426,42 +416,42 @@ namespace DalTest
                 switch (Input)
                 {
                     case ConfigMenu.AdvanceClockByMinute:
-                        s_dalConfig.Clock = s_dalConfig.Clock.AddMinutes(1);
+                        s_dal.Config.Clock = s_dal.Config.Clock.AddMinutes(1);
                         break;
 
                     case ConfigMenu.AdvanceClockByHour:
-                        s_dalConfig.Clock = s_dalConfig.Clock.AddHours(1);
+                        s_dal.Config.Clock = s_dal.Config.Clock.AddHours(1);
                         break;
 
                     case ConfigMenu.AdvanceClockByDay:
-                        s_dalConfig.Clock = s_dalConfig.Clock.AddDays(1);
+                        s_dal.Config.Clock = s_dal.Config.Clock.AddDays(1);
                         break;
 
                     case ConfigMenu.AdvanceClockByMonth:
-                        s_dalConfig.Clock = s_dalConfig.Clock.AddMonths(1);
+                        s_dal.Config.Clock = s_dal.Config.Clock.AddMonths(1);
                         break;
 
                     case ConfigMenu.AdvanceClockByYear:
-                        s_dalConfig.Clock = s_dalConfig.Clock.AddYears(1);
+                        s_dal.Config.Clock = s_dal.Config.Clock.AddYears(1);
                         break;
 
                     case ConfigMenu.DisplayClock:
-                        Console.WriteLine($"Clock: {s_dalConfig.Clock}");
+                        Console.WriteLine($"Clock: {s_dal.Config.Clock}");
                         break;
 
                     case ConfigMenu.ChangeRiskRange:
                         Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
                         if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
                             throw new FormatException("Invalid time format.");
-                        s_dalConfig.RiskRange = newRiskRange;
+                        s_dal.Config.RiskRange = newRiskRange;
                         break;
 
                     case ConfigMenu.DisplayRiskRange:
-                        Console.WriteLine($"Risk Range: {s_dalConfig.RiskRange}");
+                        Console.WriteLine($"Risk Range: {s_dal.Config.RiskRange}");
                         break;
 
                     case ConfigMenu.Reset:
-                        s_dalConfig.Reset();
+                        s_dal.Config.Reset();
                         break;
 
                     default:

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 /// <param name="Clock"> A time range after which a call is considered at risk, nearing its required end time.</param>
 /// <param name="RiskRange"> a time range after which a call is considered at risk, nearing its required end time.</param>
 
-internal static class Config
+public static class Config
 {
     public const int firstCallId = 1000; // מזהה קריאה התחלתי
     public static int NextCallId = firstCallId;

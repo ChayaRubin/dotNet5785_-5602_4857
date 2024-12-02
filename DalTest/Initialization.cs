@@ -234,7 +234,6 @@ public static class Initialization
 
 
 
-            // for (int i = 0; i < 50; i++)
             for (int i = 0; i < 50; i++)
             {
                 int MyRadioCallId = Config.getNextCallId;
