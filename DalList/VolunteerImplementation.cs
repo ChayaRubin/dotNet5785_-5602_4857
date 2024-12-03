@@ -1,6 +1,7 @@
 ﻿using DalApi;
 using DO;
 using System.Collections.Generic;
+using System.Linq;
 namespace Dal;
 
 internal class VolunteerImplementation : IVolunteer
@@ -9,7 +10,7 @@ internal class VolunteerImplementation : IVolunteer
     {
         
         if (DataSource.Volunteers.Any(c => c?.Id == item.Id))
-            throw new Exception($"Volunteer with Id {item.Id} already exists.");
+            throw new DalAlreadyExistsException($"Volunteer with Id {item.Id} already exists.");
        
         DataSource.Volunteers.Add(item);
     }
@@ -17,7 +18,7 @@ internal class VolunteerImplementation : IVolunteer
     {
         Volunteer? VolunteerToRemove = DataSource.Volunteers.FirstOrDefault(c => c?.Id == id);
         if (VolunteerToRemove != null) DataSource.Volunteers.Remove(VolunteerToRemove);
-        else throw new Exception($"Volunteer with id {id} does not exists.");
+        else throw new DalDoesNotExistException($"Volunteer with id {id} does not exists.");
     }
 
     public void DeleteAll()
@@ -29,20 +30,25 @@ internal class VolunteerImplementation : IVolunteer
 
     public Volunteer? Read(int id)
     {
-        Volunteer? VolunteerToRead = DataSource.Volunteers.FirstOrDefault(c => c?.Id == id);
-        return (VolunteerToRead);
+        return DataSource.Volunteers.FirstOrDefault(item => item.Id == id); //stage 2
     }
 
-    public List<Volunteer> ReadAll()
+    public Volunteer? Read(Func<Volunteer, bool> filter)
     {
-        return new List<Volunteer>(DataSource.Volunteers);
+        return DataSource.Volunteers.FirstOrDefault(filter);
+    }
+    public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
+    {
+        return filter == null
+                ? DataSource.Volunteers
+                : DataSource.Volunteers.Where(filter);
     }
 
     public void Update(Volunteer item)
     {
         Volunteer? VolunteerToRemove = DataSource.Volunteers.FirstOrDefault(c => c?.Id == item.Id);
         if (VolunteerToRemove != null) DataSource.Volunteers.Remove(VolunteerToRemove);
-        else throw new Exception($"Volunteer with this Id {item.Id} does not exists.");
+        else throw new DalDoesNotExistException($"Volunteer with this Id {item.Id} does not exists.");
         DataSource.Volunteers.Add(item);
     }
 }

@@ -290,15 +290,14 @@ public static class Initialization
 
     private static void createAssignments()
     {
-        List<Volunteer>? volunteersList = s_dal.Volunteer.ReadAll();
-        List<Call>? callsList = s_dal.Call.ReadAll();
+        List<Volunteer>? volunteersList = s_dal.Volunteer.ReadAll()?.ToList();
+        List<Call>? callsList = s_dal.Call.ReadAll()?.ToList();
 
         for (int i = 0; i < 49; i++)
         {
             DateTime minTime = callsList[i].StartTime;
             DateTime maxTime = (DateTime)callsList[i].ExpiredTime;
             TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-            // DateTime randomTime = minTime.AddMinutes(s_rand.Next((int)diff.TotalMinutes));
             DateTime randomTime = minTime.AddMinutes(s_rand.Next(Math.Abs((int)diff.TotalMinutes)));
 
 

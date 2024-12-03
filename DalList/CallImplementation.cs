@@ -7,18 +7,15 @@ internal class CallImplementation : ICall
 {
     public void Create(Call item)
     {
-
-        if (DataSource.Calls.Any(c => c?.RadioCallId == item.RadioCallId))
-        {  
-            throw new Exception($"Call with Id {item.RadioCallId} already exists.");
-        }
-        DataSource.Calls.Add(item);
+        item.RadioCallId = Config.getNextAssignmentId;
+        Call copy = item;
+        DataSource.Calls.Add(copy);
     }
     public void Delete(int id)//gpt
     {
             Call? callToRemove = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == id);
             if (callToRemove != null) DataSource.Calls.Remove(callToRemove);
-            else throw new Exception($"Call with RadioCallId {id} does not exists.");
+            else throw new DalDoesNotExistException($"Call with RadioCallId {id} does not exists.");
     }
 
     public void DeleteAll()
@@ -30,20 +27,27 @@ internal class CallImplementation : ICall
 
     public Call? Read(int id)
     {
-        Call? callToRead = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == id);
-        return (callToRead);
+        return DataSource.Calls.FirstOrDefault(item => item.RadioCallId == id); //stage 2
     }
 
-    public List<Call> ReadAll()
+    public Call? Read(Func<Call, bool> filter)
     {
-            return new List<Call>(DataSource.Calls); 
+        return DataSource.Calls.FirstOrDefault(filter);
     }
 
+    public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
+    {
+        {
+            return filter == null
+                ? DataSource.Calls
+                : DataSource.Calls.Where(filter);
+        }
+    }
     public void Update(Call item)
     {
         Call? callToRemove = DataSource.Calls.FirstOrDefault(c => c?.RadioCallId == item.RadioCallId);
         if (callToRemove != null) DataSource.Calls.Remove(callToRemove);
-        else throw new Exception($"Call with this Id {item.RadioCallId} does not exists.");
+        else throw new DalDoesNotExistException($"Call with this Id {item.RadioCallId} does not exists.");
         DataSource.Calls.Add(item);
     }
 }

@@ -47,20 +47,23 @@ namespace DalTest
             try
             {
                 Console.WriteLine("Enter your details");
-                Console.Write("Enter ID: ");
-                int myId = int.Parse(Console.ReadLine()!);
+                
                 switch (choice)
                 {
                     case "VolunteerMenu":
+                        Console.Write("Enter ID: ");
+                        int myId = int.Parse(Console.ReadLine()!);
                         Volunteer currentVol = CreateVolunteerFromUserInput(myId);
                         s_dal.Volunteer.Create(currentVol);
                         break;
                     case "CallMenu":
-                        Call currentCall = CreateCallFromUserInput(myId);
+                        Console.Write("Enter ID: ");
+                        int myId2 = int.Parse(Console.ReadLine()!);
+                        Call currentCall = CreateCallFromUserInput(myId2);
                         s_dal.Call.Create(currentCall);
                         break;
                     case "AssignmentMenu":
-                        Assignment currentAss = CreateAssignmentFromUserInput(myId);
+                        Assignment currentAss = CreateAssignmentFromUserInput();
                         s_dal.Assignment.Create(currentAss);
                         break;
                 }
@@ -121,7 +124,7 @@ namespace DalTest
                     s_dal.Call.Update(currentCall);
                     break;
                 case "AssignmentMenu":
-                    Assignment currentAss = CreateAssignmentFromUserInput(myId);
+                    Assignment currentAss = CreateAssignmentFromUserInput();
                     s_dal.Assignment.Update(currentAss);
                     break;
             }
@@ -369,9 +372,9 @@ namespace DalTest
         }
 
 
-        static Assignment CreateAssignmentFromUserInput(int Id)
+        static Assignment CreateAssignmentFromUserInput()
         {
-            int AssignmentId = Config.getNextAssignmentId;
+            int AssignmentId = 0;
 
             Console.Write("Enter Call Id: ");
             int CallId = int.Parse(Console.ReadLine()!);
