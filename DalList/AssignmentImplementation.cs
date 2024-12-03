@@ -23,8 +23,8 @@ internal class AssignmentImplementation : IAssignment
 
     public void DeleteAll()
     {
-        if (!DataSource.Assignments.Any()) return; // אם הרשימה ריקה, אין צורך להפעיל כלום
-        DataSource.Assignments.Clear(); // מסיר את כל האלמנטים ברשימה
+        if (!DataSource.Assignments.Any()) return; 
+        DataSource.Assignments.Clear(); 
     }
 
 

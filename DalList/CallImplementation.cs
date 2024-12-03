@@ -20,8 +20,8 @@ internal class CallImplementation : ICall
 
     public void DeleteAll()
     {
-        if (!DataSource.Calls.Any()) return; // אם הרשימה ריקה, אין צורך להפעיל כלום
-        DataSource.Calls.Clear(); // מסיר את כל האלמנטים ברשימה
+        if (!DataSource.Calls.Any()) return; 
+        DataSource.Calls.Clear();
     }
 
 
