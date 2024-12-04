@@ -27,7 +27,6 @@ internal class VolunteerImplementation : IVolunteer
         DataSource.Volunteers.Clear(); 
     }
 
-
     public Volunteer? Read(int id)
     {
         return DataSource.Volunteers.FirstOrDefault(item => item.Id == id); //stage 2
