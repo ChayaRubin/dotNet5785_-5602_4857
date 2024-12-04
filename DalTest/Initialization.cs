@@ -94,7 +94,8 @@ public static class Initialization
                     Active = true,
                     MaxResponseDistance = s_rand.NextDouble() * MAX_DISTANCE,
                     TypeOfDistance = DistanceTypeEnum.AirDistance,
-                    Password = encryptedPassword
+                    Password = password,
+                    //encryptedPassword
                 };
 
                 s_dal.Volunteer.Create(volunteer);

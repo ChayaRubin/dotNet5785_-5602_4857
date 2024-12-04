@@ -68,7 +68,7 @@ public class Volunteer
 
     public override string ToString()
     {
-        return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
+        return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Password:{Password},Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
     }
     //private bool IsValidPassword(string? password)
     //{
