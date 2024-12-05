@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Dal;
 
+//I explained them each by the program page
+
 internal class VolunteerImplementation : IVolunteer
 {
     public void Create(Volunteer item)
@@ -27,10 +29,10 @@ internal class VolunteerImplementation : IVolunteer
         DataSource.Volunteers.Clear(); 
     }
 
-    public Volunteer? Read(int id)
-    {
-        return DataSource.Volunteers.FirstOrDefault(item => item.Id == id); //stage 2
-    }
+    //public Volunteer? Read(int id)
+    //{
+    //    return DataSource.Volunteers.FirstOrDefault(item => item.Id == id); //stage 2
+    //}
 
     public Volunteer? Read(Func<Volunteer, bool> filter)
     {

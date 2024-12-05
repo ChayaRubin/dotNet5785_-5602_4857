@@ -61,7 +61,7 @@ public static class Initialization
                 do
                 {
                     id = s_rand.Next(MIN_ID, MAX_ID);
-                } while (s_dal!.Volunteer.Read(id) != null);  // Ensure unique ID
+                } while (s_dal.Volunteer.Read(v => v.Id == id) != null);
 
 
                 Random rand = new Random();
@@ -71,7 +71,7 @@ public static class Initialization
                 {
                     phoneNumber = $"05{rand.Next(1000000, 10000000)}";
                     phoneNumberInt = int.Parse(phoneNumber);
-                } while (s_dal.Volunteer.Read(phoneNumberInt) != null);
+                } while (s_dal.Volunteer.Read(v => v.Phone == phoneNumber) != null);
 
                 string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
                 string address = addresses[i];

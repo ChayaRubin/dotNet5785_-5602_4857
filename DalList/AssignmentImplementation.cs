@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 namespace Dal;
-
+//I explained them each by the program page
 internal class AssignmentImplementation : IAssignment
 {
     public void Create(Assignment item)
@@ -28,10 +28,10 @@ internal class AssignmentImplementation : IAssignment
     }
 
 
-    public Assignment? Read(int id)
-    {
-        return DataSource.Assignments.FirstOrDefault(item => item.Id == id); //stage 2
-    }
+    //public Assignment? Read(int id)
+    //{
+    //    return DataSource.Assignments.FirstOrDefault(item => item.Id == id); //stage 2
+    //}
 
     public Assignment? Read(Func<Assignment, bool> filter)
     {

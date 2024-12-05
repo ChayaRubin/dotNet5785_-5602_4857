@@ -7,42 +7,9 @@ namespace DalTest
     internal class Program
     {
         static readonly IDal s_dal = new DalList(); //stage 2
-        private enum MainMenuOption
-        {
-            Exit,
-            VolunteerMenu,
-            CallMenu,
-            AssignmentMenu,
-            InitializeData,
-            DisplayAllData,
-            ConfigMenu,
-            ResetDatabase
-        }
-        private enum ActionMenu
-        {
-            Exit,
-            Create,
-            Read,
-            ReadAll,
-            Update,
-            Delete,
-            DeleteAll
-        }
-        private enum ConfigMenu
-        {
-            Exit,
-            AdvanceClockByMinute,
-            AdvanceClockByHour,
-            AdvanceClockByDay,
-            AdvanceClockByMonth,
-            AdvanceClockByYear,
-            DisplayClock,
-            ChangeRiskRange,
-            DisplayRiskRange,
-            Reset
-        }
 
-        // Sends to different function to create different types based on users choice.
+
+        //Create- Sends to different function to create different types based on users choice.
         private static void Create(string choice)
         {
             
@@ -57,9 +24,9 @@ namespace DalTest
                         s_dal.Volunteer.Create(currentVol);
                         break;
                     case "CallMenu":
-                        Console.Write("Enter ID: ");
+                       /* Console.Write("Enter ID: ");*/
                         int myId2 = int.Parse(Console.ReadLine()!);
-                        Call currentCall = CreateCallFromUserInput(myId2);
+                        Call currentCall = CreateCallFromUserInput();
                         s_dal.Call.Create(currentCall);
                         break;
                     case "AssignmentMenu":
@@ -71,24 +38,26 @@ namespace DalTest
             
         }
 
-        // Reads and prints a specific item based on useres choice.
+        //Read Reads and prints a specific item based on users choice.
         private static void Read(string choice, int id)
         {
             switch (choice)
             {
                 case "VolunteerMenu":
-                    Console.WriteLine( s_dal.Volunteer.Read(id));
+                    Console.WriteLine(s_dal.Volunteer.Read(v => v.Id == id));
                     break;
+
                 case "CallMenu":
-                    Console.WriteLine(s_dal.Call.Read(id));
+                    Console.WriteLine(s_dal.Call.Read(p => p.RadioCallId == id));
                     break;
+
                 case "AssignmentMenu":
-                    Console.WriteLine(s_dal.Assignment.Read(id));
+                    Console.WriteLine(s_dal.Assignment.Read(a => a.Id == id));
                     break;
             }
         }
 
-        // Reads and prints a specific list of items based on useres choice.
+        //ReadAll- Reads and prints a specific list of items based on users choice.
         private static void ReadAll(string choice)
         {
             switch (choice)
@@ -109,7 +78,7 @@ namespace DalTest
         }
 
 
-        // Updates a specific item based on useres choice.
+        // Update- Updates a specific item based on users choice.
         private static void Update(string choice)
         {
             Console.WriteLine("Enter your details");
@@ -122,7 +91,7 @@ namespace DalTest
                     s_dal.Volunteer.Update(currentVol);
                     break;
                 case "CallMenu":
-                    Call currentCall = CreateCallFromUserInput(myId);
+                    Call currentCall = CreateCallFromUserInput();
                     s_dal.Call.Update(currentCall);
                     break;
                 case "AssignmentMenu":
@@ -132,7 +101,7 @@ namespace DalTest
             }
         }
 
-        // Deletes a specific item based on useres choice.
+        //Delete- Deletes a specific item based on users choice.
         private static void Delete(string choice,int id)
         {
             switch (choice)
@@ -149,7 +118,7 @@ namespace DalTest
             }
         }
 
-        // Deletes a specific list of items based on useres choice.
+        //DeleteAll- Deletes a specific list of items based on users choice.
         private static void DeleteAll(string choice)
         {
             switch (choice)
@@ -340,10 +309,10 @@ namespace DalTest
 
         }
 
-        static Call CreateCallFromUserInput(int Id)
+        static Call CreateCallFromUserInput()
         {
 
-            int RadioCallId = Id;
+            int RadioCallId = 0;
 
             Console.WriteLine("Enter the call description (optinal)");
             string? Description = Console.ReadLine();

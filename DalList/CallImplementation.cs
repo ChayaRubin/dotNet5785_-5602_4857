@@ -1,7 +1,9 @@
 ﻿using DalApi; 
 using DO;
 using System.Collections.Generic;
+using System.Linq;
 namespace Dal;
+//I explained them each by the program page
 
 internal class CallImplementation : ICall
 {
@@ -25,10 +27,10 @@ internal class CallImplementation : ICall
     }
 
 
-    public Call? Read(int id)
-    {
-        return DataSource.Calls.FirstOrDefault(item => item.RadioCallId == id); //stage 2
-    }
+    //public Call? Read(int id)
+    //{
+    //    return DataSource.Calls.FirstOrDefault(item => item.RadioCallId == id); //stage 2
+    //}
 
     public Call? Read(Func<Call, bool> filter)
     {
