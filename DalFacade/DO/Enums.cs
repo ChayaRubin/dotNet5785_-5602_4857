@@ -24,7 +24,7 @@ public enum PositionEnum
 /// </summary>
 public enum CallResolutionStatus
 {
-    Treated,      
+    Treated = 1,      
     SelfCanceled, 
     AdminCanceled, 
     Expired        
@@ -35,7 +35,7 @@ public enum CallResolutionStatus
 /// </summary>
 public enum CallType
 {
-    Urgent,
+    Urgent = 1,
     Medium_Urgency,
     General_Assistance,
     Non_Urgent,
@@ -46,7 +46,7 @@ public enum CallType
 /// </summary>
 public enum MainMenuOption
 {
-    Exit,
+    Exit=1,
     VolunteerMenu,
     CallMenu,
     AssignmentMenu,
