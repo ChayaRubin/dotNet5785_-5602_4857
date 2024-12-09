@@ -12,9 +12,9 @@ namespace DalTest
         //Create- Sends to different function to create different types based on users choice.
         private static void Create(string choice)
         {
-            
+            try
+            {
                 Console.WriteLine("Enter your details");
-                
                 switch (choice)
                 {
                     case "VolunteerMenu":
@@ -24,7 +24,7 @@ namespace DalTest
                         s_dal.Volunteer.Create(currentVol);
                         break;
                     case "CallMenu":
-                       /* Console.Write("Enter ID: ");*/
+                        /* Console.Write("Enter ID: ");*/
                         int myId2 = int.Parse(Console.ReadLine()!);
                         Call currentCall = CreateCallFromUserInput();
                         s_dal.Call.Create(currentCall);
@@ -34,46 +34,84 @@ namespace DalTest
                         s_dal.Assignment.Create(currentAss);
                         break;
                 }
-            
-            
+
+            }
+            catch (DalAlreadyExistsException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Item already exists.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
+            }
         }
 
         //Read Reads and prints a specific item based on users choice.
         private static void Read(string choice, int id)
         {
-            switch (choice)
+            try
             {
-                case "VolunteerMenu":
-                    Console.WriteLine(s_dal.Volunteer.Read(v => v.Id == id));
-                    break;
+                switch (choice)
+                {
+                    case "VolunteerMenu":
+                        Console.WriteLine(s_dal.Volunteer.Read(v => v.Id == id));
+                        break;
 
-                case "CallMenu":
-                    Console.WriteLine(s_dal.Call.Read(p => p.RadioCallId == id));
-                    break;
+                    case "CallMenu":
+                        Console.WriteLine(s_dal.Call.Read(p => p.RadioCallId == id));
+                        break;
 
-                case "AssignmentMenu":
-                    Console.WriteLine(s_dal.Assignment.Read(a => a.Id == id));
-                    break;
+                    case "AssignmentMenu":
+                        Console.WriteLine(s_dal.Assignment.Read(a => a.Id == id));
+                        break;
+                }
+            }
+            catch (DalDoesNotExistException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Item does not exist.");
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
             }
         }
 
         //ReadAll- Reads and prints a specific list of items based on users choice.
         private static void ReadAll(string choice)
         {
-            switch (choice)
+            try
             {
-                case "VolunteerMenu":
-                    foreach (var item in s_dal!.Volunteer.ReadAll())
-                        Console.WriteLine(item);
-                    break;
-                case "CallMenu":
-                    foreach (var item in s_dal!.Call.ReadAll())
-                        Console.WriteLine(item);
-                    break;
-                case "AssignmentMenu":
-                    foreach (var item in s_dal!.Assignment.ReadAll())
-                        Console.WriteLine(item);
-                    break;
+                switch (choice)
+                {
+                    case "VolunteerMenu":
+                        foreach (var item in s_dal!.Volunteer.ReadAll())
+                            Console.WriteLine(item);
+                        break;
+                    case "CallMenu":
+                        foreach (var item in s_dal!.Call.ReadAll())
+                            Console.WriteLine(item);
+                        break;
+                    case "AssignmentMenu":
+                        foreach (var item in s_dal!.Assignment.ReadAll())
+                            Console.WriteLine(item);
+                        break;
+                }
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
             }
         }
 
@@ -84,54 +122,99 @@ namespace DalTest
             Console.WriteLine("Enter your details");
             Console.Write("Enter ID: ");
             int myId = int.Parse(Console.ReadLine()!);
-            switch (choice)
+            try
             {
-                case "VolunteerMenu":
-                    Volunteer currentVol = CreateVolunteerFromUserInput(myId);
-                    s_dal.Volunteer.Update(currentVol);
-                    break;
-                case "CallMenu":
-                    Call currentCall = CreateCallFromUserInput();
-                    s_dal.Call.Update(currentCall);
-                    break;
-                case "AssignmentMenu":
-                    Assignment currentAss = CreateAssignmentFromUserInput();
-                    s_dal.Assignment.Update(currentAss);
-                    break;
+                switch (choice)
+                {
+                    case "VolunteerMenu":
+                        Volunteer currentVol = CreateVolunteerFromUserInput(myId);
+                        s_dal.Volunteer.Update(currentVol);
+                        break;
+                    case "CallMenu":
+                        Call currentCall = CreateCallFromUserInput();
+                        s_dal.Call.Update(currentCall);
+                        break;
+                    case "AssignmentMenu":
+                        Assignment currentAss = CreateAssignmentFromUserInput();
+                        s_dal.Assignment.Update(currentAss);
+                        break;
+                }
+            }
+            catch (DalDoesNotExistException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Item does not exist.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
             }
         }
 
         //Delete- Deletes a specific item based on users choice.
-        private static void Delete(string choice,int id)
+        private static void Delete(string choice, int id)
         {
-            switch (choice)
+            try
             {
-                case "VolunteerMenu":
-                    s_dal.Volunteer.Delete(id);
-                    break;
-                case "CallMenu":
-                    s_dal.Call.Delete(id);
-                    break;
-                case "AssignmentMenu":
-                    s_dal.Assignment.Delete(id);
-                    break;
+                switch (choice)
+                {
+                    case "VolunteerMenu":
+                        s_dal.Volunteer.Delete(id);
+                        break;
+                    case "CallMenu":
+                        s_dal.Call.Delete(id);
+                        break;
+                    case "AssignmentMenu":
+                        s_dal.Assignment.Delete(id);
+                        break;
+                }
+            }
+            catch (DalDeletionImpossible ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Deletion impossible.");
+            }
+            catch (DalDoesNotExistException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Item does not exist.");
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
             }
         }
 
         //DeleteAll- Deletes a specific list of items based on users choice.
         private static void DeleteAll(string choice)
         {
-            switch (choice)
+            try
             {
-                case "VolunteerMenu":
-                    s_dal.Volunteer.DeleteAll();
-                    break;
-                case "CallMenu":
-                    s_dal.Call.DeleteAll();
-                    break;
-                case "AssignmentMenu":
-                    s_dal.Assignment.DeleteAll();
-                    break;
+                switch (choice)
+                {
+                    case "VolunteerMenu":
+                        s_dal.Volunteer.DeleteAll();
+                        break;
+                    case "CallMenu":
+                        s_dal.Call.DeleteAll();
+                        break;
+                    case "AssignmentMenu":
+                        s_dal.Assignment.DeleteAll();
+                        break;
+                }
+            }
+            catch (DalDeletionImpossible ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Deletion impossible.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
             }
         }
 
@@ -187,9 +270,21 @@ namespace DalTest
                 }
 
             }
-            catch (Exception e)
+            catch (DalDeletionImpossible ex)
             {
-                Console.WriteLine($"");
+                Console.WriteLine($"Error: {ex.Message} - Deletion impossible.");
+            }
+            catch (DalDoesNotExistException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Item does not exist.");
+            }
+            catch (DalInvalidOptionException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
+            }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
             }
         }
 
@@ -213,7 +308,7 @@ namespace DalTest
                     Console.WriteLine($"{(int)option}. {option}");
                 }
 
-            MainMenuOption choice;
+                MainMenuOption choice;
                 Enum.TryParse(Console.ReadLine(), out choice);
 
                 {
@@ -251,17 +346,17 @@ namespace DalTest
                         Console.WriteLine("Enter a number:");
                         Enum.TryParse(Console.ReadLine(), out choice);
                     }
-
-
-
                 }
 
             }
-            catch (Exception e)
+            catch (DalInvalidOptionException ex)
             {
-                Console.WriteLine($"An error occurred: {e.Message}");
+                Console.WriteLine($"Error: {ex.Message} - Invalid option selected.");
             }
-
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
+            }
         }
 
         static Volunteer CreateVolunteerFromUserInput(int Id)
@@ -288,7 +383,7 @@ namespace DalTest
 
 
             Console.WriteLine("Enter your Longitude (optinal)");
-            double Longitude = double.TryParse(Console.ReadLine(), out  Longitude) ? Longitude : throw new DalFormatException("Invalid latitude");
+            double Longitude = double.TryParse(Console.ReadLine(), out Longitude) ? Longitude : throw new DalFormatException("Invalid latitude");
 
 
             Console.WriteLine("Enter position type, 1 for Manager, 2 for Volunteer");
@@ -304,8 +399,8 @@ namespace DalTest
             Console.WriteLine("Enter type of distance, 1 for air distance, 2 for walking distance,3 for driving distance");
             DistanceTypeEnum typeOfDistance;
             typeOfDistance = DistanceTypeEnum.TryParse(Console.ReadLine(), out typeOfDistance) ? typeOfDistance : throw new DalInvalidOptionException("Invalid Position.");
-            
-            return new Volunteer(VolunteerId, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance , typeOfDistance);
+
+            return new Volunteer(VolunteerId, Name, Phone, Email, Password, Address, Latitude, Longitude, Position, Active, MaxResponseDistance, typeOfDistance);
 
         }
 
@@ -327,7 +422,7 @@ namespace DalTest
             double Latitude = double.TryParse(Console.ReadLine(), out Latitude) ? Latitude : throw new DalFormatException("Invalid latitude");
 
             Console.WriteLine("Enter the event longitude");
-            double Longitude = double.TryParse(Console.ReadLine(), out  Longitude) ? Longitude : throw new DalFormatException("Invalid longitude.");
+            double Longitude = double.TryParse(Console.ReadLine(), out Longitude) ? Longitude : throw new DalFormatException("Invalid longitude.");
 
             Console.WriteLine("Enter the Start Time of the event (in format dd/mm/yy hh:mm:ss): ");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime StartTime))
@@ -386,69 +481,74 @@ namespace DalTest
             Console.Write("Select an option: ");
             if (!Enum.TryParse(Console.ReadLine(), out ConfigMenu Input)) throw new DalInvalidOptionException("Invalid choice");
 
-            while (Input is not ConfigMenu.Exit)
+            try
             {
-                switch (Input)
+                while (Input is not ConfigMenu.Exit)
                 {
-                    case ConfigMenu.AdvanceClockByMinute:
-                        s_dal.Config.Clock = s_dal.Config.Clock.AddMinutes(1);
-                        break;
+                    switch (Input)
+                    {
+                        case ConfigMenu.AdvanceClockByMinute:
+                            s_dal.Config.Clock = s_dal.Config.Clock.AddMinutes(1);
+                            break;
 
-                    case ConfigMenu.AdvanceClockByHour:
-                        s_dal.Config.Clock = s_dal.Config.Clock.AddHours(1);
-                        break;
+                        case ConfigMenu.AdvanceClockByHour:
+                            s_dal.Config.Clock = s_dal.Config.Clock.AddHours(1);
+                            break;
 
-                    case ConfigMenu.AdvanceClockByDay:
-                        s_dal.Config.Clock = s_dal.Config.Clock.AddDays(1);
-                        break;
+                        case ConfigMenu.AdvanceClockByDay:
+                            s_dal.Config.Clock = s_dal.Config.Clock.AddDays(1);
+                            break;
 
-                    case ConfigMenu.AdvanceClockByMonth:
-                        s_dal.Config.Clock = s_dal.Config.Clock.AddMonths(1);
-                        break;
+                        case ConfigMenu.AdvanceClockByMonth:
+                            s_dal.Config.Clock = s_dal.Config.Clock.AddMonths(1);
+                            break;
 
-                    case ConfigMenu.AdvanceClockByYear:
-                        s_dal.Config.Clock = s_dal.Config.Clock.AddYears(1);
-                        break;
+                        case ConfigMenu.AdvanceClockByYear:
+                            s_dal.Config.Clock = s_dal.Config.Clock.AddYears(1);
+                            break;
 
-                    case ConfigMenu.DisplayClock:
-                        Console.WriteLine($"Clock: {s_dal.Config.Clock}");
-                        break;
+                        case ConfigMenu.DisplayClock:
+                            Console.WriteLine($"Clock: {s_dal.Config.Clock}");
+                            break;
 
-                    case ConfigMenu.ChangeRiskRange:
-                        Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
-                        if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
-                            throw new DalFormatException("Invalid time format.");
-                        s_dal.Config.RiskRange = newRiskRange;
-                        break;
+                        case ConfigMenu.ChangeRiskRange:
+                            Console.WriteLine("Enter a time span in the format [hh:mm:ss]:");
+                            if (!TimeSpan.TryParse(Console.ReadLine(), out TimeSpan newRiskRange))
+                                throw new DalFormatException("Invalid time format.");
+                            s_dal.Config.RiskRange = newRiskRange;
+                            break;
 
-                    case ConfigMenu.DisplayRiskRange:
-                        Console.WriteLine($"Risk Range: {s_dal.Config.RiskRange}");
-                        break;
+                        case ConfigMenu.DisplayRiskRange:
+                            Console.WriteLine($"Risk Range: {s_dal.Config.RiskRange}");
+                            break;
 
-                    case ConfigMenu.Reset:
-                        s_dal.Config.Reset();
-                        break;
+                        case ConfigMenu.Reset:
+                            s_dal.Config.Reset();
+                            break;
 
-                    default:
-                        Console.WriteLine("Invalid option.");
-                        break;
-                }
+                        default:
+                            Console.WriteLine("Invalid option.");
+                            break;
+                    }
 
-                // הצגת התפריט מחדש
-                Console.WriteLine("\nConfig Menu:");
-                foreach (ConfigMenu option in Enum.GetValues(typeof(ConfigMenu)))
-                {
-                    Console.WriteLine($"{(int)option}. {option}");
-                }
-                Console.Write("Select an option: ");
-                while (!Enum.TryParse(Console.ReadLine(), out Input) || !Enum.IsDefined(typeof(ConfigMenu), Input))
-                {
-                    Console.WriteLine("Invalid choice. Please try again.");
+                    // הצגת התפריט מחדש
+                    Console.WriteLine("\nConfig Menu:");
+                    foreach (ConfigMenu option in Enum.GetValues(typeof(ConfigMenu)))
+                    {
+                        Console.WriteLine($"{(int)option}. {option}");
+                    }
                     Console.Write("Select an option: ");
+                    while (!Enum.TryParse(Console.ReadLine(), out Input) || !Enum.IsDefined(typeof(ConfigMenu), Input))
+                    {
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        Console.Write("Select an option: ");
+                    }
                 }
             }
+            catch (DalFormatException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} - Invalid data format.");
+            }
         }
-
-
     }
 }
