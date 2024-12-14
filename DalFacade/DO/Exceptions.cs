@@ -38,3 +38,11 @@ public class DalInvalidOptionException : Exception
 {
     public DalInvalidOptionException(string message) : base(message) { }
 }
+
+/// <summary>
+
+/// </summary>
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException(string message) : base(message) { }
+}

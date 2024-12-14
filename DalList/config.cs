@@ -25,7 +25,8 @@ public static class Config
 
     public static void Reset()
     {
-        NextCallId = firstCallId;  
+        NextCallId = firstCallId;
+        NextAssignmentId= firstAssignmentId;
         Clock = DateTime.Now;     
         RiskRange = TimeSpan.Zero; 
     }

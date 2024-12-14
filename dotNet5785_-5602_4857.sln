@@ -10,11 +10,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalFacade", "DalFacade\DalFacade.csproj", "{1D350B90-C047-43B7-A9C9-E9E0555965F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalFacade", "DalFacade\DalFacade.csproj", "{1D350B90-C047-43B7-A9C9-E9E0555965F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalList", "DalList\DalList.csproj", "{9537B3C2-0E6E-42F6-BC42-E5925B70B9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalList", "DalList\DalList.csproj", "{9537B3C2-0E6E-42F6-BC42-E5925B70B9EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalTest", "DalTest\DalTest.csproj", "{9D6E861A-21B9-4C35-A427-07B84CEBB42C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalTest", "DalTest\DalTest.csproj", "{9D6E861A-21B9-4C35-A427-07B84CEBB42C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalXml", "DalXml\DalXml.csproj", "{37A6314F-F7FC-4BFE-9906-B0CD10FE3116}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{AF6C0FCE-19BD-427C-B965-51F0751FAB90}"
+	ProjectSection(SolutionItems) = preProject
+		xml\Assignments.xml.txt = xml\Assignments.xml.txt
+		xml\Calls.xml.txt = xml\Calls.xml.txt
+		xml\data-config.xml.txt = xml\data-config.xml.txt
+		xml\Volunteers.xml.txt = xml\Volunteers.xml.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +48,10 @@ Global
 		{9D6E861A-21B9-4C35-A427-07B84CEBB42C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D6E861A-21B9-4C35-A427-07B84CEBB42C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D6E861A-21B9-4C35-A427-07B84CEBB42C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37A6314F-F7FC-4BFE-9906-B0CD10FE3116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37A6314F-F7FC-4BFE-9906-B0CD10FE3116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37A6314F-F7FC-4BFE-9906-B0CD10FE3116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37A6314F-F7FC-4BFE-9906-B0CD10FE3116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
