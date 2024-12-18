@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<!-- או 'net8.0' אם אתה לא משתמש ב-Windows ספציפית -->
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
@@ -11,12 +10,8 @@
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
 		<RootNamespace />
-	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.2.2" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
-	</ItemGroup>
+	</PropertyGroup>
 
 </Project>
 

@@ -2,10 +2,12 @@
 namespace Dal;
 using DalApi;
 using DO;
+using System;
+using System.Collections.Generic;
 
-internal class VolunteerImplementation : IVolunteer
+internal class AssignmentImplementation : IAssignment
 {
-    public void Create(Volunteer item)
+    public void Create(Assignment item)
     {
         throw new NotImplementedException();
     }
@@ -20,17 +22,17 @@ internal class VolunteerImplementation : IVolunteer
         throw new NotImplementedException();
     }
 
-    public Volunteer? Read(Func<Volunteer, bool> filter)
+    public Assignment? Read(Func<Assignment, bool> filter)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
+    public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
         throw new NotImplementedException();
     }
 
-    public void Update(Volunteer item)
+    public void Update(Assignment item)
     {
         throw new NotImplementedException();
     }

@@ -1,11 +1,12 @@
-﻿
-namespace Dal;
-using DalApi;
+﻿using DalApi;
 using DO;
+using System;
+using System.Collections.Generic;
+namespace Dal;
 
-internal class VolunteerImplementation : IVolunteer
+internal class CallImplementation : ICall
 {
-    public void Create(Volunteer item)
+    public void Create(Call item)
     {
         throw new NotImplementedException();
     }
@@ -20,17 +21,17 @@ internal class VolunteerImplementation : IVolunteer
         throw new NotImplementedException();
     }
 
-    public Volunteer? Read(Func<Volunteer, bool> filter)
+    public Call? Read(Func<Call, bool> filter)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
+    public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
         throw new NotImplementedException();
     }
 
-    public void Update(Volunteer item)
+    public void Update(Call item)
     {
         throw new NotImplementedException();
     }
