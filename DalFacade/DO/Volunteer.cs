@@ -20,7 +20,7 @@ namespace DO;
 ///  <param name="TypeOfDistance">Enum representing the unit or type of distance (e.g., by bus, planw...)</param>
 ///  
 
-public class Volunteer
+public record Volunteer
 {
     public int Id { get; set; }
     public string Name { get; set; }

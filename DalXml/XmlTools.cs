@@ -79,6 +79,7 @@ static class XMLTools
             throw new DalXMLFileLoadCreateException($"fail to load xml file: {s_xmlDir + xmlFilePath}, {ex.Message}");
         }
     }
+
     #endregion
 
     #region XmlConfig
@@ -127,5 +128,7 @@ static class XMLTools
     public static int? ToIntNullable(this XElement element, string name) =>
         int.TryParse((string?)element.Element(name), out var result) ? (int?)result : null;
     #endregion
+    public static TimeSpan? ToTimeSpanNullable(this XElement element, string name) =>
+   TimeSpan.TryParse((string?)element.Element(name), out var result) ? (TimeSpan?)result : null;
 
 }

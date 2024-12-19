@@ -46,7 +46,7 @@ public enum CallType
 /// </summary>
 public enum MainMenuOption
 {
-    Exit=1,
+    Exit,
     VolunteerMenu,
     CallMenu,
     AssignmentMenu,

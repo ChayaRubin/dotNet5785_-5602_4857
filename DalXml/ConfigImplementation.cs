@@ -1,16 +1,11 @@
 ﻿//using DalApi;
 //using DO;
 namespace Dal;
+using DalApi;
+using DO;
 
 internal class ConfigImplementation : IConfig
 {
-    public int FirstCallId => Config.firstCallId;
-    public int NextCallId
-    {
-        get => Config.NextCallId;
-        set => Config.NextCallId = value;
-    }
-    public int NextAssignmentId => Config.NextAssignmentId;
     public DateTime Clock
     {
         get => Config.Clock;

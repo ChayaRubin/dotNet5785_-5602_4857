@@ -14,7 +14,7 @@ namespace DO;
 /// <param name="myStartTime">The start time of the call.</param>
 /// <param name="myExpiredTime">The expiration time of the call.</param>
 ///
-public class Call
+public record Call
 {
     public int RadioCallId { get; set; }
     public string? Description { get; set; }

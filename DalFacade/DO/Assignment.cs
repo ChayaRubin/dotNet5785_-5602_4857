@@ -11,7 +11,7 @@ namespace DO;
 /// <param name="StartDateTime">The time the call was assigned to the volunteer</param>
 /// <param name="EndDateTime">The time the volunteer finished handling the call (nullable)</param>
 /// <param name="CompletionType">Enum indicating how the call was completed (nullable)</param>
-public class Assignment
+public record Assignment
 {
     public int Id { get; set; }
     public int CallId { get; set; }
