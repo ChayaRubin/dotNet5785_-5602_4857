@@ -3,8 +3,7 @@
     using DO;
 
     /// <summary>
-    /// Defines the configuration settings for the system, including the system's clock, 
-    /// the risk range, and a method to reset configuration values.
+    /// Defines the configuration settings for the system, including the system's clock, the risk range, and a method to reset configuration values.
     /// </summary>
     public interface IConfig
     {
