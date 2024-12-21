@@ -7,16 +7,20 @@ namespace Dal;
 
 public class DalXml : IDal
 {
-    public IAssignment Assignment => throw new NotImplementedException();
+    public IAssignment Assignment => new AssignmentImplementation();
 
-    public ICall Volunteer => throw new NotImplementedException();
+    public IVolunteer Volunteer => new VolunteerImplementation();
 
-    public ICall Call => throw new NotImplementedException();
+    public ICall Call => new CallImplementation();
 
-    public IConfig Config => throw new NotImplementedException();
+    public IConfig Config => new ConfigImplementation();
 
     public void ResetDB()
     {
-        throw new NotImplementedException();
+        Volunteer.DeleteAll();
+        Call.DeleteAll();
+        Assignment.DeleteAll();
+        Config.Reset();
+
     }
 }

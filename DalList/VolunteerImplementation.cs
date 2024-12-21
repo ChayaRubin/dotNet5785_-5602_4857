@@ -6,7 +6,7 @@ namespace Dal;
 
 //I explained them each by the program page
 
-internal class VolunteerImplementation : ICall
+internal class VolunteerImplementation :IVolunteer
 {
     public void Create(Volunteer item)
     {

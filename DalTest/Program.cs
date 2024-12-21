@@ -6,8 +6,8 @@ namespace DalTest
 {
     internal class Program
     {
-        static readonly IDal s_dal = new DalList(); //stage 2
-
+        //static readonly IDal s_dal = new DalList(); //stage 2
+        static readonly IDal s_dal = new DalXml(); //stage 3
 
         //Create- Sends to different function to create different types based on users choice.
         private static void Create(string choice)
