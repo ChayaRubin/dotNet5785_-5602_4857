@@ -9,7 +9,7 @@ public class DalXml : IDal
 {
     public IAssignment Assignment => throw new NotImplementedException();
 
-    public IVolunteer Volunteer => throw new NotImplementedException();
+    public ICall Volunteer => throw new NotImplementedException();
 
     public ICall Call => throw new NotImplementedException();
 

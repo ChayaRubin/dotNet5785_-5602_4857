@@ -5,7 +5,7 @@ sealed public class DalList : IDal
 {
     public IAssignment Assignment { get; } = new AssignmentImplementation();
 
-    public IVolunteer Volunteer { get; } = new VolunteerImplementation();
+    public ICall Volunteer { get; } = new VolunteerImplementation();
 
     public ICall Call { get; } = new CallImplementation();
 
