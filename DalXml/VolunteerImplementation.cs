@@ -7,6 +7,9 @@ using System.Linq;
 using System.Numerics;
 using System.Xml.Linq;
 
+/// <summary>
+/// A new VolunteerImplementation class that inherits from IVolunteer.
+/// </summary>
 internal class VolunteerImplementation : IVolunteer
 {
     /// <summary>

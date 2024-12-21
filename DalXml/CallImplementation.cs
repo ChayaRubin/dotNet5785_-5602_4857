@@ -7,6 +7,9 @@ using System.Linq;
 using System.Numerics;
 using System.Xml.Linq;
 
+/// <summary>
+/// A new CallImplementation class that inherits from ICall.
+/// </summary>
 internal class CallImplementation :ICall
 {
     /// <summary>

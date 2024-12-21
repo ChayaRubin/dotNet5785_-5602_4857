@@ -1,14 +1,17 @@
 ﻿
-namespace Dal;
+
 using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-
+namespace Dal;
+/// <summary>
+/// A new AssignmentImplementation class that inherits from IAssignment.
+/// </summary>
 internal class AssignmentImplementation : IAssignment
 {
-    static Assignments getAssignment(XElement a)
+    static Assignment getAssignment(XElement a)
     {
         return new DO.Assignment()
         {
@@ -22,30 +25,40 @@ internal class AssignmentImplementation : IAssignment
 
     }
 
-        public Assignment? Read(int id)
-        {
-            XElement? studentElem =
-        XMLTools.LoadListFromXMLElement(Config.s_assignment_xml).Elements().FirstOrDefault(st => (int?)st.Element("Id") == id);
-            return studentElem is null ? null : getAssignment(studentElem);
-        }
+    /// <summary>
+    /// Adds a new Call to the XML file.
+    /// </summary>
+    public void Create(Call item)
+    {
+        List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
+        calls.Add(item);
+        XMLTools.SaveListToXMLSerializer(calls, Config.s_calls_xml);
+    }
 
-        public Assignment? Read(Func<Assignment, bool> filter)
-        {
-            return XMLTools.LoadListFromXMLElement(Config.s_assignment_xml).Elements().Select(s => getAssignment(s)).FirstOrDefault(filter);
-        }
+    public Assignment? Read(int id)
+    {
+        XElement? studentElem =
+    XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().FirstOrDefault(st => (int?)st.Element("Id") == id);
+        return studentElem is null ? null : getAssignment(studentElem);
+    }
 
-        public void Update(Assignment item)
-        {
-            XElement studentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignment_xml);
+    public Assignment? Read(Func<Assignment, bool> filter)
+    {
+        return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(s => getAssignment(s)).FirstOrDefault(filter);
+    }
 
-            (studentsRootElem.Elements().FirstOrDefault(st => (int?)st.Element("Id") == item.Id)
-            ?? throw new DO.DalDoesNotExistException($"Student with ID={item.Id} does Not exist"))
-                    .Remove();
+    public void Update(Assignment item)
+    {
+        XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
 
-            studentsRootElem.Add(new XElement("Student", createAssignmentElement(item)));
+        (assignmentsRootElem.Elements().FirstOrDefault(st => (int?)st.Element("Id") == item.Id)
+        ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
+                .Remove();
 
-            XMLTools.SaveListToXMLElement(studentsRootElem, Config.s_assignment_xml);
-        }
-    
+        assignmentsRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
+
+        XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
+    }
+
 
 }
