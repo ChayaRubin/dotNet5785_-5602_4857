@@ -4,7 +4,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 
-public interface IVolunteer : ICrud<Volunteer> { }
+public interface ICall : ICrud<Volunteer> { }
 
 //public interface IVolunteer
 //{
