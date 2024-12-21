@@ -2,6 +2,10 @@
 
 namespace DalApi;
 
+/// <summary>
+/// i explaind in different places already.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public interface ICrud<T> where T : class
 {
     void Create(T item);

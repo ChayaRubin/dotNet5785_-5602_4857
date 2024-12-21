@@ -218,6 +218,13 @@ namespace DalTest
             }
         }
 
+
+        /// <summary>
+        /// Handles the menu for managing entities. 
+        /// It presents options for creating, reading, updating, and deleting entities. 
+        /// It loops until the user chooses to exit. If there are errors in data handling, specific exceptions are caught and displayed.
+        /// </summary>
+        /// <param name="choice"></param>
         private static void EntityMenu(string choice)
         {
             try
@@ -288,6 +295,10 @@ namespace DalTest
             }
         }
 
+
+        /// <summary>
+        /// Displays data for all the entities (Volunteers, Calls, and Assignments) by calling the ReadAll method for each entity type.
+        /// </summary>
         private static void DisplayAllData()
         {
             ReadAll("VolunteerMenu");
@@ -298,6 +309,12 @@ namespace DalTest
         }
 
 
+        /// <summary>
+        /// The main entry point for the application. 
+        /// Displays the main menu, handles user selection for different actions (like accessing entity menus, initializing data, or resetting the database). 
+        /// It also catches invalid option and data format exceptions.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             try
@@ -359,6 +376,14 @@ namespace DalTest
             }
         }
 
+        /// <summary>
+        /// Prompts the user for input to create a new Volunteer object.
+        /// Returns the created Volunteer object.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <exception cref="DalFormatException"></exception>
+        /// <exception cref="DalInvalidOptionException"></exception>
         static Volunteer CreateVolunteerFromUserInput(int Id)
         {
             int VolunteerId = Id;
@@ -404,6 +429,14 @@ namespace DalTest
 
         }
 
+
+        /// <summary>
+        /// Prompts the user to input details for creating a new Call object.
+        /// Returns the created Call object.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="DalInvalidOptionException"></exception>
+        /// <exception cref="DalFormatException"></exception>
         static Call CreateCallFromUserInput()
         {
 
@@ -440,6 +473,13 @@ namespace DalTest
         }
 
 
+        /// <summary>
+        /// Prompts the user to input details for creating a new Assignment object. 
+        /// Returns the created Assignment object.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="DalFormatException"></exception>
+        /// <exception cref="DalInvalidOptionException"></exception>
         static Assignment CreateAssignmentFromUserInput()
         {
             int AssignmentId = 0;
@@ -470,7 +510,12 @@ namespace DalTest
         }
 
 
-
+        /// <summary>
+        /// Handles the configuration menu, allowing users to modify settings such as advancing the clock, displaying and changing the risk range, and resetting configurations. 
+        /// It loops until the user selects the "Exit" option. 
+        /// Validations are done for user input, and any errors in data format are caught.
+        /// </summary>
+        /// <exception cref="DalInvalidOptionException"></exception>
         private static void ConfigMenuFunction()
         {
             Console.WriteLine("Config Menu:");

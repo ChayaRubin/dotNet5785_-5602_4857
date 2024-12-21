@@ -1,18 +1,9 @@
 ﻿
-namespace DalApi;
 using DO;
-using System;
-using System.Collections.Generic;
-
-public interface IVolunteer : ICrud<Volunteer> { }
-
-//public interface IVolunteer
-//{
-//    void Create(Volunteer item); 
-//    Volunteer? Read(int id); 
-//    List<Volunteer> ReadAll(); 
-//    void Update(Volunteer item); 
-//    void Delete(int id); 
-//    void DeleteAll(); 
-
-//}
+namespace DalApi
+{
+    /// <summary>
+    /// Interface for interacting with <see cref="Volunteer"/> data, extending basic CRUD operations.
+    /// </summary>
+    public interface IVolunteer : ICrud<Volunteer> { }
+}

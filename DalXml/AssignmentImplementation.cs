@@ -11,17 +11,11 @@ namespace Dal;
 /// </summary>
 internal class AssignmentImplementation : IAssignment
 {
-    XElement CreateXElement(Assignment item)
-    {
-        return new XElement("Assignment",
-            new XElement("Id", item.Id),
-            new XElement("CallId", item.CallId),
-            new XElement("VolunteerId", item.VolunteerId),
-            new XElement("EntryTime", item.EntryTime),
-            new XElement("FinishCompletionTime", item.FinishCompletionTime),
-            new XElement("callResolutionStatus", item.callResolutionStatus));
-    }
 
+
+    /// <summary>
+    /// Converts an XML element into an Assignment object.
+    /// <summary>
     static Assignment getAssignment(XElement a)
     {
         return new DO.Assignment()
@@ -35,6 +29,24 @@ internal class AssignmentImplementation : IAssignment
         };
     }
 
+    /// <summary>
+    /// Creates a new XML element representing an Assignment object, with its properties serialized into corresponding child elements.
+    /// </summary>
+    XElement CreateXElement(Assignment item)
+    {
+        return new XElement("Assignment",
+            new XElement("Id", item.Id),
+            new XElement("CallId", item.CallId),
+            new XElement("VolunteerId", item.VolunteerId),
+            new XElement("EntryTime", item.EntryTime),
+            new XElement("FinishCompletionTime", item.FinishCompletionTime),
+            new XElement("callResolutionStatus", item.callResolutionStatus));
+    }
+
+
+    /// <summary>
+    /// Adds a new Assignment to the XML file.
+    /// </summary>
     public void Create(Assignment item)
     {
         XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
@@ -42,6 +54,9 @@ internal class AssignmentImplementation : IAssignment
         XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
     }
 
+    /// <summary>
+    /// Deletes a Assignment by ID from the XML file.
+    /// </summary>
     public void Delete(int id)
     {
         XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
@@ -57,6 +72,10 @@ internal class AssignmentImplementation : IAssignment
         }
     }
 
+
+    /// <summary>
+    /// Deletes all Assignments from the XML file.
+    /// </summary>
     public void DeleteAll()
     {
         XElement assignmentsRootElem = new XElement("Assignments");
@@ -70,17 +89,27 @@ internal class AssignmentImplementation : IAssignment
     //    return assignmentElem is null ? null : getAssignment(assignmentElem);
     //}
 
+
+    /// <summary>
+    /// Reads the first Assignment matching a filter.
+    /// </summary>
     public Assignment? Read(Func<Assignment, bool> filter)
     {
         return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a)).FirstOrDefault(filter);
     }
 
+    /// <summary>
+    /// Reads all Assignments, optionally filtered by a predicate.
+    /// </summary>
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
         var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a));
         return filter is null ? assignments : assignments.Where(filter);
     }
 
+    /// <summary>
+    /// Updates an existing Assignment in the XML file.
+    /// </summary>
     public void Update(Assignment item)
     {
         XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);

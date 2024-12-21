@@ -1,7 +1,9 @@
-﻿
+﻿using DO;
 
-namespace DalApi;
-using DO;
-
-public interface ICall : ICrud<Call> { }
-
+namespace DalApi
+{
+    /// <summary>
+    /// Interface for interacting with <see cref="Call"/> data, extending basic CRUD operations.
+    /// </summary>
+    public interface ICall : ICrud<Call> { }
+}
