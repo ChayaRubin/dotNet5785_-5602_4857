@@ -27,12 +27,6 @@ internal class AssignmentImplementation : IAssignment
         DataSource.Assignments.Clear(); 
     }
 
-
-    //public Assignment? Read(int id)
-    //{
-    //    return DataSource.Assignments.FirstOrDefault(item => item.Id == id); //stage 2
-    //}
-
     public Assignment? Read(Func<Assignment, bool> filter)
     {
         return DataSource.Assignments.FirstOrDefault(filter);

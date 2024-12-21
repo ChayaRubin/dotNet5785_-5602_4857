@@ -4,6 +4,10 @@ namespace Dal;
 using DalApi;
 using DO;
 
+/// <summary>
+/// A new ConfigImplementation class that inherits from IConfig.
+/// </summary>
+
 internal class ConfigImplementation : IConfig
 {
     public DateTime Clock

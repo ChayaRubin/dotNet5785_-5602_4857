@@ -1,8 +1,10 @@
 ﻿
-
-//namespace Dal;
 using DalApi;
 namespace Dal;
+/// <summary>
+/// A new DalXml class that inherits from IDal.
+/// </summary>
+
 public class DalXml : IDal
 {
     public IAssignment Assignment => throw new NotImplementedException();
