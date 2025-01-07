@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{AF6C0FCE-19B
 		xml\assignments.xml = xml\assignments.xml
 		xml\calls.xml = xml\calls.xml
 		xml\data-config.xml = xml\data-config.xml
+		xml\dal-config.xml = xml\dal-config.xml
 		xml\volunteers.xml = xml\volunteers.xml
 	EndProjectSection
 EndProject

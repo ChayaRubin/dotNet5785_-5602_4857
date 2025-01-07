@@ -7,7 +7,8 @@ namespace DalTest
     internal class Program
     {
         //static readonly IDal s_dal = new DalList(); //stage 2
-        static readonly IDal s_dal = new DalXml(); //stage 3
+        //static readonly IDal s_dal = new DalXml(); //stage 3
+        static readonly IDal s_dal = Factory.Get; //stage 4
 
         //Create- Sends to different function to create different types based on users choice.
         private static void Create(string choice)
@@ -341,7 +342,9 @@ namespace DalTest
                                 break;
 
                             case MainMenuOption.InitializeData:
-                                Initialization.Do(s_dal); //stage 2
+                                //Initialization.Do(s_dal); //stage 2
+                                Initialization.Do(); //stage 4
+
                                 break;
 
                             case MainMenuOption.DisplayAllData:

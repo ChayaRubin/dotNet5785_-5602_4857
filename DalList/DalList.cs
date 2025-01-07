@@ -6,8 +6,17 @@ using DalApi;
 /// for managing <see cref="Assignment"/>, <see cref="Volunteer"/>, <see cref="Call"/>, and <see cref="Config"/> entities.
 /// It encapsulates the logic for interacting with these entities and their respective implementations.
 /// </summary>
-sealed public class DalList : IDal
+sealed internal class DalList : IDal
 {
+    /// <summary>
+    /// Static readonly property initialized to a new instance of the class
+    /// </summary>
+    public static IDal Instance { get; } = new DalList();
+    /// <summary>
+    /// private ctor
+    /// </summary>
+    private DalList() { }
+
     /// <summary>
     /// Gets the <see cref="IAssignment"/> implementation for interacting with assignment-related data.
     /// Provides methods for performing CRUD operations on assignments.

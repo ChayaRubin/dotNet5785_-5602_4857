@@ -34,15 +34,28 @@ public class DalFormatException : Exception
 /// handle cases where the user selects an option that does not exist within the valid set of choices, 
 /// ensuring the program can gracefully handle invalid inputs and provide clear feedback.
 /// </summary>
+[Serializable]
 public class DalInvalidOptionException : Exception
 {
     public DalInvalidOptionException(string message) : base(message) { }
 }
 
 /// <summary>
-
+/// Use this exception to handle and report issues specific to XML file operations in the DAL.
 /// </summary>
+[Serializable]
 public class DalXMLFileLoadCreateException : Exception
 {
     public DalXMLFileLoadCreateException(string message) : base(message) { }
+}
+
+
+/// <summary>
+/// Use this exception to handle and report issues specific to DAL configuration.
+/// </summary>
+[Serializable]
+public class DalConfigException : Exception
+{
+    public DalConfigException(string msg) : base(msg) { }
+    public DalConfigException(string msg, Exception ex) : base(msg, ex) { }
 }

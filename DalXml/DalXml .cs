@@ -1,5 +1,6 @@
 ﻿//נעזרנו בגיפיטי בתיעוד  בכמה מקומות.
 using DalApi;
+using System.Diagnostics;
 namespace Dal
 {
     /// <summary>
@@ -7,8 +8,16 @@ namespace Dal
     /// Provides access to implementations for managing Assignments, Volunteers, Calls, and Configuration settings.
     /// Also includes functionality to reset the database by clearing all stored data.
     /// </summary>
-    public class DalXml : IDal
+    sealed internal class DalXml : IDal
     {
+        /// <summary>
+        /// Static readonly property initialized to a new instance of the class
+        /// </summary>
+        public static IDal Instance { get; } = new DalXml();
+        /// <summary>
+        /// private ctor
+        /// </summary>
+        private DalXml() { }
         /// <summary>
         /// Provides access to the Assignment implementation, allowing for management of Assignment data.
         /// </summary>

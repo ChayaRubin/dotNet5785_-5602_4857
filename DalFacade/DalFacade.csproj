@@ -13,5 +13,13 @@
 
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="DalConfig.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="DalApi\DalConfig.cs" />
+	</ItemGroup>
+
 </Project>
 
