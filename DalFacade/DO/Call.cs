@@ -44,10 +44,10 @@ public record Call
         StartTime = startTime;
         ExpiredTime = expiredTime;
     }
-    public override string ToString()
+ /*   public override string ToString()
     {
         return $"Id: {RadioCallId}, CallType: {CallType}, Description: {Description}, Address: {Address}, Latitude: {Latitude}, Longitude: {Longitude},StartTime:{StartTime},ExpiredTime:{ExpiredTime}";
-    }
+    }*/
 }
 
 

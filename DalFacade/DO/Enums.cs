@@ -86,3 +86,4 @@ public enum ConfigMenu
     DisplayRiskRange,
     Reset
 }
+

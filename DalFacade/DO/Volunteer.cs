@@ -66,10 +66,12 @@ public record Volunteer
         TypeOfDistance = MyTypeOfDistance;
     }
 
-    public override string ToString()
+    /*public override string ToString()
     {
         return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Password:{Password},Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
-    }
+    }*/
+
+
     //private bool IsValidPassword(string? password)
     //{
     //    if (password == null)
