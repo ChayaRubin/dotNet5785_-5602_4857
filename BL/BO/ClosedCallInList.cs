@@ -1,6 +1,6 @@
 ﻿using System;
 using BO;
-using static BO.Enums;
+//using static BO.Enums;
 
 namespace BO
 {

@@ -9,7 +9,7 @@ public interface IAdmin
         DateTime GetSystemClock();
 
         // מתודת קידום שעון
-        void AdvanceSystemClock(TimeUnit timeUnit);
+        void AdvanceSystemClock(BO.TimeUnit timeUnit);
 
         // מתודת בקשת טווח זמן סיכון
         TimeSpan GetRiskTimeRange();
@@ -23,6 +23,3 @@ public interface IAdmin
         // מתודת אתחול בסיס נתונים
         void InitializeDatabase();
 }
-
-
-

@@ -1,8 +1,8 @@
 ﻿
 namespace BO;
 
-public class Enums
-{
+/*public class Enums
+{*/
     /// <summary>
     /// Enum for Distance TypeEnum
     /// </summary>
@@ -38,5 +38,14 @@ public class Enums
         AdminCanceled,
         Expired
     }
-}
+
+    public enum TimeUnit
+    {
+        MINUTE,
+        HOUR,
+        DAY,
+        MONTH,
+        YEAR
+    }
+//}
 

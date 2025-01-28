@@ -1,4 +1,4 @@
-﻿//using BlImplementation;
+﻿using BlImplementation;
 using BO;
 namespace Helpers;
 
@@ -38,7 +38,7 @@ internal static class ClockManager //stage 4
         //Go through all students to update properties that are affected by the clock update
         //(students becomes not active after 5 years etc.)
         
-        StudentManager.PeriodicStudentsUpdates(oldClock, newClock); //stage 4
+        //StudentManager.PeriodicStudentsUpdates(oldClock, newClock); //stage 4
         //etc ...
 
         //Calling all the observers of clock update
