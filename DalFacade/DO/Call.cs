@@ -1,7 +1,4 @@
-﻿using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace DO;
+﻿using DO;
 
 /// <summary>
 /// Initializes a new instance of the <see cref="Call"/> class with specific values for all properties.

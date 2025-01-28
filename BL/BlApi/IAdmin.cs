@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace BIApi
+namespace BlApi;
+
+public interface IAdmin
 {
-    public interface IAdmin
-    {
+
         // מתודת בקשת שעון
         DateTime GetSystemClock();
 
@@ -25,5 +22,7 @@ namespace BIApi
 
         // מתודת אתחול בסיס נתונים
         void InitializeDatabase();
-    }
 }
+
+
+
