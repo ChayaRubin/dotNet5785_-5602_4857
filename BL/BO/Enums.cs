@@ -48,4 +48,13 @@ namespace BO;
         YEAR
     }
 //}
+public enum CallField
+{
+    Id, // מזהה קריאה
+    CallerName, // שם המתקשר
+    VolunteerName, // שם המתנדב
+    Status, // סטטוס הקריאה
+    DateCreated, // תאריך יצירה
+    LastAssigned // הקצאה אחרונה
+}
 
