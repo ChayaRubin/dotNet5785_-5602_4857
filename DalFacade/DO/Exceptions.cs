@@ -77,7 +77,9 @@ public class DalArgumentException : Exception
     public DalArgumentException(string msg) : base(msg) { }
 }
 
-
+/// <summary>
+/// 
+/// </summary>
 [Serializable]
 public class DalNullPropertyException : Exception
 {

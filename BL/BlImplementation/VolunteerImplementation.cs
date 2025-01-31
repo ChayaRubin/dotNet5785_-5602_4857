@@ -1,9 +1,7 @@
 ﻿using BlApi;
 using BO;
-//using DalApi;
 using DO;
 using Helpers;
-using System.Globalization;
 
 namespace BlImplementation;
 
@@ -11,17 +9,33 @@ internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    /// <summary>
+    /// Authenticates a volunteer by checking their username and password.
+    /// </summary>
+    /// <param name="username">The volunteer's username.</param>
+    /// <param name="password">The volunteer's password.</param>
+    /// <returns>The position of the volunteer if authentication is successful.</returns>
+    /// <exception cref="BlUnauthorizedAccessException">Thrown if the username or password is incorrect.</exception>
     public string Login(string username, string password)
-
     {
         var volunteer = _dal.Volunteer.Read(v => v.Name == username);
 
-        if (volunteer == null || volunteer.Password != password)
+        if (volunteer == null)
+            throw new BlUnauthorizedAccessException("Invalid username or password");
+
+        // Compare hashed passwords
+        if (!VolunteerManager.VerifyPassword(password, volunteer.Password))
             throw new BlUnauthorizedAccessException("Invalid username or password");
 
         return volunteer.Position.ToString();
     }
 
+    /// <summary>
+    /// Retrieves a list of volunteers, optionally filtered by their activity status and sorted by the specified criteria.
+    /// </summary>
+    /// <param name="isActive">Optional parameter to filter volunteers by activity status.</param>
+    /// <param name="sortBy">Optional parameter to specify how to sort the volunteers.</param>
+    /// <returns>A list of volunteers that match the criteria.</returns>
     public IEnumerable<BO.Volunteer> GetVolunteersList(bool? isActive, VolunteerSortBy? sortBy)
     {
         // שליפת המתנדבים עם סינון של פעילות
@@ -44,7 +58,13 @@ internal class VolunteerImplementation : IVolunteer
         // שליחת הרשימה הממוינת לפונקציה החיצונית
         return volunteerList;
     }
-
+    /// <summary>
+    /// Retrieves detailed information about a volunteer based on their ID number.
+    /// </summary>
+    /// <param name="idNumber">The ID number of the volunteer.</param>
+    /// <returns>The details of the volunteer.</returns>
+    /// <exception cref="BlFormatException">Thrown if the ID format is invalid.</exception>
+    /// <exception cref="BlDoesNotExistException">Thrown if no volunteer is found with the given ID.</exception>
     public BO.Volunteer GetVolunteerDetails(string idNumber)
     {
         DO.Volunteer? volunteer = null;
@@ -66,31 +86,23 @@ internal class VolunteerImplementation : IVolunteer
         return volunteerBO;
     }
 
+    /// <summary>
+    /// Updates the details of an existing volunteer based on their ID number.
+    /// </summary>
+    /// <param name="idNumber">The ID number of the volunteer to be updated.</param>
+    /// <param name="volunteerBO">The updated volunteer details.</param>
+    /// <exception cref="DalFormatException">Thrown if the ID format is invalid.</exception>
+    /// <exception cref="BlDoesNotExistException">Thrown if the volunteer does not exist.</exception>
+    /// <exception cref="DalUnauthorizedAccessException">Thrown if the user does not have permission to update the volunteer.</exception>
+    /// <exception cref="BlUnauthorizedAccessException">Thrown if the volunteer does not have permission to update certain fields.</exception>
+    /// <exception cref="BlFormatException">Thrown if the updated volunteer data is in an invalid format.</exception>
+    /// <exception cref="BlGeneralDatabaseException">Thrown if an unexpected error occurs during the update operation.</exception>
     public void UpdateVolunteerDetails(string idNumber, BO.Volunteer volunteerBO)
     {
         try
         {
-            // בדיקת תקינות ת.ז של המבקש
-            if (!VolunteerManager.IsRequesterAuthorized(idNumber, volunteerBO))
-            {
-                throw new DalUnauthorizedAccessException("You do not have permission to update this volunteer.");
-            }
-
-            // ווידוא שהקלט תקין מבחינת פורמט
-            VolunteerManager.ValidateInputFormat(volunteerBO);
-
-            // ווידוא תקינות ערכים לוגיים
-            VolunteerManager.ValidateLogicalFields(volunteerBO);
-
-            // חישוב קווי אורך ורוחב מהכתובת
-            var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
-
-            volunteerBO.Latitude = latitude;
-            volunteerBO.Longitude = longitude;
-
-            // קבלת המתנדב מה- DAL
+            // Get existing volunteer from DAL
             DO.Volunteer? existingVolunteer = null;
-
             if (int.TryParse(idNumber, out int id))
             {
                 existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
@@ -100,16 +112,50 @@ internal class VolunteerImplementation : IVolunteer
                 throw new DalFormatException("Invalid ID format");
             }
 
-            // ווידוא אילו שדות השתנו והאם מותר לשנותם
-            if (!Helpers.VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
+            if (existingVolunteer == null)
             {
-                throw new DalFormatException("You do not have permission to update the Role field.");
+                throw new BlDoesNotExistException($"The volunteer with ID={idNumber} was not found.");
             }
 
-            // המרת ה- BO ל- DO
-            DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
+            // Check authorization
+            if (!VolunteerManager.IsRequesterAuthorized(idNumber, volunteerBO))
+            {
+                throw new DalUnauthorizedAccessException("You do not have permission to update this volunteer.");
+            }
 
-            // עדכון המתנדב ב- DAL
+            // Validate input format
+            VolunteerManager.ValidateInputFormat(volunteerBO);
+
+            // Validate logical fields
+            VolunteerManager.ValidateLogicalFields(volunteerBO);
+
+            // Handle password update securely
+            if (volunteerBO.Password != existingVolunteer.Password)
+            {
+                if (idNumber != volunteerBO.Id.ToString() && volunteerBO.Role != BO.PositionEnum.Manager)
+                {
+                    throw new BlUnauthorizedAccessException("Only the volunteer or a manager can update the password.");
+                }
+                // Hash the new password before storing it
+                volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password);
+            }
+
+            // Validate if field updates are allowed
+            if (!Helpers.VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
+            {
+                throw new DalFormatException("You do not have permission to update certain fields.");
+            }
+
+            // Update latitude & longitude if address changed
+            if (volunteerBO.CurrentAddress != existingVolunteer.Address)
+            {
+                var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
+                volunteerBO.Latitude = latitude;
+                volunteerBO.Longitude = longitude;
+            }
+
+            // Convert BO to DO and update in DAL
+            DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
             _dal.Volunteer.Update(volunteerDO);
         }
         catch (DO.DalFormatException ex)
@@ -130,6 +176,13 @@ internal class VolunteerImplementation : IVolunteer
         }
     }
 
+    /// <summary>
+    /// Deletes a volunteer based on their ID number.
+    /// </summary>
+    /// <param name="id">The ID of the volunteer to be deleted.</param>
+    /// <exception cref="BO.BlDoesNotExistException">Thrown if the volunteer does not exist.</exception>
+    /// <exception cref="BO.BlUnauthorizedAccessException">Thrown if the volunteer cannot be deleted because they are currently handling a call.</exception>
+    /// <exception cref="BO.BlGeneralDatabaseException">Thrown if an unexpected error occurs during the deletion process.</exception>
     public void DeleteVolunteer(int id)
     {
         try
@@ -157,55 +210,56 @@ internal class VolunteerImplementation : IVolunteer
         }
     }
 
+    /// <summary>
+    /// Adds a new volunteer to the system.
+    /// </summary>
+    /// <param name="volunteer">The volunteer to be added.</param>
+    /// <exception cref="BlAlreadyExistsException">Thrown if a volunteer with the same ID already exists.</exception>
+    /// <exception cref="BlFormatException">Thrown if the input data for the volunteer is invalid.</exception>
+    /// <exception cref="BlUnauthorizedAccessException">Thrown if the operation is not authorized.</exception>
+    /// <exception cref="BlGeneralDatabaseException">Thrown if an unexpected error occurs while adding the volunteer.</exception>
     public void AddVolunteer(BO.Volunteer volunteer)
     {
         try
         {
-            // ווידוא שהקלט תקין מבחינת פורמט
+            // Validate input format
             VolunteerManager.ValidateInputFormat(volunteer);
 
-            // ווידוא שהקלט תקין מבחינת לוגית
+            // Validate logical fields
             VolunteerManager.ValidateLogicalFields(volunteer);
 
-            // חישוב קווי אורך ורוחב מהכתובת
-            var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress!);
+            // Hash the initial password before storing it
+            volunteer.Password = VolunteerManager.HashPassword(volunteer.Password);
 
+            // Get latitude & longitude from address
+            var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress!);
             volunteer.Latitude = latitude;
             volunteer.Longitude = longitude;
 
-            // המרת ה- BO ל- DO
+            // Convert BO to DO
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteer);
-            try
-            {
-                _dal.Volunteer.Create(volunteerDO);
-            }
-            catch (DO.DalDoesNotExistException ex)
-            {
-                // מתנדב כבר קיים עם ת.ז - זרוק חריגה מותאמת
-                throw new DalDoesNotExistException($"Volunteer with ID={volunteer.Id} already exists. {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                // חריגות כלליות במהלך הוספת המתנדב
-                throw new BlGeneralDatabaseException("An unexpected error occurred while adding the volunteer.");
-            }
 
+            // Attempt to add volunteer to database
+            _dal.Volunteer.Create(volunteerDO);
+        }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new BlAlreadyExistsException($"Volunteer with ID={volunteer.Id} already exists. {ex.Message}");
         }
         catch (DO.DalFormatException ex)
         {
-            throw new BlFormatException($"Invalid data for volunteer update: {ex.Message}");
+            throw new BlFormatException($"Invalid data for volunteer addition: {ex.Message}");
         }
         catch (DO.DalUnauthorizedAccessException ex)
         {
-            throw new BlUnauthorizedAccessException($"Invalid data for volunteer update: {ex.Message}");
-        }
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new BlDoesNotExistException($"The volunteer with ID={volunteer.Id} was not found.");
+            throw new BlUnauthorizedAccessException($"Unauthorized action: {ex.Message}");
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException("An unexpected error occurred while updating the volunteer.");
+            throw new BlGeneralDatabaseException("An unexpected error occurred while adding the volunteer.");
         }
     }
+
 }
+
+
