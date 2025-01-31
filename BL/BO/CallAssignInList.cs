@@ -1,5 +1,5 @@
 ﻿
-using static BO.Enums;
+//using static BO.Enums
 
 namespace BO
 {

@@ -68,6 +68,8 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDatabase()
     {
-        //??????????????????
+        _dal.Config.Reset();
+        DalTest.Initialization.Do();
+        ClockManager.UpdateClock(ClockManager.Now);
     }
 }

@@ -1,8 +1,6 @@
 ﻿
 namespace BO;
 
-/*public class Enums
-{*/
     /// <summary>
     /// Enum for Distance TypeEnum
     /// </summary>
@@ -47,14 +45,24 @@ namespace BO;
         MONTH,
         YEAR
     }
-//}
+
 public enum CallField
 {
-    Id, // מזהה קריאה
-    CallerName, // שם המתקשר
-    VolunteerName, // שם המתנדב
-    Status, // סטטוס הקריאה
-    DateCreated, // תאריך יצירה
-    LastAssigned // הקצאה אחרונה
+    Id,
+    FullName,
+    TotalHandledCalls,
+    TotalCanceledCalls,
+    TotalExpiredCalls,
+    CurrentCallId,
+    CurrentCallType
 }
+
+public enum VolunteerSortBy
+{
+    FullName,
+    TotalHandledCalls,
+    TotalCanceledCalls,
+    TotalExpiredCalls
+}
+
 

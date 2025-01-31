@@ -15,3 +15,26 @@ public class BlInvalidTimeUnitException : Exception
 }
 
 
+[Serializable]
+public class BlUnauthorizedAccessException : Exception
+{
+    public BlUnauthorizedAccessException(string? message) : base(message) { }
+}
+
+[Serializable]
+public class BlDoesNotExistException : Exception
+{
+    public BlDoesNotExistException(string? message) : base(message) { }
+}
+
+[Serializable]
+public class BlFormatException : Exception
+{
+    public BlFormatException(string? message) : base(message) { }
+}
+
+[Serializable]
+public class BlGeneralDatabaseException : Exception
+{
+    public BlGeneralDatabaseException(string? message) : base(message) { }
+}

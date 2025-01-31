@@ -57,5 +57,29 @@ public class DalXMLFileLoadCreateException : Exception
 public class DalConfigException : Exception
 {
     public DalConfigException(string msg) : base(msg) { }
-    public DalConfigException(string msg, Exception ex) : base(msg, ex) { }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[Serializable]
+public class DalUnauthorizedAccessException : Exception
+{
+    public DalUnauthorizedAccessException(string msg) : base(msg) { }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[Serializable]
+public class DalArgumentException : Exception
+{
+    public DalArgumentException(string msg) : base(msg) { }
+}
+
+
+[Serializable]
+public class DalNullPropertyException : Exception
+{
+    public DalNullPropertyException(string? message) : base(message) { }
 }

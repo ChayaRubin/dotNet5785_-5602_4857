@@ -1,6 +1,4 @@
-﻿
-
-namespace BlApi;
+﻿namespace BlApi;
 
 public interface IAdmin
 {
@@ -21,5 +19,5 @@ public interface IAdmin
         void ResetDatabase();
 
         // מתודת אתחול בסיס נתונים
-        void InitializeDatabase();
+       void InitializeDatabase();
 }

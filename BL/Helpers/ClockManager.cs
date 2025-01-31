@@ -94,7 +94,7 @@ internal static class ClockManager //stage 4
             //TO_DO:
             //Add calls here to any logic simulation that was required in stage 7
             //for example: course registration simulation
-            StudentManager.SimulateCourseRegistrationAndGrade(); //stage 7
+            //StudentManager.SimulateCourseRegistrationAndGrade(); //stage 7
 
             //etc...
             #endregion Stage 7
