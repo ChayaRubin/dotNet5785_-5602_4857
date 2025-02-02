@@ -1,5 +1,4 @@
-﻿
-using DalApi;
+﻿using DalApi;
 using BO;
 using System.Data;
 using DO;
@@ -10,7 +9,7 @@ using System.Security.Cryptography;
 
 internal static class VolunteerManager
 {
-    private static IDal s_dal = Factory.Get; //stage 4
+    private static IDal s_dal = DalApi.Factory.Get; //stage 4
 
     /// <summary>
     /// Converts a collection of DO.Volunteer objects to a list of BO.Volunteer objects
@@ -66,7 +65,7 @@ internal static class VolunteerManager
             Name = volunteer.FullName,
             Phone = volunteer.PhoneNumber,
             Email = volunteer.Email,
-            Password = volunteer.Password,
+            Password = HashPassword(GenerateStrongPassword()),
             Address = volunteer.CurrentAddress,
             Latitude = volunteer.Latitude,
             Longitude = volunteer.Longitude,
@@ -145,7 +144,8 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="volunteerBO">Volunteer object to validate</param>
     /// <exception cref="DalFormatException">Thrown when validation fails</exception>
-    public static void ValidateLogicalFields(BO.Volunteer volunteerBO)
+    /// ---------------------------------------------------------------------------------------------------------------------------------
+ /*   public static void ValidateLogicalFields(BO.Volunteer volunteerBO)
     {
         var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
 
@@ -158,7 +158,7 @@ internal static class VolunteerManager
         {
             throw new DalFormatException("Coordinates are out of valid geographic range.");
         }
-    }
+    }*/
 
     /// <summary>
     /// Validates the format of all input fields in a volunteer object
@@ -202,33 +202,35 @@ internal static class VolunteerManager
     /// <returns>True if ID is valid, false otherwise</returns>
     public static bool IsValidIdNumber(string idNumber)
     {
+        // בדיקת אורך וסוג התו (האם כל התו הוא ספרה)
         if (idNumber.Length != 9 || !idNumber.All(char.IsDigit))
         {
             return false;
         }
 
-        if (int.TryParse(idNumber, out int id))
+        // המרת המספר למערך של ספרות
+        int[] digits = new int[9];
+        for (int i = 0; i < 9; i++)
         {
-            int[] digits = new int[9];
-            for (int i = 0; i < 9; i++)
-            {
-                digits[i] = idNumber[i] - '0';
-            }
-
-            int sum = 0;
-            for (int i = 0; i < 8; i++)
-            {
-                int multiplier = (i % 2 == 0) ? 1 : 2;
-                int product = digits[i] * multiplier;
-                sum += product > 9 ? product - 9 : product;
-            }
-
-            int checkDigit = (10 - sum % 10) % 10;
-            return checkDigit == digits[8];
+            digits[i] = idNumber[i] - '0'; // המרת תו לספרה
         }
 
-        return false;
+        // חישוב סכום לפי אלגוריתם מספר הזהות
+        int sum = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            int multiplier = (i % 2 == 0) ? 1 : 2;
+            int product = digits[i] * multiplier;
+            sum += product > 9 ? product - 9 : product;
+        }
+
+        // חישוב ספרת ביקורת
+        int checkDigit = (10 - sum % 10) % 10;
+
+        // בדיקה אם ספרת הביקורת נכונה
+        return checkDigit == digits[8];
     }
+
 
     /// <summary>
     /// Validates a phone number format
@@ -298,6 +300,33 @@ internal static class VolunteerManager
         return hashedInput == storedHash;
     }
 
+    /// <summary>
+    /// returns a randoml strong password
+    /// </summary>
+    /// <returns></returns>
+    public static string GenerateStrongPassword()
+    {
+        const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+        const string digits = "0123456789";
+        const string special = "!@#$%^&*";
+        const string allChars = uppercase + lowercase + digits + special;
 
+        char[] password = new char[8];
 
+        // Ensure at least one of each required character type
+        password[0] = uppercase[RandomNumberGenerator.GetInt32(uppercase.Length)];
+        password[1] = lowercase[RandomNumberGenerator.GetInt32(lowercase.Length)];
+        password[2] = digits[RandomNumberGenerator.GetInt32(digits.Length)];
+        password[3] = special[RandomNumberGenerator.GetInt32(special.Length)];
+
+        // Fill the remaining characters randomly from all types
+        for (int i = 4; i < 8; i++)
+        {
+            password[i] = allChars[RandomNumberGenerator.GetInt32(allChars.Length)];
+        }
+
+        // Shuffle the password to avoid any predictable ordering
+        return new string(password.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
+    }
 }

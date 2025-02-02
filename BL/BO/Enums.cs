@@ -66,3 +66,14 @@ public enum VolunteerSortBy
 }
 
 
+public enum CallListFilter
+{
+    CallType,
+    Address
+}
+
+public enum CallListSortBy
+{
+    CallId,
+    StartTime
+}

@@ -52,5 +52,22 @@ namespace BO
         /// </summary>
         public CallStatus? CompletionType { get; set; }
 
+
+        /// <summary>
+        /// The type of treatment completion.
+        /// Retrieved from DO.Assignment. Nullable because the status might not have been updated.
+        /// </summary>
+
+        public override string ToString()
+        {
+            // את יכולה להמיר את הערכים למחרוזת בצורה קריאה
+            return $"Call ID: {Id}, " +
+                   $"Type: {Type}, " +
+                   $"Address: {Address}, " +
+                   $"Open Time: {OpenTime}, " +
+                   $"Start Treatment: {StartTreatmentTime}, " +
+                   $"End Treatment: {EndTreatmentTime?.ToString() ?? "Not Ended"}, " +
+                   $"Completion Type: {CompletionType?.ToString() ?? "Not Updated"}";
+        }
     }
 }

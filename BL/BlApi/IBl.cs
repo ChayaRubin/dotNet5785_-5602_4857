@@ -1,8 +1,8 @@
 ﻿namespace BlApi;
 public interface IBl
 {
-    IVolunteer Student { get; }
-    ICall Course { get; }
+    IVolunteer Volunteer { get; }
+    ICall Call { get; }
     IAdmin Admin { get; }
 }
 

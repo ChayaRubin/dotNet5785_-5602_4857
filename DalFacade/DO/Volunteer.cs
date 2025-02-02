@@ -70,15 +70,6 @@ public record Volunteer
     {
         return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Password:{Password},Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
     }*/
-
-
-    //private bool IsValidPassword(string? password)
-    //{
-    //    if (password == null)
-    //        return false;
-
-    //    return password.Length >= 8 && password.Any(char.IsDigit) && password.Any(char.IsLetter);
-    //}
 }
 
 

@@ -6,7 +6,9 @@ using Helpers;
 namespace BlImplementation;
 internal class AdminImplementation : IAdmin
 {
-    private static readonly IDal _dal = Factory.Get;
+    //private static readonly IDal _dal = BlApi.Factory.Get();
+    private static readonly IDal _dal = DalApi.Factory.Get;
+
 
     /// <summary>
     /// Returns the current system clock time.

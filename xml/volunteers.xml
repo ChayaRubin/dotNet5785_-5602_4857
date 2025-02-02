@@ -224,4 +224,32 @@
     <MaxResponseDistance>39.18562399715266</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
+  <Volunteer>
+    <Id>327725602</Id>
+    <Name>ct</Name>
+    <Phone>0583227200</Phone>
+    <Email>ct@gmail.com</Email>
+    <Password>xlqoopxM+YAfCorjBRGfHhgQOnNaOhPJtbn3kSPgh3c=</Password>
+    <Address>32</Address>
+    <Latitude>32</Latitude>
+    <Longitude>32</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>329236087</Id>
+    <Name>pnina</Name>
+    <Phone>0583225096</Phone>
+    <Email>p@gmail.com</Email>
+    <Password>L4ggNezsYHgfvxjkLalTwvqKFGfoEDtPii9KW2rASd4=</Password>
+    <Address>564</Address>
+    <Latitude>32</Latitude>
+    <Longitude>23</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>70</MaxResponseDistance>
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
 </ArrayOfVolunteer>

@@ -25,7 +25,7 @@ internal class AssignmentImplementation : IAssignment
             VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("Can't convert VolunteerId"),
             EntryTime = a.ToDateTimeNullable("EntryTime") ?? throw new FormatException("Can't convert EntryTime"),
             FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime") ?? throw new FormatException("Can't convert FinishCompletionTime"),
-            callResolutionStatus = a.ToEnumNullable<CallResolutionStatus>("callResolutionStatus") ?? throw new FormatException("Can't convert callResolutionStatus")
+            CallResolutionStatus = a.ToEnumNullable<CallResolutionStatus>("callResolutionStatus") ?? throw new FormatException("Can't convert callResolutionStatus")
         };
     }
 
@@ -40,7 +40,7 @@ internal class AssignmentImplementation : IAssignment
             new XElement("VolunteerId", item.VolunteerId),
             new XElement("EntryTime", item.EntryTime),
             new XElement("FinishCompletionTime", item.FinishCompletionTime),
-            new XElement("callResolutionStatus", item.callResolutionStatus));
+            new XElement("callResolutionStatus", item.CallResolutionStatus));
     }
 
 
