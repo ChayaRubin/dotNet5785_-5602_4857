@@ -17,6 +17,7 @@ internal class CallImplementation :ICall
     /// </summary>
     public void Create(Call item)
     {
+        item.RadioCallId = Config.NextCallId;
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
         calls.Add(item);
         XMLTools.SaveListToXMLSerializer(calls, Config.s_calls_xml);

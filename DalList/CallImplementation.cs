@@ -9,7 +9,7 @@ internal class CallImplementation : ICall
 {
     public void Create(Call item)
     {
-        item.RadioCallId = Config.getNextAssignmentId;
+        item.RadioCallId = Config.NextCallId;
         Call copy = item;
         DataSource.Calls.Add(copy);
     }

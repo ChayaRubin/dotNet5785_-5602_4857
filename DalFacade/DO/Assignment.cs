@@ -39,6 +39,7 @@ public record Assignment
         this.CallResolutionStatus = callResolutionStatus;
     }
 
+
     //public override string ToString()
     //{
     //    return $"Id: {Id}, CallId: {CallId}, VolunteerId: {VolunteerId}, EntryTime: {EntryTime}, FinishCompletionTime: {FinishCompletionTime}, callResolutionStatus: {callResolutionStatus}";

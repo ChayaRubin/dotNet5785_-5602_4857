@@ -61,7 +61,7 @@ internal static class CallManager
     // המרה מ-BO.Call ל-DO.Call בצורה מבוקשת
     public static DO.Call ConvertToDO(BO.Call boCall)
     {
-        var newCallDO = new DO.Call
+        return new DO.Call
         {
             RadioCallId = boCall.Id,
             Description = boCall.Description,
@@ -73,7 +73,6 @@ internal static class CallManager
             ExpiredTime = boCall.MaxEndTime ?? DateTime.Now
         };
 
-        return newCallDO;
     }
 
     public static BO.Call ConvertToBO(DO.Call call, List<CallAssignInList> assignments)

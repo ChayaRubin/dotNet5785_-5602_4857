@@ -1,9 +1,5 @@
 ﻿/*using BlApi;
 using BO;
-using Dal;
-//using DalApi;\
-
-//using DalApi;
 using DO;
 using Helpers;
 
@@ -12,81 +8,48 @@ namespace BlImplementation;
 internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="volunteerId"></param>
-    /// <param name="callId"></param>
-    /// <exception cref="BlDoesNotExistException"></exception>
-    /// <exception cref="BlAlreadyExistsException"></exception>
-    /// <exception cref="BlArgumentException"></exception>
-    /// <exception cref="BlGeneralDatabaseException"></exception>
+
     public void AssignCall(int volunteerId, int callId)
     {
         try
         {
-            // שליפת פרטי הקריאה מה-DAL
+            // שליפת הקריאה מהמאגר
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
-
-            // אם הקריאה לא קיימת, זריקת חריגה
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
 
-            // בדיקה אם הקריאה כבר טופלה או אם יש הקצאה פתוחה
-            var existingAssignment = _dal.Assignment.Read(a => a.Id == callId);
+            // בדיקה אם לקריאה כבר יש הקצאה פתוחה או שטופלה בעבר
+            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId &&
+                (a.CallResolutionStatus == CallResolutionStatus.open || a.CallResolutionStatus == CallResolutionStatus.Treated));
 
             if (existingAssignment != null)
-            {
-                // אם יש הקצאה פתוחה או אם הקריאה כבר טופלה, זריקת חריגה
-                if (existingAssignment.CallResolutionStatus == CallResolutionStatus.open ||
-                    existingAssignment.CallResolutionStatus == CallResolutionStatus.Treated)
-                {
-                    throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
-                }
+                throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
 
-            }
-
-            // בדיקה אם הקריאה לא פג תוקף
-            if (call.ExpiredTime < _dal.Config.Clock)  // השוואה עם השעון המובנה בקונפיג
+            // בדיקה אם הקריאה פג תוקף
+            if (call.ExpiredTime < _dal.Config.Clock)
                 throw new DalArgumentException($"Call {callId} has expired.");
 
-            // יצירת הקצאה חדשה
+            // יצירת אובייקט הקצאה חדש
             var newAssignment = new Assignment
             {
                 CallId = callId,
                 VolunteerId = volunteerId,
-                EntryTime = _dal.Config.Clock, // שימוש בשעון המובנה בקונפיג
-                FinishCompletionTime = null, // לא ידוע עדיין
-                CallResolutionStatus = CallResolutionStatus.open // הקריאה בסטטוס פתוח
+                EntryTime = _dal.Config.Clock, // זמן הכניסה לטיפול
+                FinishCompletionTime = null,   // טרם הסתיים
+                CallResolutionStatus = CallResolutionStatus.open
             };
 
-            // הוספת ההקצאה ל-DAL
+            // הוספת ההקצאה למערכת
             _dal.Assignment.Create(newAssignment);
 
             Console.WriteLine($"Assignment created for volunteer {volunteerId} and call {callId}");
         }
-        catch (DalDoesNotExistException ex)
-        {
-            // במקרה שהקריאה לא קיימת
-            throw new BlDoesNotExistException($"BL Exception: {ex.Message}");
-        }
-        catch (DalAlreadyExistsException ex)
-        {
-            // במקרה שכבר קיימת הקצאה
-            throw new BlAlreadyExistsException($"BL Exception: {ex.Message}");
-        }
-        catch (DalArgumentException ex)
-        {
-            // במקרה שקריאה פגה תוקף
-            throw new BlArgumentException($"BL Exception: {ex.Message}");
-        }
         catch (Exception ex)
         {
-            // טיפול כללי בשגיאות
-            throw new BlGeneralDatabaseException($"An unexpected error occurred: {ex.Message}");
+            // הפעלת מנגנון החריגות המרכזי שיטפל בהמרת החריגה המתאימה
+            CallManager.HandleDalException(ex);
         }
     }
-
     public IEnumerable<int> GetCallCountsByStatus()
     {
         try
@@ -108,12 +71,10 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // ניסיון לקבל את נתוני הקריאה מהשכבה הנתונים
             DO.Call? callData = _dal.Call.Read(c => c.RadioCallId == callId);
             if (callData == null)
                 throw new BO.BlDoesNotExistException("Call not found");
 
-            // קבלת רשימת ההקצאות עבור הקריאה
             var assignmentData = _dal.Assignment.ReadAll()
                 .Where(a => a.CallId == callId)
                 .ToList();
@@ -122,28 +83,17 @@ internal class CallImplementation : ICall
             {
                 AssignTime = a.EntryTime,
                 VolunteerId = a.VolunteerId
-                // ניתן להוסיף שדות נוספים אם יש צורך
             }).ToList();
 
-            // המרת נתוני הקריאה לישות הלוגית BO.Call, כולל רשימת ההקצאות
             BO.Call callBO = CallManager.ConvertToBO(callData, assignmentList);
-
             return callBO;
-        }
-        catch (DalDoesNotExistException ex)
-        {
-            throw new BO.BlDoesNotExistException($"An unexpected error occurred while retrieving the call details: {ex.Message}");
-        }
-        catch (DalFormatException ex)
-        {
-            throw new BO.BlFormatException($"An unexpected error occurred while retrieving the call details: {ex.Message}");
         }
         catch (Exception ex)
         {
-            throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while retrieving the call details: {ex.Message}");
+            CallManager.HandleDalException(ex);
+            throw;
         }
     }
-
     public void UpdateCallDetails(BO.Call call)
     {
         if (call == null)
@@ -151,47 +101,35 @@ internal class CallImplementation : ICall
 
         try
         {
-            // בדיקות תקינות של הקריאה
             CallManager.ValidateCall(call);
-
-            // קבלת קואורדינטות לפי כתובת
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(call.Address);
             if (latitude == 0 || longitude == 0)
                 throw new BO.BlInvalidTimeUnitException("Invalid address: Unable to retrieve coordinates.");
 
-            // עדכון הקואורדינטות לקריאה
             call.Latitude = latitude;
             call.Longitude = longitude;
 
-            // המרת הקריאה ל-DO.Call
             DO.Call doCall = CallManager.ConvertToDO(call);
-
-            // עדכון הקריאה ב-DAL
             _dal.Call.Update(doCall);
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException("Failed to update call details.");
+            CallManager.HandleDalException(ex);
         }
     }
 
-
-
     public IEnumerable<BO.CallInList> GetCallList(
-    CallField? filterByField = null,
-    object? filterValue = null,
-    CallField? sortByField = null)
+        CallField? filterByField = null,
+        object? filterValue = null,
+        CallField? sortByField = null)
     {
         try
         {
-            // שליפת הקריאות עם סינון
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll(call =>
                 !filterByField.HasValue || CallManager.FilterCall(call, filterByField.Value, filterValue));
 
-            // המרת הקריאות ל-BO
             var callList = CallManager.GetCallList(calls);
 
-            // מיון הרשימה לפי הקריטריון שנבחר
             callList = sortByField.HasValue ? sortByField.Value switch
             {
                 CallField.Id => callList.OrderBy(c => c.Id).ToList(),
@@ -204,38 +142,33 @@ internal class CallImplementation : ICall
                 _ => callList.OrderBy(c => c.Id).ToList()
             } : callList.OrderBy(c => c.Id).ToList();
 
-            // החזרת הרשימה הממוינת
             return callList;
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException($"An unexpected error occurred while retrieving the call list: {ex.Message}");
+            throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while retrieving the call list: {ex.Message}");
         }
     }
-
 
     public void DeleteCall(int callId)
     {
         try
         {
-            // Check if the call exists in the data layer
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
+            var openAssignments = _dal.Assignment.Read(a => a.CallId == callId && a.CallResolutionStatus == DO.CallResolutionStatus.open);
 
             if (call == null)
             {
                 throw new DalDoesNotExistException("Call not found.");
             }
 
-            // Check if the call is assigned to any volunteer
             DO.Assignment? assignment = _dal.Assignment.Read(a => a.CallId == callId);
 
             if (assignment != null)
             {
-                // If the call has been assigned, it cannot be deleted
                 throw new BO.BlNullPropertyException("Cannot delete a call that has been assigned.");
             }
 
-            // Check if there are any open status assignments
             var openAssignments = _dal.Assignment.Read(a => a.CallId == callId && a.CallResolutionStatus == DO.CallResolutionStatus.open);
 
             if (openAssignments != null)
@@ -243,20 +176,11 @@ internal class CallImplementation : ICall
                 throw new BO.BlInvalidTimeUnitException("Only open calls can be deleted.");
             }
 
-            // Perform the deletion of the call
             _dal.Call.Delete(callId);
-        }
-        catch (DO.DalFormatException ex)
-        {
-            throw new BO.BlNullPropertyException("An error occurred while deleting the call.");
-        }
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new BO.BlDoesNotExistException("Call not found in the database.");
         }
         catch (Exception ex)
         {
-            throw new BO.BlGeneralDatabaseException("Error deleting the call.");
+            CallManager.HandleDalException(ex);
         }
     }
 
@@ -264,22 +188,29 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // בודקים אם ערכי הקריאה תקינים
             CallManager.ValidateCall(newCall);
 
-            // ממירים את BO.Call ל-DO.Call
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
-
-            // מנסים להוסיף את הקריאה החדשה לשכבת הנתונים
             _dal.Call.Create(newCallDO);
+        }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new BlAlreadyExistsException($"Volunteer with ID={newCall.Id} already exists. {ex.Message}");
+        }
+        catch (DO.DalFormatException ex)
+        {
+            throw new BlFormatException($"Invalid volunteer data: {ex.Message}");
+        }
+        catch (DO.DalUnauthorizedAccessException ex)
+        {
+            throw new BlUnauthorizedAccessException($"Unauthorized to add volunteer: {ex.Message}");
         }
         catch (Exception ex)
         {
-            // במקרה של בעיה, נזרוק חריגה מתאימה
-            throw new BlGeneralDatabaseException("Error adding call to database");
+            throw new BlGeneralDatabaseException($"An unexpected error occurred while adding the volunteer: {ex.Message}");
         }
-    }
 
+    }
     public IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, Enum? callType = null, Enum? sortByField = null)
     {
         return CallManager.GetCallsForVolunteer<BO.OpenCallInList>(volunteerId, callType, sortByField, isOpen: true);
@@ -290,41 +221,74 @@ internal class CallImplementation : ICall
         return CallManager.GetCallsForVolunteer<BO.ClosedCallInList>(volunteerId, callType, sortByField, isOpen: false);
     }
 
-    /// <summary>
-    /// Calculates the distance between two geographic coordinates.
-    /// </summary>
-    private double CalculateDistance(double? lat1, double? lon1, double lat2, double lon2)
+    public void CancelCall(int requestorId, int assignmentId)
     {
-        // אם אחד מהערכים lat1 או lon1 הוא null, תחזיר 0 או ערך ברירת מחדל אחר
-        if (lat1 == null || lon1 == null)
+        try
         {
-            throw new ArgumentException("Latitude or Longitude values are null.");
+            // Retrieve the assignment from the data layer using Read with filter
+            DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId) ??
+                throw new Exception("The requested assignment does not exist");
+
+            // Check authorization - the requester must be either the volunteer or an admin
+            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId) ??
+                throw new Exception("The volunteer was not found in the system");
+
+            // Check if the requestor is an admin or the volunteer themselves
+            bool isAdmin = volunteer.Position == DO.PositionEnum.Manager;
+
+            bool isVolunteer = assignment.VolunteerId == requestorId;
+
+            if (!isAdmin && !isVolunteer)
+                throw new Exception("You do not have permission to cancel this call");
+
+            // Ensure the assignment is still open
+            if (assignment.FinishCompletionTime != null || assignment.EntryTime < DateTime.Now)
+                throw new Exception("Cannot cancel a call that has already been closed");
+
+            // Update the assignment data
+            assignment.EntryTime = ClockManager.Now;
+           // assignment.FinishCompletionTime = isVolunteer ? ClosureType.SelfCancellation : ClosureType.AdminCancellation;
+
+            _dal.Assignment.Update(assignment);
         }
-
-        const double R = 6371; // Earth's radius in km
-
-        // המר את הערכים של lat1 ו-lon1 אם הם לא null
-        double lat1Value = lat1.Value;
-        double lon1Value = lon1.Value;
-
-        // חישוב המרחק
-        double dLat = (lat2 - lat1Value) * Math.PI / 180;
-        double dLon = (lon2 - lon1Value) * Math.PI / 180;
-        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                   Math.Cos(lat1Value * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) *
-                   Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-        return R * c; // המרחק בקילומטרים
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while canceling the call", ex);
+        }
     }
 
+    public void CloseCall(int volunteerId, int assignmentId)
+    {
+        try
+        {
+            // Retrieve the assignment from the data layer
+            var existingAssignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+                ?? throw new Exception($"Assignment with ID {assignmentId} not found");
+
+            // Check permissions - verify the volunteer assigned to this call
+            if (existingAssignment.VolunteerId != volunteerId)
+                throw new Exception("Volunteer is not authorized to close this call");
+
+            // Ensure the call is still open
+            if (existingAssignment.FinishCompletionTime != null)
+                throw new Exception("Call has already been closed or expired");
+
+            // Update the assignment
+            existingAssignment.FinishCompletionTime = ClockManager.Now;
+            existingAssignment.CallResolutionStatus = DO.CallResolutionStatus.Closed; // השתמש ב-CallStatus במקום ClosureType
+            _dal.Assignment.Update(existingAssignment);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error closing call", ex);
+        }
+    }
 
 }
 */
 
 using BlApi;
 using BO;
-using Dal;
 using DO;
 using Helpers;
 
@@ -339,17 +303,14 @@ internal class CallImplementation : ICall
         try
         {
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
-
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
 
-            var existingAssignment = _dal.Assignment.Read(a => a.Id == callId);
-            if (existingAssignment != null &&
-                (existingAssignment.CallResolutionStatus == CallResolutionStatus.open ||
-                existingAssignment.CallResolutionStatus == CallResolutionStatus.Treated))
-            {
+            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId &&
+                (a.CallResolutionStatus == CallResolutionStatus.open || a.CallResolutionStatus == CallResolutionStatus.Treated));
+
+            if (existingAssignment != null)
                 throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
-            }
 
             if (call.ExpiredTime < _dal.Config.Clock)
                 throw new DalArgumentException($"Call {callId} has expired.");
@@ -364,7 +325,6 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Create(newAssignment);
-            Console.WriteLine($"Assignment created for volunteer {volunteerId} and call {callId}");
         }
         catch (Exception ex)
         {
@@ -377,7 +337,6 @@ internal class CallImplementation : ICall
         try
         {
             var calls = _dal.Call.ReadAll();
-
             return calls.GroupBy(call => (int)call.CallType)
                         .OrderBy(group => group.Key)
                         .Select(group => group.Count())
@@ -478,25 +437,13 @@ internal class CallImplementation : ICall
         try
         {
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
-
             if (call == null)
-            {
                 throw new DalDoesNotExistException("Call not found.");
-            }
 
-            DO.Assignment? assignment = _dal.Assignment.Read(a => a.CallId == callId);
+            var openAssignments = _dal.Assignment.ReadAll(a => a.CallId == callId && a.CallResolutionStatus == DO.CallResolutionStatus.open);
 
-            if (assignment != null)
-            {
-                throw new BO.BlNullPropertyException("Cannot delete a call that has been assigned.");
-            }
-
-            var openAssignments = _dal.Assignment.Read(a => a.CallId == callId && a.CallResolutionStatus == DO.CallResolutionStatus.open);
-
-            if (openAssignments != null)
-            {
-                throw new BO.BlInvalidTimeUnitException("Only open calls can be deleted.");
-            }
+            if (openAssignments.Any())
+                throw new BO.BlInvalidTimeUnitException("Cannot delete a call that is still open.");
 
             _dal.Call.Delete(callId);
         }
@@ -511,13 +458,63 @@ internal class CallImplementation : ICall
         try
         {
             CallManager.ValidateCall(newCall);
-
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
             _dal.Call.Create(newCallDO);
         }
         catch (Exception ex)
         {
             CallManager.HandleDalException(ex);
+        }
+    }
+
+    public void CancelCall(int requestorId, int assignmentId)
+    {
+        try
+        {
+            DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+                ?? throw new Exception("The requested assignment does not exist");
+
+            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)
+                ?? throw new Exception("The volunteer was not found in the system");
+
+            bool isAdmin = volunteer.Position == DO.PositionEnum.Manager;
+            bool isVolunteer = assignment.VolunteerId == requestorId;
+
+            if (!isAdmin && !isVolunteer)
+                throw new Exception("You do not have permission to cancel this call");
+
+            if (assignment.FinishCompletionTime != null || assignment.EntryTime < DateTime.Now)
+                throw new Exception("Cannot cancel a call that has already been closed");
+
+            assignment.EntryTime = ClockManager.Now;
+            _dal.Assignment.Update(assignment);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while canceling the call", ex);
+        }
+    }
+
+    public void CloseCall(int volunteerId, int assignmentId)
+    {
+        try
+        {
+            var existingAssignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+                ?? throw new Exception($"Assignment with ID {assignmentId} not found");
+
+            if (existingAssignment.VolunteerId != volunteerId)
+                throw new Exception("Volunteer is not authorized to close this call");
+
+            if (existingAssignment.FinishCompletionTime != null)
+                throw new Exception("Call has already been closed or expired");
+
+            existingAssignment.FinishCompletionTime = ClockManager.Now;
+            existingAssignment.CallResolutionStatus = DO.CallResolutionStatus.Closed;
+            _dal.Assignment.Update(existingAssignment);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error closing call", ex);
         }
     }
 
@@ -530,6 +527,4 @@ internal class CallImplementation : ICall
     {
         return CallManager.GetCallsForVolunteer<BO.ClosedCallInList>(volunteerId, callType, sortByField, isOpen: false);
     }
-
-
 }

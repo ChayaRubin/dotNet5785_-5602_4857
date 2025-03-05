@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfVolunteer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Volunteer>
-    <Id>117861273</Id>
-    <Name>Yaakov Cohen</Name>
-    <Phone>056200560</Phone>
-    <Email>yaakov.cohen@email.com</Email>
-    <Password>ZbTi6t)Nb^ij</Password>
-    <Address>Atsil 13, Jerusalem</Address>
-    <Latitude>31.7735</Latitude>
-    <Longitude>35.208</Longitude>
+    <Id>327006516</Id>
+    <Name>Ma</Name>
+    <Phone>0548428809</Phone>
+    <Email>ma@email.com</Email>
+    <Password>MaRubin26!</Password>
+    <Address>King David Street 7, Jerusalem</Address>
+    <Latitude>31.7685</Latitude>
+    <Longitude>35.213</Longitude>
     <Position>Manager</Position>
     <Active>true</Active>
-    <MaxResponseDistance>12.264420857492292</MaxResponseDistance>
+    <MaxResponseDistance>0.6193893112996562</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
@@ -43,7 +43,7 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>527585017</Id>
+    <Id>327725602</Id>
     <Name>Sarah Shalom</Name>
     <Phone>054196694</Phone>
     <Email>sarah.shalom@email.com</Email>
@@ -52,22 +52,8 @@
     <Latitude>31.781</Latitude>
     <Longitude>35.216</Longitude>
     <Position>Volunteer</Position>
-    <Active>true</Active>
+    <Active>false</Active>
     <MaxResponseDistance>41.14039656936196</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <Id>472203899</Id>
-    <Name>Chaim Adler</Name>
-    <Phone>053511218</Phone>
-    <Email>chaim.adler@email.com</Email>
-    <Password>(wLwiG2zY9UJ</Password>
-    <Address>Agrippas Street 22, Jerusalem</Address>
-    <Latitude>31.773</Latitude>
-    <Longitude>35.225</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>34.74050196238571</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
@@ -108,7 +94,7 @@
     <Latitude>31.7745</Latitude>
     <Longitude>35.227</Longitude>
     <Position>Volunteer</Position>
-    <Active>true</Active>
+    <Active>false</Active>
     <MaxResponseDistance>9.72755496109387</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
@@ -225,20 +211,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>327725602</Id>
-    <Name>ct</Name>
-    <Phone>0583227200</Phone>
-    <Email>ct@gmail.com</Email>
-    <Password>xlqoopxM+YAfCorjBRGfHhgQOnNaOhPJtbn3kSPgh3c=</Password>
-    <Address>32</Address>
-    <Latitude>32</Latitude>
-    <Longitude>32</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>60</MaxResponseDistance>
-    <TypeOfDistance>DrivingDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>329236087</Id>
     <Name>pnina</Name>
     <Phone>0583225096</Phone>
@@ -250,6 +222,118 @@
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>70</MaxResponseDistance>
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>327725602</Id>
+    <Name>ct</Name>
+    <Phone>0583227200</Phone>
+    <Email>ct@gmail.com</Email>
+    <Password>Chaya26!</Password>
+    <Address>etzel13</Address>
+    <Latitude>32</Latitude>
+    <Longitude>32</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>328279138</Id>
+    <Name>tzipi</Name>
+    <Phone>0504169291</Phone>
+    <Email>t@gmail.com</Email>
+    <Password>Tzipi26!</Password>
+    <Address>beitar</Address>
+    <Latitude>32</Latitude>
+    <Longitude>32</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>3</MaxResponseDistance>
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>328306931</Id>
+    <Name>batya</Name>
+    <Phone>0556772347</Phone>
+    <Email>b@gmail.com</Email>
+    <Password>Batya26!</Password>
+    <Address>sdfghjk</Address>
+    <Latitude>32</Latitude>
+    <Longitude>32</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>50</MaxResponseDistance>
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>327725602</Id>
+    <Name />
+    <Phone>0583268775</Phone>
+    <Email>ytd@hi.com</Email>
+    <Password>ChayaRubin26!</Password>
+    <Address>rsdfgh</Address>
+    <Latitude>6</Latitude>
+    <Longitude>2</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>117861273</Id>
+    <Name>ma</Name>
+    <Phone>056200560</Phone>
+    <Email>yaakov.cohen@email.com</Email>
+    <Password>SHA256:RyLrVU1OfxKXlYxkubrSBvCIxj3sv80iwy1xR9aST6g=</Password>
+    <Address>Atsil 13, Jerusalem</Address>
+    <Latitude>31.7735</Latitude>
+    <Longitude>35.208</Longitude>
+    <Position>Manager</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>12.264420857492292</MaxResponseDistance>
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>329161822</Id>
+    <Name />
+    <Phone>0583268775</Phone>
+    <Email>o@gmail.com</Email>
+    <Password>OraRubin26!</Password>
+    <Address>fdsdfghjk</Address>
+    <Latitude>534</Latitude>
+    <Longitude>56435</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>336717954</Id>
+    <Name>vkghc</Name>
+    <Phone>0583227200</Phone>
+    <Email>htd@h.com</Email>
+    <Password>Shuly26!</Password>
+    <Address>sdfghjkl;</Address>
+    <Latitude>65</Latitude>
+    <Longitude>16</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>327934857</Id>
+    <Name>dfghjk</Name>
+    <Phone>0583227200</Phone>
+    <Email>jkg@jkdb.com</Email>
+    <Password>cghkgvdzfjT6%</Password>
+    <Address>jhvbjhkl</Address>
+    <Latitude>56</Latitude>
+    <Longitude>45</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
     <TypeOfDistance>DrivingDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

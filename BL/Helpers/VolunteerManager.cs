@@ -65,7 +65,8 @@ internal static class VolunteerManager
             Name = volunteer.FullName,
             Phone = volunteer.PhoneNumber,
             Email = volunteer.Email,
-            Password = HashPassword(GenerateStrongPassword()),
+            //Password = HashPassword(GenerateStrongPassword()),
+            Password = volunteer.Password,
             Address = volunteer.CurrentAddress,
             Latitude = volunteer.Latitude,
             Longitude = volunteer.Longitude,
@@ -145,7 +146,7 @@ internal static class VolunteerManager
     /// <param name="volunteerBO">Volunteer object to validate</param>
     /// <exception cref="DalFormatException">Thrown when validation fails</exception>
     /// ---------------------------------------------------------------------------------------------------------------------------------
- /*   public static void ValidateLogicalFields(BO.Volunteer volunteerBO)
+    public static void ValidateLogicalFields(BO.Volunteer volunteerBO)
     {
         var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
 
@@ -158,7 +159,7 @@ internal static class VolunteerManager
         {
             throw new DalFormatException("Coordinates are out of valid geographic range.");
         }
-    }*/
+    }
 
     /// <summary>
     /// Validates the format of all input fields in a volunteer object
@@ -278,7 +279,7 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="password">The plain text password to be hashed.</param>
     /// <returns>A Base64-encoded string representation of the hashed password.</returns>
-    public static string HashPassword(string password)
+    /*public static string HashPassword(string password)
     {
         using (SHA256 sha256 = SHA256.Create())
         {
@@ -286,7 +287,7 @@ internal static class VolunteerManager
             byte[] hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
-    }
+    }*/
 
     /// <summary>
     /// Verifies if the provided plain text password matches the stored hashed password.
@@ -296,15 +297,16 @@ internal static class VolunteerManager
     /// <returns>True if the input password matches the stored hash, otherwise false.</returns>
     public static bool VerifyPassword(string inputPassword, string storedHash)
     {
-        var hashedInput = HashPassword(inputPassword);
-        return hashedInput == storedHash;
+        //var hashedInput = HashPassword(inputPassword);
+        //var hashedInput = inputPassword;
+        return inputPassword == storedHash;
     }
 
     /// <summary>
     /// returns a randoml strong password
     /// </summary>
     /// <returns></returns>
-    public static string GenerateStrongPassword()
+/*    public static string GenerateStrongPassword()
     {
         const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string lowercase = "abcdefghijklmnopqrstuvwxyz";
@@ -328,5 +330,5 @@ internal static class VolunteerManager
 
         // Shuffle the password to avoid any predictable ordering
         return new string(password.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
-    }
+    }*/
 }

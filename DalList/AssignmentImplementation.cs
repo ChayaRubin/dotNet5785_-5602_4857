@@ -10,7 +10,7 @@ internal class AssignmentImplementation : IAssignment
     public void Create(Assignment item)
     {
 
-        item.Id = Config.getNextAssignmentId;
+        item.Id = Config.NextAssignmentId;
         Assignment copy = item;
         DataSource.Assignments.Add(copy);
     }
@@ -27,10 +27,12 @@ internal class AssignmentImplementation : IAssignment
         DataSource.Assignments.Clear(); 
     }
 
-    public Assignment? Read(Func<Assignment, bool> filter)
+    public Assignment Read(Func<Assignment, bool> filter)
     {
         return DataSource.Assignments.FirstOrDefault(filter);
     }
+
+
     public Assignment? ReadSingle(Func<Assignment, bool> condition)
     {
         return DataSource.Assignments.FirstOrDefault(condition);

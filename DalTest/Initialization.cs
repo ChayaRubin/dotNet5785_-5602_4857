@@ -237,7 +237,7 @@ public static class Initialization
 
             for (int i = 0; i < 50; i++)
             {
-                int MyRadioCallId = Config.getNextCallId;
+                int MyRadioCallId = Config.NextCallId;
                 string MyDescription = CallDescriptions[i];
                 string MyAddress = CallAddresses[i];
                 double MyLatitude = CallLatitudes[i];
@@ -313,7 +313,7 @@ public static class Initialization
             }
 
             s_dal!.Assignment.Create(new Assignment(
-                Config.getNextAssignmentId,
+                Config.NextAssignmentId,
                 callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId
                 volunteersList[s_rand.Next(volunteersList.Count)].Id, // VolunteerId
                 randomTime, // EntryTime

@@ -22,6 +22,8 @@ static class XMLTools
 
         try
         {
+            //{System.IO.FileStream}
+            // שמור את הרשימה המעודכנת ל-XML
             using FileStream file = new(xmlFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
             new XmlSerializer(typeof(List<T>)).Serialize(file, list);
         }
@@ -30,10 +32,21 @@ static class XMLTools
             throw new DalXMLFileLoadCreateException($"fail to create xml file: {s_xmlDir + xmlFilePath}, {ex.Message}");
         }
     }
+
+    // פונקציה חדשה להוספת אובייקט ושמירת הרשימה
+    public static void SaveListToXMLSerializerWithNewItem<T>(List<T> list, string xmlFileName, T newItem) where T : class
+    {
+        // הוסף את האובייקט החדש לרשימה
+        list.Add(newItem);
+
+        // שמור את הרשימה המעודכנת ל-XML
+        SaveListToXMLSerializer(list, xmlFileName);
+    }
+
     public static List<T> LoadListFromXMLSerializer<T>(string xmlFileName) where T : class
     {
         string xmlFilePath = s_xmlDir + xmlFileName;
-
+        //"..\\xml\\volunteers.xml"
         try
         {
             if (!File.Exists(xmlFilePath)) return new();

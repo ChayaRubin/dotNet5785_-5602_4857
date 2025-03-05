@@ -23,7 +23,7 @@ namespace Dal
         public int NextCallId
         {
             get => Config.NextCallId;    // Gets the next call ID
-            set => Config.NextCallId = value; // Sets the next call ID
+            //set => Config.NextCallId = value; // Sets the next call ID
         }
 
         /// <summary>

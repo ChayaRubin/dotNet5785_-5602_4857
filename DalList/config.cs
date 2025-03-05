@@ -13,20 +13,20 @@ using System.Collections.Generic;
 public static class Config
 {
     public const int firstCallId = 1000; 
-    public static int NextCallId = firstCallId;
-    public static int getNextCallId { get => NextCallId++; }
+    private static int nextCallId = firstCallId;
+    public static int NextCallId { get => nextCallId++; }
  
     public const int firstAssignmentId = 1000; 
-    public static int NextAssignmentId = firstAssignmentId;
-    public static int getNextAssignmentId { get => NextAssignmentId++; }
+    public static int nextAssignmentId = firstAssignmentId;
+    public static int NextAssignmentId { get => nextAssignmentId++; }
     public static DateTime Clock { get; set; } = DateTime.Now;
 
     public static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
 
     public static void Reset()
     {
-        NextCallId = firstCallId;
-        NextAssignmentId= firstAssignmentId;
+        nextCallId = firstCallId;
+        nextAssignmentId= firstAssignmentId;
         Clock = DateTime.Now;     
         RiskRange = TimeSpan.Zero; 
     }

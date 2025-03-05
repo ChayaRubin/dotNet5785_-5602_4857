@@ -1,11 +1,8 @@
 ﻿using BO;
 namespace BlApi;
-
 public interface ICall
 {
     IEnumerable<int> GetCallCountsByStatus();
-
-
     IEnumerable<BO.CallInList> GetCallList(
         CallField? filterByField = null,
         object? filterValue = null,
