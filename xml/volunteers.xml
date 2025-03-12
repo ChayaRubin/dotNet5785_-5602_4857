@@ -5,7 +5,7 @@
     <Name>Ma</Name>
     <Phone>0548428809</Phone>
     <Email>ma@email.com</Email>
-    <Password>MaRubin26!</Password>
+    <Password>123456</Password>
     <Address>King David Street 7, Jerusalem</Address>
     <Latitude>31.7685</Latitude>
     <Longitude>35.213</Longitude>
@@ -229,7 +229,7 @@
     <Name>ct</Name>
     <Phone>0583227200</Phone>
     <Email>ct@gmail.com</Email>
-    <Password>Chaya26!</Password>
+    <Password>123456</Password>
     <Address>etzel13</Address>
     <Latitude>32</Latitude>
     <Longitude>32</Longitude>

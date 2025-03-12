@@ -24,7 +24,7 @@ public enum PositionEnum
 /// </summary>
 public enum CallResolutionStatus
 {
-    Treated = 1,  
+    Treated = 0,  
     open,
     OpenRisk,
     Closed,

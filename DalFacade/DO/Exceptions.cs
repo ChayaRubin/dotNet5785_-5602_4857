@@ -85,3 +85,21 @@ public class DalNullPropertyException : Exception
 {
     public DalNullPropertyException(string? message) : base(message) { }
 }
+
+/// <summary>
+/// 
+/// </summary>
+[Serializable]
+public class DalNoPermitionException : Exception
+{
+    public DalNoPermitionException(string? message) : base(message) { }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[Serializable]
+public class DalGeneralDatabaseException : Exception
+{
+    public DalGeneralDatabaseException(string? message) : base(message) { }
+}

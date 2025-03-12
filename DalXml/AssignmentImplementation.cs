@@ -18,6 +18,14 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     static Assignment getAssignment(XElement a)
     {
+        var status = a.ToEnumNullable<CallResolutionStatus>("callResolutionStatus");
+
+        if (status == null)
+        {
+            //Console.WriteLine("Invalid callResolutionStatus: " + a.Element("callResolutionStatus")?.Value);
+            // Either assign a default value or log the error properly
+            status = CallResolutionStatus.Closed; // Replace with an appropriate default
+        }
         return new DO.Assignment()
         {
             Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
@@ -25,7 +33,7 @@ internal class AssignmentImplementation : IAssignment
             VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("Can't convert VolunteerId"),
             EntryTime = a.ToDateTimeNullable("EntryTime") ?? throw new FormatException("Can't convert EntryTime"),
             FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime") ?? throw new FormatException("Can't convert FinishCompletionTime"),
-            CallResolutionStatus = a.ToEnumNullable<CallResolutionStatus>("callResolutionStatus") ?? throw new FormatException("Can't convert callResolutionStatus")
+            CallResolutionStatus = status.Value
         };
     }
 
@@ -101,11 +109,24 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// Reads all Assignments, optionally filtered by a predicate.
     /// </summary>
-    public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
+    /*public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
         var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a));
         return filter is null ? assignments : assignments.Where(filter);
+    }*/
+    public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
+    {
+        var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml)
+            .Elements("Assignment") // Ensure you're getting all "Assignment" elements
+            .Select(a => getAssignment(a))
+            .ToList(); // Convert to a list to ensure evaluation happens here
+
+        // Remove the filter temporarily to check all assignments
+        return assignments;  // This should return all assignments in the XML
     }
+
+
+
 
     /// <summary>
     /// Updates an existing Assignment in the XML file.

@@ -1,6 +1,7 @@
 ﻿using BlApi;
 using BO;
 
+
 class Program
 {
     private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
@@ -64,11 +65,7 @@ class Program
             Console.WriteLine("9. Delete a volunteer");
             Console.WriteLine("10. get list of volunteers");
             Console.WriteLine("Testing Admin Interface");
-
-            // Test GetSystemClock Method
             Console.WriteLine("System Clock: ");
-
-            
             Console.Write("\nEnter your choice: ");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -137,11 +134,14 @@ class Program
             //Console.WriteLine("2. Volunteer Call History");
             Console.WriteLine("2. Get Closed calls by valunteer");
             Console.WriteLine("3. Get open calls by valunteer");
+            Console.WriteLine("11. TestGetCallDetails");
             Console.WriteLine("4. Get valunteer Deatails");
             Console.WriteLine("5. update volunteer details");
             Console.WriteLine("6. Logout");
-            Console.WriteLine("7. TestRiskTimeRange");
-            Console.WriteLine("8. TestAdvanceSystemClock");
+            Console.WriteLine("7. Test Risk Time Range");
+            Console.WriteLine("8. Test Advance System Clock");
+            Console.WriteLine("9. Tes tReset Database");
+            Console.WriteLine("10. Test Initialize Database");
             Console.Write("\nEnter your choice: ");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -157,19 +157,15 @@ class Program
                     case 1:
                         //SelectCallForHandlingScreen(volunteer);
                         break;
-
                     case 2:
                         VolunteerClosedCallsScreen(volunteer.Id);
                         break;
-
                     case 3:
-                        //VolunteerOpenCallsScreen(volunteer);
+                        VolunteerOpenCallsScreen(volunteer.Id);
                         break;
-
                     case 4:
                         Console.WriteLine(volunteer);
                         break;
-
                     case 5:
                         UpdateVolunteerDetails(volunteer);
                         string id = volunteer.Id.ToString();
@@ -182,12 +178,27 @@ class Program
                     case 8:
                         TestRiskTimeRange();
                         break;
-                    /*case 9:
+                    case 9:
                         TestResetDatabase();
-                        return;
+                        break;
+                    case 11:
+                        TestGetCallDetails();
+                        break;
+                    case 12:
+                       TestUpdateCallDetails();
+                        break;
+                    case 13:
+                        TestCloseCall();
+                        break;
+                    case 14:
+                        TestAssignCall();
+                        break;
+                    case 15:
+                        TestCancelCall();
+                        break;
                     case 10:
-                        TestInitializeDatabase();*/
-                    //return
+                        TestInitializeDatabase();
+                        break;
                     case 6:
                         return; // Return to login menu
                     default:
@@ -359,7 +370,7 @@ class Program
 
     public static List<BO.ClosedCallInList> VolunteerClosedCallsScreen(int volunteerId)
     {
-        try
+        /*try
         {
             // קריאה לפונקציה שתביא את הקריאות הסגורות שטופלו על ידי המתנדב
             //var closedCalls = s_bl.Call.GetClosedCallsByVolunteer(volunteerId);
@@ -376,16 +387,84 @@ class Program
         {
             Console.WriteLine($"Error fetching closed calls: {ex.Message}");
             return new List<BO.ClosedCallInList>();
+        }*/
+        try
+        {
+            // Assume s_bl is properly initialized as a field in your class
+            // private static readonly BlApi.IBL s_bl = BlApi.Factory.Get;
+
+            // Call the method from your interface
+            var closedCalls = s_bl.Call.GetClosedCallsByVolunteer(volunteerId);
+
+            // For better debugging, print more detailed information
+            Console.WriteLine($"Found {closedCalls.Count()} closed calls for volunteer {volunteerId}");
+
+            foreach (var call in closedCalls)
+            {
+                Console.WriteLine($"Call ID: {call.Id}, Type: {call.Type}, " +
+                                 $"Address: {call.Address}, Open Time: {call.OpenTime}, " +
+                                 $"End Time: {call.EndTreatmentTime}");
+            }
+
+            return closedCalls.ToList();
+        }
+        catch (Exception ex)
+        {
+            // More detailed error reporting
+            Console.WriteLine($"Error fetching closed calls for volunteer {volunteerId}: {ex.Message}");
+            Console.WriteLine($"Error details: {ex.StackTrace}");
+
+            // If you want to see inner exceptions as well
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Console.WriteLine($"Inner exception: {innerEx.Message}");
+                innerEx = innerEx.InnerException;
+            }
+
+            return new List<BO.ClosedCallInList>();
         }
     }
 
-
-
-
-    /*private static void VolunteerOpenCallsScreen(Volunteer volunteer)
+    public static List<BO.OpenCallInList> VolunteerOpenCallsScreen(int volunteerId)
     {
         Console.WriteLine("Volunteer Open Calls Screen");
-    }*/
+        try
+        {
+            // Assume s_bl is properly initialized as a field in your class
+            // private static readonly BlApi.IBL s_bl = BlApi.Factory.Get;
+
+            // Call the method from your interface
+            var openCalls = s_bl.Call.GetOpenCallsForVolunteer(volunteerId);
+
+            // For better debugging, print more detailed information
+            Console.WriteLine($"Found {openCalls.Count()} closed calls for volunteer {volunteerId}");
+
+            foreach (var call in openCalls)
+            {
+                Console.WriteLine($"Call ID: {call.Id}, Type: {call.CallType}, " +
+                                 $"Address: {call.FullAddress}, Open Time: {call.OpenTime}");
+            }
+
+            return openCalls.ToList();
+        }
+        catch (Exception ex)
+        {
+            // More detailed error reporting
+            Console.WriteLine($"Error fetching closed calls for volunteer {volunteerId}: {ex.Message}");
+            Console.WriteLine($"Error details: {ex.StackTrace}");
+
+            // If you want to see inner exceptions as well
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Console.WriteLine($"Inner exception: {innerEx.Message}");
+                innerEx = innerEx.InnerException;
+            }
+
+            return new List<BO.OpenCallInList>();
+        }
+    }
 
 
 
@@ -501,7 +580,7 @@ class Program
                 s_bl.Volunteer.DeleteVolunteer(volunteerId);
                 Console.WriteLine($"Volunteer with ID {volunteerId} has been successfully deleted.");
             }
-            catch (BO.BlDoesNotExistException ex)
+            catch (DO.DalDoesNotExistException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
@@ -605,19 +684,137 @@ class Program
         s_bl.Admin.SetRiskTimeRange(newRiskTimeRange);
         Console.WriteLine($"New Risk Time Range set to: {newRiskTimeRange}");
     }
-/*
+
     private static void TestResetDatabase()
     {
         Console.WriteLine("\nTesting Reset Database...");
-        admin.ResetDatabase();
+        s_bl.Admin.ResetDatabase();
         Console.WriteLine("Database has been reset.");
     }
-
     private static void TestInitializeDatabase()
     {
         Console.WriteLine("\nTesting Initialize Database...");
-        admin.InitializeDatabase();
+        s_bl.Admin.InitializeDatabase();
         Console.WriteLine("Database has been initialized.");
-    }*/
-}
+    }
+
+    private static void TestGetCallDetails()
+    {
+        Console.WriteLine("Enter Call ID: ");
+        int callId = int.Parse(Console.ReadLine() ?? "0");
+        var callDetails = s_bl.Call.GetCallDetails(callId);
+        Console.WriteLine(callDetails);
+    }
+
+    private static void TestUpdateCallDetails()
+    {
+        Console.WriteLine("Enter Call ID to update: ");
+        int callId = int.Parse(Console.ReadLine() ?? "0");
+        var call = s_bl.Call.GetCallDetails(callId);
+
+        Console.Write($"Enter new Type (current: {call.Type}, press Enter to keep current): ");
+        string typeInput = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(typeInput) && Enum.TryParse(typeInput, out CallTypeEnum newType))
+            call.Type = newType;
+
+        Console.Write($"Enter new Description (current: {(string.IsNullOrEmpty(call.Description) ? "N/A" : call.Description)}, press Enter to keep current): ");
+        string updatedDescription = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(updatedDescription))
+            call.Description = updatedDescription;
+
+        Console.Write($"Enter new Address (current: {call.Address}, press Enter to keep current): ");
+        string updatedAddress = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(updatedAddress))
+            call.Address = updatedAddress;
+
+        Console.Write($"Enter new Latitude (current: {call.Latitude}, press Enter to keep current): ");
+        string latInput = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(latInput) && double.TryParse(latInput, out double newLat))
+            call.Latitude = newLat;
+
+        Console.Write($"Enter new Longitude (current: {call.Longitude}, press Enter to keep current): ");
+        string lonInput = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(lonInput) && double.TryParse(lonInput, out double newLon))
+            call.Longitude = newLon;
+
+        Console.Write($"Enter new Max End Time (current: {(call.MaxEndTime.HasValue ? call.MaxEndTime.Value.ToString() : "N/A")}, press Enter to keep current): ");
+        string endTimeInput = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(endTimeInput) && DateTime.TryParse(endTimeInput, out DateTime newEndTime))
+            call.MaxEndTime = newEndTime;
+
+        Console.Write($"Enter new Status (current: {call.Status}, press Enter to keep current): ");
+        string statusInput = Console.ReadLine() ?? "";
+        if (!string.IsNullOrWhiteSpace(statusInput) && Enum.TryParse(statusInput, out CallStatus newStatus))
+            call.Status = newStatus;
+
+        s_bl.Call.UpdateCallDetails(call);
+        Console.WriteLine("Call updated successfully.");
+    }
+
+    private static void TestCloseCall()
+    {
+        Console.WriteLine("Enter Volunteer ID: ");
+        if (int.TryParse(Console.ReadLine(), out int volunteerId))
+        {
+            Console.WriteLine("Enter Assignment ID: ");
+            if (int.TryParse(Console.ReadLine(), out int assignmentId))
+            {
+                s_bl.Call.CloseCall(volunteerId, assignmentId);
+                Console.WriteLine("Call closed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid Assignment ID.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Volunteer ID.");
+        }
+    }
+
+    private static void TestCancelCall()
+    {
+        Console.WriteLine("Enter Requestor ID: ");
+        if (int.TryParse(Console.ReadLine(), out int requestorId))
+        {
+            Console.WriteLine("Enter Assignment ID: ");
+            if (int.TryParse(Console.ReadLine(), out int assignmentId))
+            {
+                s_bl.Call.CancelCall(requestorId, assignmentId);
+                Console.WriteLine("Call cancelled successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid Assignment ID.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Requestor ID.");
+        }
+    }
+
+    private static void TestAssignCall()
+    {
+        Console.WriteLine("Enter Volunteer ID: ");
+        if (int.TryParse(Console.ReadLine(), out int volunteerId))
+        {
+            Console.WriteLine("Enter Call ID to assign: ");
+            if (int.TryParse(Console.ReadLine(), out int callId))
+            {
+                s_bl.Call.AssignCall(volunteerId, callId);
+                Console.WriteLine("Call assigned successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid Call ID.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Volunteer ID.");
+        }
+    }
+
 

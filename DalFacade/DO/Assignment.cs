@@ -29,7 +29,11 @@ public record Assignment
         FinishCompletionTime = null; 
         CallResolutionStatus = CallResolutionStatus.Treated;  
     }
-    public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus callResolutionStatus)
+    public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus 
+        
+        
+        
+        callResolutionStatus)
     {
         Id = id;
         CallId = callId;

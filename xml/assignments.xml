@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Assignments>
   <Assignment>
-    <Id>1000</Id>
-    <CallId>1008</CallId>
-    <VolunteerId>819526391</VolunteerId>
-    <EntryTime>2025-01-22T17:22:16.0057604+02:00</EntryTime>
-    <FinishCompletionTime>2025-01-22T19:22:16.0057604+02:00</FinishCompletionTime>
-    <callResolutionStatus>Expired</callResolutionStatus>
-  </Assignment>
-  <Assignment>
     <Id>1001</Id>
     <CallId>1000</CallId>
     <VolunteerId>479662041</VolunteerId>
@@ -392,4 +384,37 @@
     <FinishCompletionTime>2025-01-22T19:04:16.0057604+02:00</FinishCompletionTime>
     <callResolutionStatus>SelfCanceled</callResolutionStatus>
   </Assignment>
+	<Assignment>
+		<Id>1050</Id>
+		<CallId>1026</CallId>
+		<VolunteerId>327725602</VolunteerId>
+		<EntryTime>2025-01-22T17:04:16.0057604+02:00</EntryTime>
+		<FinishCompletionTime>2025-01-22T19:04:16.0057604+02:00</FinishCompletionTime>
+		<callResolutionStatus>closed</callResolutionStatus>
+	</Assignment>
+	<Assignment>
+		<Id>1052</Id>
+		<CallId>1027</CallId>
+		<VolunteerId>327725602</VolunteerId>
+		<EntryTime>2025-01-22T17:04:16.0057604+02:00</EntryTime>
+		<FinishCompletionTime>2025-01-22T19:04:16.0057604+02:00</FinishCompletionTime>
+		<callResolutionStatus>closed</callResolutionStatus>
+	</Assignment>
+	<Assignment>
+		<Id>1051</Id>
+		<CallId>1026</CallId>
+		<VolunteerId>327725602</VolunteerId>
+		<EntryTime>2025-01-22T17:04:16.0057604+02:00</EntryTime>
+		<FinishCompletionTime>2025-01-22T19:04:16.0057604+02:00</FinishCompletionTime>
+		<callResolutionStatus>open</callResolutionStatus>
+	</Assignment>
+	<Assignment>
+		<Id>1055</Id>
+		<CallId>1027</CallId>
+		<VolunteerId>327725602</VolunteerId>
+		<EntryTime>2026-03-12T17:04:16.0057604+02:00</EntryTime>
+		<FinishCompletionTime>2025-03-12T19:04:16.0057604+02:00</FinishCompletionTime>
+		<callResolutionStatus>open</callResolutionStatus>
+	</Assignment>
+
 </Assignments>

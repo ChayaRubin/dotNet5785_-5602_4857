@@ -150,4 +150,13 @@ namespace BO
     {
         public BlArgumentException(string? message) : base(message) { }
     }
+
+    /// <summary>
+    /// Exception thrown when ArgumentException occurs.
+    /// </summary>
+    [Serializable]
+    public class BlNoPermitionException : Exception
+    {
+        public BlNoPermitionException(string? message) : base(message) { }
+    }
 }

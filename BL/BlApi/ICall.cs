@@ -33,13 +33,11 @@ public interface ICall
         Enum? sortByField = null);
 
     //מתודת עדכון "סיום טיפול" בקריאה
-    //void CloseCall(int volunteerId, int assignmentId);
+    void CloseCall(int volunteerId, int assignmentId);
 
     //מתודת עדכון "ביטול טיפול" בקריאה
-    //void CancelCall(int requestorId, int assignmentId);
+    void CancelCall(int requestorId, int assignmentId);
 
     //מתודת בחירת קריאה לטיפול
     void AssignCall(int volunteerId, int callId);
 }
-
-

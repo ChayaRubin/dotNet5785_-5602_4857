@@ -22,7 +22,7 @@ public enum PositionEnum
 
 public enum CallTypeEnum
 {
-    Urgent = 1,
+    Urgent = 0,
     Medium_Urgency,
     General_Assistance,
     Non_Urgent,
