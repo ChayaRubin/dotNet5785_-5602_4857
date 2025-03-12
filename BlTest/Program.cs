@@ -26,7 +26,6 @@ class Program
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine() ?? "";
 
-                // Assuming Login method returns role as string
                 string role = s_bl.Volunteer.Login(username, password);
 
                 switch (role.ToLower())
@@ -54,18 +53,12 @@ class Program
         while (true)
         {
             Console.WriteLine("\nManager Main Menu:");
-            //Console.WriteLine("1. Call Management Screen");
-            //Console.WriteLine("2. Single Call Management Screen");
-            Console.WriteLine("3. Add Call Screen");
-            Console.WriteLine("4. Volunteer Management Screen");
-            Console.WriteLine("5. Single Volunteer Management Screen");
-            Console.WriteLine("6. Add Volunteer Screen");
-            Console.WriteLine("7. Delete Call");
-            Console.WriteLine("8. Logout");
-            Console.WriteLine("9. Delete a volunteer");
-            Console.WriteLine("10. get list of volunteers");
-            Console.WriteLine("Testing Admin Interface");
-            Console.WriteLine("System Clock: ");
+            Console.WriteLine("1. Add Call Screen");
+            Console.WriteLine("2. Add Volunteer Screen");
+            Console.WriteLine("3. Delete Call");
+            Console.WriteLine("4. Delete a volunteer");
+            Console.WriteLine("5. get list of volunteers");
+            Console.WriteLine("6. Logout");
             Console.Write("\nEnter your choice: ");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -79,34 +72,21 @@ class Program
                 switch (choice)
                 {
                     case 1:
-                        CallManagementScreen();
-                        break;
-                    case 2:
-                        SingleCallManagementScreen();
-                        break;
-                    case 3:
                         AddCallScreen();
                         break;
-                    case 4:
-                        VolunteerManagementScreen();
-                        break;
-                    case 5:
-                        SingleVolunteerManagementScreen();
-                        break;
-                    case 6:
+                    case 2:
                         AddVolunteerScreen();
                         break;
-                    case 7:
+                    case 3:
                         DeleteCallScreen();
                         break;
-                    case 9:
+                    case 4:
                         DeleteVolunteerOption();
                         break;
-                    case 10:
-                        // Option 1: Get list of all volunteers
+                    case 5:
                         DisplayVolunteersList();
                         break;
-                    case 8:
+                    case 6:
                         return; // Return to login menu
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -122,26 +102,25 @@ class Program
 
     private static void VolunteerMainMenu(string username)
     {
-        // Get volunteer details to have context
-        //var volunteer? = s_bl.Volunteer.GetVolunteerDetails(username);
         BO.Volunteer? volunteer = s_bl.Volunteer.GetVolunteerDetails(username);
-
 
         while (true)
         {
             Console.WriteLine("\nVolunteer Main Menu:");
-            Console.WriteLine("1. Select Call for Handling");
-            //Console.WriteLine("2. Volunteer Call History");
             Console.WriteLine("2. Get Closed calls by valunteer");
             Console.WriteLine("3. Get open calls by valunteer");
-            Console.WriteLine("11. TestGetCallDetails");
-            Console.WriteLine("4. Get valunteer Deatails");
-            Console.WriteLine("5. update volunteer details");
-            Console.WriteLine("6. Logout");
-            Console.WriteLine("7. Test Risk Time Range");
-            Console.WriteLine("8. Test Advance System Clock");
-            Console.WriteLine("9. Tes tReset Database");
-            Console.WriteLine("10. Test Initialize Database");
+            Console.WriteLine("4. Get Volunteer Details");
+            Console.WriteLine("5. Update Volunteer Details");
+            Console.WriteLine("6. Test Advance System Clock");
+            Console.WriteLine("7. Test RiskTime Range");
+            Console.WriteLine("8. Test Reset Database");
+            Console.WriteLine("9. Test Get Call Details");
+            Console.WriteLine("10. Test Update Call Details");
+            Console.WriteLine("11. Test Close Call");
+            Console.WriteLine("12. Test Assign Call");
+            Console.WriteLine("13. Test Cancel Call");
+            Console.WriteLine("14. Test Initialize Database");
+            Console.WriteLine("15. Logout");
             Console.Write("\nEnter your choice: ");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -154,9 +133,6 @@ class Program
             {
                 switch (choice)
                 {
-                    case 1:
-                        //SelectCallForHandlingScreen(volunteer);
-                        break;
                     case 2:
                         VolunteerClosedCallsScreen(volunteer.Id);
                         break;
@@ -172,34 +148,34 @@ class Program
                         s_bl.Volunteer.UpdateVolunteerDetails(id, volunteer);
                         Console.WriteLine("Volunteer updated successfully");
                         break;
-                    case 7:
+                    case 6:
                         TestAdvanceSystemClock();
                         break;
-                    case 8:
+                    case 7:
                         TestRiskTimeRange();
                         break;
-                    case 9:
+                    case 8:
                         TestResetDatabase();
                         break;
-                    case 11:
+                    case 9:
                         TestGetCallDetails();
                         break;
-                    case 12:
-                       TestUpdateCallDetails();
+                    case 10:
+                        TestUpdateCallDetails();
                         break;
-                    case 13:
+                    case 11:
                         TestCloseCall();
                         break;
-                    case 14:
+                    case 12:
                         TestAssignCall();
                         break;
-                    case 15:
+                    case 13:
                         TestCancelCall();
                         break;
-                    case 10:
+                    case 14:
                         TestInitializeDatabase();
                         break;
-                    case 6:
+                    case 15:
                         return; // Return to login menu
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -213,20 +189,6 @@ class Program
         }
     }
 
-    // Placeholder methods for specific screens
-    private static void CallManagementScreen()
-    {
-        Console.WriteLine("Call Management Screen");
-        // Implement detailed call management logic
-        // List all calls, filter, sort, etc.
-    }
-
-    private static void SingleCallManagementScreen()
-    {
-        Console.WriteLine("Single Call Management Screen");
-        // Implement logic for managing a specific call
-        // Details, update, assign, etc.
-    }
 
     private static void AddCallScreen()
     {
@@ -242,7 +204,7 @@ class Program
             string address = Console.ReadLine();
 
             Console.Write("Enter the call type: ");
-            CallTypeEnum callType = (CallTypeEnum)Enum.Parse(typeof( CallTypeEnum), Console.ReadLine());
+            CallTypeEnum callType = (CallTypeEnum)Enum.Parse(typeof(CallTypeEnum), Console.ReadLine());
 
 
             // Collecting Latitude and Longitude from the user
@@ -252,17 +214,6 @@ class Program
             Console.Write("Enter the Longitude: ");
             double longitude = double.Parse(Console.ReadLine());
 
-            // Collecting call type
-           /* Console.Write("Enter the call type (e.g., Emergency, Routine): ");
-            string callTypeInput = Console.ReadLine();
-            CallTypeEnum callType;
-            if (!Enum.TryParse(callTypeInput, true, out callType))
-            {
-                Console.WriteLine("Invalid call type. Setting to 'Routine' by default.");
-                callType = CallTypeEnum.Routine;  // Set a default value if the input is invalid
-            }*/
-
-            // Collecting the call status
             Console.Write("Enter the call status (e.g., Open, Closed): ");
             string statusInput = Console.ReadLine();
             CallStatus status;
@@ -299,16 +250,9 @@ class Program
                 OpenTime = DateTime.Now, // Current time as OpenTime
                 MaxEndTime = maxEndTime,
                 Status = status,
-                // s_bl.Volunteer.AddVolunteer(newVolunteer);
 
             };
             s_bl.Call.AddCall(newCall);
-            // Validate the call
-            /*CallManager.ValidateCall(newCall);*/
-
-            // Add the call to the system
-            /* CallImplementation callImplementation = new CallImplementation();*/
-            /*callImplementation.AddCall(newCall);*/
 
             Console.WriteLine("New call added successfully!");
         }
@@ -316,22 +260,6 @@ class Program
         {
             Console.WriteLine($"An error occurred while adding the call: {ex.Message}");
         }
-    }
-
-
-
-    private static void VolunteerManagementScreen()
-    {
-        Console.WriteLine("Volunteer Management Screen");
-        // Implement logic for managing volunteers
-        // List, filter, sort volunteers
-    }
-
-    private static void SingleVolunteerManagementScreen()
-    {
-        Console.WriteLine("Single Volunteer Management Screen");
-        // Implement logic for managing a specific volunteer
-        // Update details, view history, etc.
     }
 
     private static void AddVolunteerScreen()
@@ -370,33 +298,11 @@ class Program
 
     public static List<BO.ClosedCallInList> VolunteerClosedCallsScreen(int volunteerId)
     {
-        /*try
-        {
-            // קריאה לפונקציה שתביא את הקריאות הסגורות שטופלו על ידי המתנדב
-            //var closedCalls = s_bl.Call.GetClosedCallsByVolunteer(volunteerId);
-            //var closedCalls = s_bl..CallManager.GetCallsForVolunteer(volunteerId);//????????????????//
-            //var closedCalls = s_bl.CallManager.GetCallsForVolunteer<BO.ClosedCallInList>(volunteerId, null, null, false);
-            var closedCalls = s_bl.Call.GetClosedCallsByVolunteer(volunteerId);
-
-
-            // החזרת רשימת הקריאות הסגורות
-            Console.WriteLine(closedCalls);
-            return closedCalls.ToList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching closed calls: {ex.Message}");
-            return new List<BO.ClosedCallInList>();
-        }*/
         try
         {
-            // Assume s_bl is properly initialized as a field in your class
-            // private static readonly BlApi.IBL s_bl = BlApi.Factory.Get;
-
             // Call the method from your interface
             var closedCalls = s_bl.Call.GetClosedCallsByVolunteer(volunteerId);
 
-            // For better debugging, print more detailed information
             Console.WriteLine($"Found {closedCalls.Count()} closed calls for volunteer {volunteerId}");
 
             foreach (var call in closedCalls)
@@ -410,17 +316,8 @@ class Program
         }
         catch (Exception ex)
         {
-            // More detailed error reporting
             Console.WriteLine($"Error fetching closed calls for volunteer {volunteerId}: {ex.Message}");
             Console.WriteLine($"Error details: {ex.StackTrace}");
-
-            // If you want to see inner exceptions as well
-            var innerEx = ex.InnerException;
-            while (innerEx != null)
-            {
-                Console.WriteLine($"Inner exception: {innerEx.Message}");
-                innerEx = innerEx.InnerException;
-            }
 
             return new List<BO.ClosedCallInList>();
         }
@@ -431,13 +328,8 @@ class Program
         Console.WriteLine("Volunteer Open Calls Screen");
         try
         {
-            // Assume s_bl is properly initialized as a field in your class
-            // private static readonly BlApi.IBL s_bl = BlApi.Factory.Get;
-
-            // Call the method from your interface
             var openCalls = s_bl.Call.GetOpenCallsForVolunteer(volunteerId);
 
-            // For better debugging, print more detailed information
             Console.WriteLine($"Found {openCalls.Count()} closed calls for volunteer {volunteerId}");
 
             foreach (var call in openCalls)
@@ -450,17 +342,7 @@ class Program
         }
         catch (Exception ex)
         {
-            // More detailed error reporting
             Console.WriteLine($"Error fetching closed calls for volunteer {volunteerId}: {ex.Message}");
-            Console.WriteLine($"Error details: {ex.StackTrace}");
-
-            // If you want to see inner exceptions as well
-            var innerEx = ex.InnerException;
-            while (innerEx != null)
-            {
-                Console.WriteLine($"Inner exception: {innerEx.Message}");
-                innerEx = innerEx.InnerException;
-            }
 
             return new List<BO.OpenCallInList>();
         }
@@ -470,11 +352,10 @@ class Program
 
     private static bool GetCoordinate(string coordinateType, out double coordinate)
     {
-        coordinate = 0; // Default value
+        coordinate = 0;
         Console.Write($"Enter {coordinateType}: ");
         string input = Console.ReadLine();
 
-        // Check if the input can be parsed into a valid double
         if (double.TryParse(input, out double parsedCoordinate))
         {
             coordinate = parsedCoordinate;
@@ -495,17 +376,16 @@ class Program
     private static int GetId()
     {
         Console.Write("Enter Id: ");
-        string input = Console.ReadLine() ?? ""; // מקבל קלט מהמקלדת
+        string input = Console.ReadLine() ?? "";
 
-        // מנסה להמיר את הקלט לאינט
         if (int.TryParse(input, out int id))
         {
-            return id; // מחזיר את ה-ID אם ההמרה הצליחה
+            return id;
         }
         else
         {
             Console.WriteLine("Invalid input. Please enter a valid integer.");
-            return -1; // מחזיר ערך ברירת מחדל במקרה של קלט לא תקין
+            return -1;
         }
     }
 
@@ -558,8 +438,6 @@ class Program
                 return;
             }
 
-            // Call the DeleteCall method from CallImplementation
-            //var callImplementation = new CallImplementation();
             s_bl.Call.DeleteCall(callId);
 
             Console.WriteLine("Call deleted successfully.");
@@ -654,15 +532,13 @@ class Program
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }
-    //private static AdminClass admin = new ();  // Replace with your actual class name
     private static void TestAdvanceSystemClock()
     {
         Console.WriteLine("\nTesting Advance System Clock...");
 
-        // Test advancing the system clock by different units
         foreach (TimeUnit timeUnit in Enum.GetValues(typeof(TimeUnit)))
         {
-            if (timeUnit != TimeUnit.UNDEFINED) // Skip 'UNDEFINED'
+            if (timeUnit != TimeUnit.UNDEFINED)
             {
                 Console.WriteLine($"Advancing by: {timeUnit}");
                 s_bl.Admin.AdvanceSystemClock(timeUnit);
@@ -816,5 +692,6 @@ class Program
             Console.WriteLine("Invalid Volunteer ID.");
         }
     }
+}
 
 
