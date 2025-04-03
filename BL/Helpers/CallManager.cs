@@ -4,6 +4,12 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
+using System.Net;
+using System.Net.Mail;
+using BlImplementation;
+using System.Globalization;
+
 
 namespace Helpers;
 
@@ -13,8 +19,16 @@ internal static class CallManager
 
     public static List<CallInList> GetCallList(IEnumerable<DO.Call> calls)
     {
-        return calls.Select(ConvertToBO).ToList();
+        var callList = calls.Select(ConvertToBO).ToList();
+
+        var uniqueCalls = callList
+            .GroupBy(call => call.Id)  // קבוצת קריאות לפי ID
+            .Select(group => group.OrderByDescending(call => call.OpenTime).First()) // מקבל את הקריאה האחרונה על פי זמן פתיחה
+            .ToList();
+
+        return uniqueCalls;
     }
+
 
     public static CallInList ConvertToBO(DO.Call call)
     {
@@ -45,18 +59,25 @@ internal static class CallManager
     }
 
     // בדיקות תקינות על ערכי הקריאה
-    public static void ValidateCall(BO.Call newCall)
+    public static async Task<(double latitude, double longitude)> ValidateCall(BO.Call newCall)
     {
         if (newCall == null)
             throw new Exception("Call object cannot be null");
 
         if (string.IsNullOrWhiteSpace(newCall.Description))
             throw new Exception("Call description cannot be empty");
+
         if (string.IsNullOrWhiteSpace(newCall.Address))
             throw new Exception("Call address cannot be empty");
+
         if (newCall.MaxEndTime <= newCall.OpenTime)
             throw new Exception("Expiration time must be later than start time");
+
+        // Call the asynchronous function and get the coordinates
+        var coordinates = Tools.GetCoordinatesFromAddress(newCall.Address);
+        return coordinates;
     }
+
 
     // המרה מ-BO.Call ל-DO.Call בצורה מבוקשת
     public static DO.Call ConvertToDO(BO.Call boCall)
@@ -75,6 +96,34 @@ internal static class CallManager
 
     }
 
+    /// <summary>
+    /// Validates the logical correctness of volunteer fields, specifically address and coordinates
+    /// Ensures the address can be converted to valid coordinates within acceptable ranges
+    /// </summary>
+    /// <param name="volunteerBO">Volunteer object to validate</param>
+    /// <exception cref="DalFormatException">Thrown when validation fails</exception>
+    /// ---------------------------------------------------------------------------------------------------------------------------------
+    public static void ValidateLogicalFields(BO.Call Call)
+    {
+        var (latitude, longitude) = Tools.GetCoordinatesFromAddress(Call.Address!);
+
+        if (latitude == 0 && longitude == 0)
+        {
+            throw new DalCoordinationExceprion("Invalid address format or unable to fetch coordinates.");
+        }
+
+        if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)
+        {
+            throw new DalCoordinationExceprion("Coordinates are out of valid geographic range.");
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="call"></param>
+    /// <param name="assignments"></param>
+    /// <returns></returns>
     public static BO.Call ConvertToBO(DO.Call call, List<CallAssignInList> assignments)
     {
         return new BO.Call
@@ -94,6 +143,7 @@ internal static class CallManager
     /// <summary>
     /// מחזירה רשימה ממיונת של קריאות עבור מתנדב מסוים.
     /// </summary>
+    
     public static IEnumerable<T> GetCallsForVolunteer<T>(int volunteerId, Enum? callType, Enum? sortByField, bool isOpen) where T : class
     {
         try
@@ -104,13 +154,18 @@ internal static class CallManager
 
             var assignments = s_dal.Assignment.ReadAll()
                 .Where(a => a.VolunteerId == volunteerId &&
-                            (isOpen ? a.CallResolutionStatus == DO.CallResolutionStatus.open || a.CallResolutionStatus == DO.CallResolutionStatus.OpenRisk
-                                    : a.CallResolutionStatus == DO.CallResolutionStatus.Closed));
+                           (isOpen
+                                ? (a.CallResolutionStatus == DO.CallResolutionStatus.Open ||
+                                   a.CallResolutionStatus == DO.CallResolutionStatus.InProgress ||
+                                   a.CallResolutionStatus == DO.CallResolutionStatus.OpenAtRisk)
+                                : a.CallResolutionStatus == DO.CallResolutionStatus.Closed))
+                .ToList();
 
+            if (assignments.Count == 0)
+                throw new BO.BlDoesNotExistException("No assignments found for the volunteer.");
 
             var calls = from assign in assignments
-                        join call in s_dal.Call.ReadAll()
-                            on assign.CallId equals call.RadioCallId
+                        join call in s_dal.Call.ReadAll() on assign.CallId equals call.RadioCallId
                         select new { call, assign };
 
             if (callType != null)
@@ -134,7 +189,9 @@ internal static class CallManager
                     Address = x.call.Address,
                     OpenTime = x.call.StartTime,
                     StartTreatmentTime = x.assign.EntryTime,
-                    EndTreatmentTime = x.assign.FinishCompletionTime,
+                    EndTreatmentTime = x.assign.FinishCompletionTime.HasValue
+                        ? x.assign.FinishCompletionTime.Value // אם FinishCompletionTime לא null, השתמש בערך
+                        : (DateTime?)null, // אם הוא null, שמור אותו כ-null
                     CompletionType = Enum.TryParse<CallStatus>(x.assign.CallResolutionStatus.ToString(), out CallStatus completionStatus)
                                        ? (CallStatus?)completionStatus
                                        : null
@@ -161,9 +218,10 @@ internal static class CallManager
         }
         catch (Exception ex)
         {
-            throw new BO.BlGeneralDatabaseException("An unexpected error occurred while fetching calls.");
+            throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while fetching calls. Details: {ex.Message}");
         }
     }
+
 
     /// <summary>
     /// מחשבת את המרחק בין שתי נקודות גיאוגרפיות.
@@ -202,6 +260,102 @@ internal static class CallManager
         }
     }
 
+    public static bool IsWithinMaxDistance(BO.Volunteer volunteer, BO.Call call)
+    {
+        const double R = 6371; // Earth's radius in km
+
+        // Extract coordinates, ensuring they are not null
+        double lat1 = volunteer.Latitude ?? 0;
+        double lon1 = volunteer.Longitude ?? 0;
+        double lat2 = call.Latitude;
+        double lon2 = call.Longitude;
+
+        // Ensure MaxDistance exists and is not null
+        double maxDistance = volunteer.MaxDistance ?? 0;
+
+        // Convert degrees to radians
+        double dLat = DegreesToRadians(lat2 - lat1);
+        double dLon = DegreesToRadians(lon2 - lon1);
+
+        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                   Math.Cos(DegreesToRadians(lat1)) * Math.Cos(DegreesToRadians(lat2)) *
+                   Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        double distance = R * c; // Distance in km
+
+        // Return whether the call is within the volunteer's max response distance
+        return distance <= maxDistance;
+    }
+
+    private static double DegreesToRadians(double degrees)
+    {
+        return degrees * (Math.PI / 180);
+    }
+
+
+    public static void SendEmail(string toEmail, string subject, string body)
+    {
+        try
+        {
+            // הגדרת פרטי השרת
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587, // Port for Gmail
+                Credentials = new NetworkCredential("yedidim26@gmail.com", "xtnd teca qkxt hjpl"),
+                EnableSsl = true,
+            };
+
+            // הגדרת הודעת המייל
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("yedidim26@gmail.com"),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = false, // אם אתה רוצה להוסיף HTML במייל, שים true
+            };
+
+            // הוספת נמען
+            mailMessage.To.Add(toEmail);
+
+            // שליחת המייל
+            smtpClient.Send(mailMessage);
+        }
+        catch (BlSendingEmailException ex)
+        {
+            Console.WriteLine($"Error sending email: {ex.Message}");
+        }
+    }
+
+    public static async Task SendEmailAsync(string toEmail, string subject, string body)
+    {
+        try
+        {
+            using (var smtpClient = new SmtpClient("smtp.gmail.com"))
+            {
+                smtpClient.Port = 587;
+                smtpClient.Credentials = new NetworkCredential("yedidim26@gmail.com", "xtnd teca qkxt hjpl");
+                smtpClient.EnableSsl = true;
+
+                using (var mailMessage = new MailMessage())
+                {
+                    mailMessage.From = new MailAddress("yedidim26@gmail.com");
+                    mailMessage.To.Add(toEmail);
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    await smtpClient.SendMailAsync(mailMessage);
+                }
+            }
+            Console.WriteLine($"Email sent successfully to {toEmail}.");
+        }
+        catch (BlSendingEmailException ex)
+        {
+            Console.WriteLine($"Error sending email to {toEmail}: {ex.Message}");
+        }
+    }
 }
+
 
 

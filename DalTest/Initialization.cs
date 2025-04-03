@@ -23,26 +23,26 @@ public static class Initialization
         "David Katz", "Esther Goldstein", "Moshe Fogel", "Tova Levi", "Yitzhak Mizrahi", "Naomi Rosen",
         "Yehuda Friedman", "Shoshana Cohen", "Eliezer Glick", "Chava Shapiro",
     };
+        //Chava Shapiro password - Da@I%*k*UTn6
 
         public static string[] addresses = new string[] {
 
-        "Atsil 13, Jerusalem", "King David Street 7, Jerusalem", "Ben Yehuda Street 45, Jerusalem",
+        "Etsel 13, Jerusalem", "King David Street 7, Jerusalem", "Ben Yehuda Street 45, Jerusalem",
         "Jaffa Street 56, Jerusalem", "Agrippas Street 22, Jerusalem", "Shmuel Hanavi Street 5, Jerusalem",
         "Yehuda Halevi Street 3, Jerusalem", "Hillel Street 19, Jerusalem", "Ramban Street 9, Jerusalem",
         "Strauss Street 12, Jerusalem", "Yafo Road 34, Jerusalem", "Kehilat Yaakov Street 8, Jerusalem",
         "Mordechai Ben Hillel Street 11, Jerusalem", "Keren Hayesod Street 16, Jerusalem", "Shazar Boulevard 21, Jerusalem", "25 Shlomzion Hamalka Street, Jerusalem:"
     };
-        public static double[] longitudes = new double[] {
-
-        35.2080, 35.2130, 35.2215, 35.2160, 35.2250, 35.2205,
-        35.2225, 35.2270, 35.2290, 35.2135, 35.2100, 35.2295,
-        35.2240, 35.2265, 35.2175, 35.2045
-    };
         public static double[] latitudes = new double[] {
+        31.7511651, 31.70954, 31.759595, 31.78168, 31.69916,
+        31.7959211, 31.7513601, 31.780094, 31.528593, 31.906037,
+        31.759595, 31.759595, 31.759595, 31.759595, 31.759595, 31.759595
+    };
 
-        31.7735, 31.7685, 31.7760, 31.7810, 31.7730, 31.7800,
-        31.7775, 31.7745, 31.7790, 31.7715, 31.7755, 31.7730,
-        31.7705, 31.7795, 31.7720, 31.7765
+        public static double[] longitudes = new double[] {
+        34.9819467, 35.205725, 35.215315, 35.220332, 35.196286,
+        35.2197757, 34.9811379, 35.218297, 35.103687, 35.203005,
+        35.215315, 35.215315, 35.215315, 35.215315, 35.215315, 35.215315
     };
 
 
@@ -94,12 +94,10 @@ public static class Initialization
                     Active = true,
                     MaxResponseDistance = s_rand.NextDouble() * MAX_DISTANCE,
                     TypeOfDistance = DistanceTypeEnum.AirDistance,
-                    Password = password,
-                    //encryptedPassword
+                    Password = encryptedPassword,
                 };
 
                 s_dal.Volunteer.Create(volunteer);
-                //Console.WriteLine($"Created {position} {name} with encrypted password: {encryptedPassword}");
             }
         }
 
@@ -120,26 +118,18 @@ public static class Initialization
         // Encrypt the password using AES
         public static string Encrypt(string plainText)
         {
-            string key = "0123456789abcdef";  // Example key, replace with a secure key
-            string iv = "abcdef9876543210";   // Example IV, replace with a secure IV
-
-            using (Aes aesAlg = Aes.Create())
+            using (SHA256 sha256Hash = SHA256.Create())
             {
-                aesAlg.Key = Encoding.UTF8.GetBytes(key);
-                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
+                // המרת הסיסמה ל-בייטים
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(plainText));
 
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
+                // המרת הבייטים למחרוזת Hex
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in bytes)
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                    {
-                        swEncrypt.Write(plainText);
-                    }
-
-                    return Convert.ToBase64String(msEncrypt.ToArray());
+                    builder.Append(b.ToString("x2"));
                 }
+                return builder.ToString();
             }
         }
     }
@@ -171,33 +161,33 @@ public static class Initialization
     "Shalom Aleichem St 10, Jerusalem", "Eli Cohen St 4, Jerusalem", "Shlomo HaMelech St 7, Jerusalem"
    };
 
-        public static double[] CallLongitudes = new double[]
-{
-    35.225721, 35.217133, 35.229169, 35.230535, 35.225939,
-    35.224211, 35.219538, 35.224968, 35.226063, 35.219375,
-    35.213736, 35.217712, 35.229053, 35.217509, 35.220429,
-    35.222809, 35.222797, 35.226436, 35.221255, 35.220655,
-    35.229191, 35.222992, 35.227074, 35.221162, 35.227591,
-    35.225712, 35.220829, 35.223016, 35.219865, 35.230012,
-    35.220076, 35.221336, 35.228300, 35.221133, 35.224713,
-    35.227271, 35.219754, 35.226358, 35.225099, 35.228086,
-    35.228418, 35.222438, 35.221694, 35.223145, 35.221228,
-    35.222590, 35.222579, 35.222869, 35.226072, 35.221711
-};
+        public static double[] CallLatitudes = new double[] {
+    31.7865608, 31.759595, 31.8017893, 31.759595, 31.794767, 
+    31.7723879, 31.842212, 31.7875022, 31.7472349, 31.7831088, 
+    31.898714, 31.8051921, 31.7857651, 31.759595, 31.7957696, 
+    31.7259643, 31.7476677, 31.759595, 31.703275, 31.7831088, 
+    31.7858115, 31.8111253, 31.759595, 31.759595, 31.759595, 
+    31.779042, 31.7909196, 32.0416824, 31.759595, 31.7933736, 
+    31.7854673, 32.3260388, 31.8405465, 31.759595, 31.759595, 
+    31.759595, 31.7686856, 31.8383352, 31.7815767, 32.8089768, 
+    31.7215207, 31.759595, 31.7709719, 31.7135737, 31.906037, 
+    31.7515394, 31.762803, 31.780514, 31.74948, 31.77676, 
+    31.81561, 31.7723328, 31.7668532, 31.759595
+    };
 
-        public static double[] CallLatitudes = new double[]
-        {
-    31.776346, 31.777594, 31.777009, 31.776115, 31.776034,
-    31.768798, 31.779074, 31.778777, 31.777356, 31.772628,
-    31.777441, 31.768927, 31.775993, 31.781968, 31.778674,
-    31.780973, 31.779477, 31.780509, 31.782150, 31.776243,
-    31.782617, 31.775681, 31.775062, 31.776265, 31.774854,
-    31.776105, 31.779306, 31.776027, 31.773822, 31.772712,
-    31.777875, 31.777619, 31.779239, 31.779170, 31.779692,
-    31.779158, 31.779050, 31.778736, 31.781393, 31.781827,
-    31.773728, 31.776413, 31.773155, 31.773418, 31.774642,
-    31.775249, 31.777264, 31.779530, 31.776292, 31.775522
-        };
+        public static double[] CallLongitudes = new double[] {
+    35.2208052, 35.215315, 35.2228759, 35.215315, 35.2425346, 
+    35.2215257, 35.24206, 35.2265973, 35.2326395, 35.2203032, 
+    35.185758, 35.2157309, 35.1968887, 35.215315, 35.2198077, 
+    34.7437502, 35.2323345, 35.215315, 35.194809, 35.2203032, 
+    35.1741509, 35.2174861, 35.215315, 35.215315, 35.215315, 
+    35.229702, 35.2089577, 34.7904787, 35.215315, 35.2246764, 
+    35.1001866, 34.8511049, 35.2454408, 35.215315, 35.215315, 
+    35.215315, 35.1950858, 35.2441809, 35.2180856, 34.997939, 
+    35.2284413, 35.215315, 35.2210202, 34.9838857, 35.203005, 
+    35.2160228, 35.2099602, 35.217981, 34.9880954, 35.230342, 
+    35.1954938, 35.2215927, 35.213483, 35.215315
+    };
 
         public static string[] CallDescriptions = new string[]
 
@@ -249,22 +239,22 @@ public static class Initialization
                 {
                     case int n when (n < 10):
                         MyCallType = CallType.Urgent;
-                        MyExpiredTime = MyStartTime.AddMinutes(15);
+                        MyExpiredTime = MyStartTime.AddDays(15);
                         break;
 
                     case int n when (n >= 10 && n < 20):
                         MyCallType = CallType.Medium_Urgency;
-                        MyExpiredTime = MyStartTime.AddMinutes(30);
+                        MyExpiredTime = MyStartTime.AddDays(30);
                         break;
 
                     case int n when (n >= 20 && n < 40):
                         MyCallType = CallType.General_Assistance;
-                        MyExpiredTime = MyStartTime.AddHours(1);
+                        MyExpiredTime = MyStartTime.AddYears(1);
                         break;
 
                     case int n when (n >= 40 && n < 50):
                         MyCallType = CallType.Non_Urgent;
-                        MyExpiredTime = MyStartTime.AddHours(2);
+                        MyExpiredTime = MyStartTime.AddMonths(2);
                         break;
 
                     default:
@@ -317,7 +307,7 @@ public static class Initialization
                 callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId
                 volunteersList[s_rand.Next(volunteersList.Count)].Id, // VolunteerId
                 randomTime, // EntryTime
-                randomTime.AddHours(2), // FinishCompletionTime
+                randomTime.AddDays(2), // FinishCompletionTime
                 typeOfEndTime // CallResolutionStatus
             ));
         }
@@ -333,7 +323,6 @@ public static class Initialization
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.ResetDB();//stage 2
 
-
         Console.WriteLine("Initializing Volunteers...");
         CreateVolunteer.CreateVolunteerEntries();
 
@@ -342,49 +331,10 @@ public static class Initialization
 
         Console.WriteLine("Initializing Assignments...");
         createAssignments();
-        //
 
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//פענוח
-//public static string Decrypt(string cipherText)
-//{
-//    using (Aes aesAlg = Aes.Create())
-//    {
-//        aesAlg.Key = Encoding.UTF8.GetBytes(key);
-//        aesAlg.IV = Encoding.UTF8.GetBytes(iv);
-
-//        ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-//        using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
-//        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-//        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-//        {
-//            return srDecrypt.ReadToEnd();
-//        }
-//    }
-//}
 
 
 

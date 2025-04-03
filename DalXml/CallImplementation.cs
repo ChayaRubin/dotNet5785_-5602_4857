@@ -54,10 +54,15 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Reads all Calls, optionally filtered by a predicate.
     /// </summary>
+    /* public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
+     {
+         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
+         return filter == null ? calls : calls.Where(filter);
+     }*/
     public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
-        return filter == null ? calls : calls.Where(filter);
+        return filter == null ? calls : calls.Where(filter).ToList();
     }
 
     /// <summary>

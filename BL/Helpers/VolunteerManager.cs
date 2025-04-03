@@ -6,6 +6,8 @@ using BlApi;
 using System.Text;
 namespace Helpers;
 using System.Security.Cryptography;
+using System;
+
 
 internal static class VolunteerManager
 {
@@ -44,10 +46,9 @@ internal static class VolunteerManager
             IsActive = volunteer.Active,
             MaxDistance = volunteer.MaxResponseDistance,
             TypeOfDistance = (BO.DistanceType)volunteer.TypeOfDistance,
-            TotalCallsHandled = 0,
+/*            TotalCallsHandled = 0,
             TotalCallsCanceled = 0,
-            TotalCallsExpired = 0,
-            CurrentCall = null
+            TotalCallsExpired = 0,*/
         };
     }
 
@@ -103,12 +104,6 @@ internal static class VolunteerManager
         {
             throw new DalUnauthorizedAccessException("Only an admin or the volunteer themselves can perform this update.");
         }
-
-        if (boVolunteer.Role != BO.PositionEnum.Manager && boVolunteer.Role != BO.PositionEnum.Volunteer)
-        {
-            throw new DalUnauthorizedAccessException("Only an admin can update the volunteer's role.");
-        }
-
         return true;
     }
 
@@ -123,21 +118,28 @@ internal static class VolunteerManager
     /// <exception cref="DalUnauthorizedAccessException">Thrown when update permission is denied</exception>
     public static bool CanUpdateFields(string requesterId, DO.Volunteer existingVolunteer, BO.Volunteer volunteerToUpdate)
     {
-        if (requesterId != existingVolunteer.Id.ToString() && !IsAdmin(requesterId, volunteerToUpdate))
+        // שליפת פרטי המשתמש שמבצע את הבקשה
+        if (!int.TryParse(requesterId, out int requesterIdInt))
+        {
+            throw new ArgumentException($"Invalid requester ID format: {requesterId}");
+        }
+
+        var requester = s_dal.Volunteer.Read(v => v.Id == requesterIdInt)
+            ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={requesterId} does not exist.");
+
+        // רק המתנדב עצמו או מנהל יכולים לעדכן פרטים
+        if (requesterId != existingVolunteer.Id.ToString() && requester.Position.ToString() != BO.PositionEnum.Manager.ToString())
         {
             return false;
         }
 
-        if (volunteerToUpdate.Role != (BO.PositionEnum)existingVolunteer.Position)
+        if (requester.Position.ToString() != BO.PositionEnum.Manager.ToString()) // אם המשתמש המבצע הוא לא מנהל, נחסום אותו
         {
-            if (volunteerToUpdate.Role != BO.PositionEnum.Manager && volunteerToUpdate.Role != BO.PositionEnum.Volunteer)
-            {
-                throw new DalUnauthorizedAccessException("Only an admin can update the volunteer's role.");
-            }
+            throw new DalUnauthorizedAccessException("Only a manager can update the volunteer's role.");
         }
-
         return true;
     }
+
 
     /// <summary>
     /// Validates the logical correctness of volunteer fields, specifically address and coordinates
@@ -152,12 +154,12 @@ internal static class VolunteerManager
 
         if (latitude == 0 && longitude == 0)
         {
-            throw new DalFormatException("Invalid address format or unable to fetch coordinates.");
+            throw new DalCoordinationExceprion("Invalid address format or unable to fetch coordinates.");
         }
 
         if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)
         {
-            throw new DalFormatException("Coordinates are out of valid geographic range.");
+            throw new DalCoordinationExceprion("Coordinates are out of valid geographic range.");
         }
     }
 
@@ -167,7 +169,7 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="volunteer">Volunteer object to validate</param>
     /// <exception cref="DalFormatException">Thrown when any validation fails</exception>
-    public static void ValidateInputFormat(BO.Volunteer volunteer)
+    public static async Task<(double latitude, double longitude)> ValidateInputFormat(BO.Volunteer volunteer)
     {
         if (!IsValidIdNumber(volunteer.Id.ToString()))
         {
@@ -193,6 +195,15 @@ internal static class VolunteerManager
         {
             throw new DalFormatException("Password is not strong enough.");
         }
+
+            var coordinates = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress); 
+
+            // Set the coordinates to the volunteer object
+            volunteer.Latitude = coordinates.latitude;
+            volunteer.Longitude = coordinates.longitude;
+
+            //CallManager.ValidateLogicalFields(newCall);
+            return coordinates;
     }
 
     /// <summary>
@@ -279,15 +290,22 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="password">The plain text password to be hashed.</param>
     /// <returns>A Base64-encoded string representation of the hashed password.</returns>
-    /*public static string HashPassword(string password)
+    public static string HashPassword(string password)
     {
-        using (SHA256 sha256 = SHA256.Create())
+        using (SHA256 sha256Hash = SHA256.Create())
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(password);
-            byte[] hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+            // המרת הסיסמה ל-בייטים
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            // המרת הבייטים למחרוזת Hex
+            StringBuilder builder = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+            return builder.ToString();
         }
-    }*/
+    }
 
     /// <summary>
     /// Verifies if the provided plain text password matches the stored hashed password.
@@ -297,38 +315,39 @@ internal static class VolunteerManager
     /// <returns>True if the input password matches the stored hash, otherwise false.</returns>
     public static bool VerifyPassword(string inputPassword, string storedHash)
     {
-        //var hashedInput = HashPassword(inputPassword);
+        var hashedInput = HashPassword(inputPassword);
         //var hashedInput = inputPassword;
-        return inputPassword == storedHash;
+        return hashedInput == storedHash;
     }
 
     /// <summary>
     /// returns a randoml strong password
     /// </summary>
     /// <returns></returns>
-/*    public static string GenerateStrongPassword()
-    {
-        const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const string lowercase = "abcdefghijklmnopqrstuvwxyz";
-        const string digits = "0123456789";
-        const string special = "!@#$%^&*";
-        const string allChars = uppercase + lowercase + digits + special;
-
-        char[] password = new char[8];
-
-        // Ensure at least one of each required character type
-        password[0] = uppercase[RandomNumberGenerator.GetInt32(uppercase.Length)];
-        password[1] = lowercase[RandomNumberGenerator.GetInt32(lowercase.Length)];
-        password[2] = digits[RandomNumberGenerator.GetInt32(digits.Length)];
-        password[3] = special[RandomNumberGenerator.GetInt32(special.Length)];
-
-        // Fill the remaining characters randomly from all types
-        for (int i = 4; i < 8; i++)
+    /*    public static string GenerateStrongPassword()
         {
-            password[i] = allChars[RandomNumberGenerator.GetInt32(allChars.Length)];
-        }
+            const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+            const string digits = "0123456789";
+            const string special = "!@#$%^&*";
+            const string allChars = uppercase + lowercase + digits + special;
 
-        // Shuffle the password to avoid any predictable ordering
-        return new string(password.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
-    }*/
+            char[] password = new char[8];
+
+            // Ensure at least one of each required character type
+            password[0] = uppercase[RandomNumberGenerator.GetInt32(uppercase.Length)];
+            password[1] = lowercase[RandomNumberGenerator.GetInt32(lowercase.Length)];
+            password[2] = digits[RandomNumberGenerator.GetInt32(digits.Length)];
+            password[3] = special[RandomNumberGenerator.GetInt32(special.Length)];
+
+            // Fill the remaining characters randomly from all types
+            for (int i = 4; i < 8; i++)
+            {
+                password[i] = allChars[RandomNumberGenerator.GetInt32(allChars.Length)];
+            }
+
+            // Shuffle the password to avoid any predictable ordering
+            return new string(password.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
+        }*/
+
 }

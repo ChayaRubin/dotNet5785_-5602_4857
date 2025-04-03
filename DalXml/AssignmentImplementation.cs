@@ -28,11 +28,11 @@ internal class AssignmentImplementation : IAssignment
         }
         return new DO.Assignment()
         {
-            Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
-            CallId = a.ToIntNullable("CallId") ?? throw new FormatException("Can't convert CallId"),
-            VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("Can't convert VolunteerId"),
-            EntryTime = a.ToDateTimeNullable("EntryTime") ?? throw new FormatException("Can't convert EntryTime"),
-            FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime") ?? throw new FormatException("Can't convert FinishCompletionTime"),
+            Id = a.ToIntNullable("Id") ?? 0,
+            CallId = a.ToIntNullable("CallId") ?? 0,
+            VolunteerId = a.ToIntNullable("VolunteerId") ?? 0,
+            EntryTime = a.ToDateTimeNullable("EntryTime") ?? new DateTime(2025, 3, 27),
+            FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime") ?? null,
             CallResolutionStatus = status.Value
         };
     }
@@ -90,12 +90,12 @@ internal class AssignmentImplementation : IAssignment
         XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
     }
 
-    //public Assignment? Read(int id)
-    //{
-    //    XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements()
-    //                                    .FirstOrDefault(a => (int?)a.Element("Id") == id);
-    //    return assignmentElem is null ? null : getAssignment(assignmentElem);
-    //}
+    public Assignment? Read(int id)
+    {
+        XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements()
+                                        .FirstOrDefault(a => (int?)a.Element("Id") == id);
+        return assignmentElem is null ? null : getAssignment(assignmentElem);
+    }
 
 
     /// <summary>
@@ -103,28 +103,56 @@ internal class AssignmentImplementation : IAssignment
     /// </summary>
     public Assignment? Read(Func<Assignment, bool> filter)
     {
-        return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a)).FirstOrDefault(filter);
+        var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml)
+            .Elements("Assignment")
+            .Select(a => getAssignment(a))
+            .ToList();
+
+        Console.WriteLine($"Loaded {assignments.Count} assignments from XML.");
+
+        var assignment = assignments.FirstOrDefault(a =>
+        {
+            bool result = filter(a);
+            Console.WriteLine($"Checking Assignment {a.Id}: {result}");
+            return result;
+        });
+
+        if (assignment != null)
+        {
+            Console.WriteLine($"Found matching assignment: {assignment.Id}");
+        }
+        else
+        {
+            Console.WriteLine("No matching assignment found.");
+        }
+
+        return assignment;
     }
 
-    /// <summary>
-    /// Reads all Assignments, optionally filtered by a predicate.
-    /// </summary>
-    /*public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
-    {
-        var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(a => getAssignment(a));
-        return filter is null ? assignments : assignments.Where(filter);
-    }*/
+
+
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
         var assignments = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml)
-            .Elements("Assignment") // Ensure you're getting all "Assignment" elements
+            .Elements("Assignment")
             .Select(a => getAssignment(a))
-            .ToList(); // Convert to a list to ensure evaluation happens here
+            .ToList(); // טוען את כל הרשימה
 
-        // Remove the filter temporarily to check all assignments
-        return assignments;  // This should return all assignments in the XML
+        Console.WriteLine($"Loaded {assignments.Count} assignments from XML.");
+
+        if (filter != null)
+        {
+            assignments = assignments.Where(a =>
+            {
+                bool result = filter(a);
+                Console.WriteLine($"Filtering Assignment {a.Id}: {result}");
+                return result;
+            }).ToList();
+        }
+
+        Console.WriteLine($"Returning {assignments.Count} assignments after filtering.");
+        return assignments;
     }
-
 
 
 

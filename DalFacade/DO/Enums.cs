@@ -24,13 +24,15 @@ public enum PositionEnum
 /// </summary>
 public enum CallResolutionStatus
 {
-    Treated = 0,  
-    open,
-    OpenRisk,
-    Closed,
-    SelfCanceled, 
-    AdminCanceled, 
-    Expired        
+    Open = 1,
+    Treated,
+    InProgress,          // בטיפול - בטיפול כרגע על ידי מתנדב
+    Closed,              // סגורה - מתנדב סיים לטפל בה
+    SelfCanceled,
+    Canceled,
+    Expired,             // פג תוקף - לא נבחרה לטיפול או לא הסתיימה בזמן
+    OpenAtRisk,          // פתוחה בסיכון - קריאה פתוחה שמתקרבת לזמן הסיום
+    InProgressAtRisk     // בטיפול בסיכון - קריאה בטיפול שמתקרבת לזמן הסיום
 }
 
 /// <summary>
@@ -38,7 +40,7 @@ public enum CallResolutionStatus
 /// </summary>
 public enum CallType
 {
-    Urgent = 1,
+    Urgent,
     Medium_Urgency,
     General_Assistance,
     Non_Urgent,

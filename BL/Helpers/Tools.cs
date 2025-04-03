@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Helpers
 {
@@ -34,7 +35,7 @@ namespace Helpers
             return stringBuilder.ToString(); // מחזירים את המחרוזת שהורכבה
         }
 
-        private const string LOCATIONIQ_API_KEY = "your_api_key_here"; // Replace with your LocationIQ API key
+        private const string LOCATIONIQ_API_KEY = "pk.47640146141430"; // Replace with your LocationIQ API key
         private const string GEOCODING_API_URL = "https://us1.locationiq.com/v1/search.php";
 
         /// <summary>
@@ -44,57 +45,48 @@ namespace Helpers
         /// <returns>Tuple containing latitude and longitude</returns>
         /// <exception cref="ArgumentException">Thrown when address is null or empty</exception>
         /// <exception cref="InvalidOperationException">Thrown when geocoding fails or returns invalid results</exception>
-        internal static (double latitude, double longitude) GetCoordinatesFromAddress(string address)
+        public static (double latitude, double longitude) GetCoordinatesFromAddress(string address)
         {
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                throw new ArgumentException("Address cannot be null or empty", nameof(address));
-            }
+            string apiKey = "PK.83B935C225DF7E2F9B1ee90A6B46AD86";
+            using var client = new HttpClient();
+            string url = $"https://us1.locationiq.com/v1/search.php?key={apiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    // Build the API request URL
-                    var requestUrl = $"{GEOCODING_API_URL}?key={LOCATIONIQ_API_KEY}&q={Uri.EscapeDataString(address)}&format=json";
+            var response = client.GetAsync(url).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Invalid address or API error.");
 
-                    // Make synchronous request (no async/await)
-                    var response = client.GetStringAsync(requestUrl).Result;  // Here we use .Result to make it synchronous
+            var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(json);
 
-                    // Parse JSON response
-                    using (JsonDocument document = JsonDocument.Parse(response))
-                    {
-                        // LocationIQ returns an array of results, we take the first one
-                        var firstResult = document.RootElement.EnumerateArray().First();
+            if (doc.RootElement.ValueKind != JsonValueKind.Array || doc.RootElement.GetArrayLength() == 0)
+                throw new Exception("Address not found.");
 
-                        var lat = firstResult.GetProperty("lat").GetString();
-                        var lon = firstResult.GetProperty("lon").GetString();
+            var root = doc.RootElement[0];
 
-                        if (double.TryParse(lat, out double latitude) &&
-                            double.TryParse(lon, out double longitude))
-                        {
-                            return (latitude, longitude);
-                        }
-
-                        throw new InvalidOperationException("Failed to parse coordinates from API response");
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new InvalidOperationException($"Failed to geocode address: {ex.Message}", ex);
-            }
-            catch (JsonException ex)
-            {
-                throw new InvalidOperationException($"Failed to parse geocoding response: {ex.Message}", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Unexpected error during geocoding: {ex.Message}", ex);
-            }
+            double latitude = double.Parse(root.GetProperty("lat").GetString());
+            double longitude = double.Parse(root.GetProperty("lon").GetString());
+            Console.WriteLine($"Latitude-1: {latitude}, Longitude-1: {longitude}");
+            return (latitude, longitude);
         }
 
+        /// <summary>
+        /// מחשבת את המרחק בין שתי נקודות גיאוגרפיות.
+        /// </summary>
+        public static double CalculateDistance(double? lat1, double? lon1, double lat2, double lon2)
+        {
+            if (lat1 == null || lon1 == null)
+                throw new ArgumentException("Latitude or Longitude values are null.");
 
+            const double R = 6371; // רדיוס כדור הארץ בקילומטרים
+            double lat1Value = lat1.Value;
+            double lon1Value = lon1.Value;
+            double dLat = (lat2 - lat1Value) * Math.PI / 180;
+            double dLon = (lon2 - lon1Value) * Math.PI / 180;
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                       Math.Cos(lat1Value * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) *
+                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
+        }
     }
-
 }

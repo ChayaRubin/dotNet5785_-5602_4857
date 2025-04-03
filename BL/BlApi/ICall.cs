@@ -18,7 +18,7 @@ public interface ICall
     void DeleteCall(int callId);
 
     //מתודת הוספת קריאה
-    void AddCall(Call newCall);
+    Task AddCall(Call newCall);
 
     //מתודת בקשת רשימת קריאות סגורות שטופלו על ידי מתנדב
     IEnumerable<BO.ClosedCallInList> GetClosedCallsByVolunteer(
@@ -40,4 +40,5 @@ public interface ICall
 
     //מתודת בחירת קריאה לטיפול
     void AssignCall(int volunteerId, int callId);
+    Task SendEmailToVolunteers(Call call);
 }

@@ -159,4 +159,31 @@ namespace BO
     {
         public BlNoPermitionException(string? message) : base(message) { }
     }
+
+    /// <summary>
+    /// Exception thrown when Sending Email Exception occurs.
+    /// </summary>
+    [Serializable]
+    public class BlSendingEmailException : Exception
+    {
+        public BlSendingEmailException(string? message) : base(message) { }
+    }
+
+    /// <summary>
+    /// Exception thrown when Coordination calculation Exception occurs.
+    /// </summary>
+    [Serializable]
+    public class BlCoordinationExceprion : Exception
+    {
+        public BlCoordinationExceprion(string? message) : base(message) { }
+    }
+
+    /// <summary>
+    /// Exception thrown from the Bl program.
+    /// </summary>
+    [Serializable]
+    public class BlProgramException : Exception
+    {
+        public BlProgramException(string? message) : base(message) { }
+    }
 }

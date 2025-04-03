@@ -60,7 +60,7 @@ public class DalConfigException : Exception
 }
 
 /// <summary>
-/// 
+/// Dal Unauthorized Access Exception
 /// </summary>
 [Serializable]
 public class DalUnauthorizedAccessException : Exception
@@ -69,7 +69,7 @@ public class DalUnauthorizedAccessException : Exception
 }
 
 /// <summary>
-/// 
+/// Dal Argument Exception
 /// </summary>
 [Serializable]
 public class DalArgumentException : Exception
@@ -78,7 +78,7 @@ public class DalArgumentException : Exception
 }
 
 /// <summary>
-/// 
+/// Dal Null Property Exception
 /// </summary>
 [Serializable]
 public class DalNullPropertyException : Exception
@@ -87,7 +87,7 @@ public class DalNullPropertyException : Exception
 }
 
 /// <summary>
-/// 
+/// Dal No Permition Exception
 /// </summary>
 [Serializable]
 public class DalNoPermitionException : Exception
@@ -96,10 +96,19 @@ public class DalNoPermitionException : Exception
 }
 
 /// <summary>
-/// 
+/// Dal General Database Exception
 /// </summary>
 [Serializable]
 public class DalGeneralDatabaseException : Exception
 {
     public DalGeneralDatabaseException(string? message) : base(message) { }
+}
+
+/// <summary>
+/// Dal Coordination Exceprion
+/// </summary>
+[Serializable]
+public class DalCoordinationExceprion : Exception
+{
+    public DalCoordinationExceprion(string? message) : base(message) { }
 }

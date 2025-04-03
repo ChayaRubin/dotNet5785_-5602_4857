@@ -22,7 +22,7 @@ public enum PositionEnum
 
 public enum CallTypeEnum
 {
-    Urgent = 0,
+    Urgent,
     Medium_Urgency,
     General_Assistance,
     Non_Urgent,
@@ -34,6 +34,8 @@ public enum CallStatus
     Open = 1,            // פתוחה - לא בטיפול של אף מתנדב כרגע
     InProgress,          // בטיפול - בטיפול כרגע על ידי מתנדב
     Closed,              // סגורה - מתנדב סיים לטפל בה
+    SelfCanceled,
+    Canceled,
     Expired,             // פג תוקף - לא נבחרה לטיפול או לא הסתיימה בזמן
     OpenAtRisk,          // פתוחה בסיכון - קריאה פתוחה שמתקרבת לזמן הסיום
     InProgressAtRisk     // בטיפול בסיכון - קריאה בטיפול שמתקרבת לזמן הסיום

@@ -12,11 +12,11 @@ using System.Collections.Generic;
 
 public static class Config
 {
-    public const int firstCallId = 1000; 
+    public const int firstCallId = 1050; 
     private static int nextCallId = firstCallId;
     public static int NextCallId { get => nextCallId++; }
  
-    public const int firstAssignmentId = 1000; 
+    public const int firstAssignmentId = 1030; 
     public static int nextAssignmentId = firstAssignmentId;
     public static int NextAssignmentId { get => nextAssignmentId++; }
     public static DateTime Clock { get; set; } = DateTime.Now;

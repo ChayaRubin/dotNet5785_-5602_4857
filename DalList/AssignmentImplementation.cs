@@ -32,12 +32,6 @@ internal class AssignmentImplementation : IAssignment
         return DataSource.Assignments.FirstOrDefault(filter);
     }
 
-
-    public Assignment? ReadSingle(Func<Assignment, bool> condition)
-    {
-        return DataSource.Assignments.FirstOrDefault(condition);
-    }
-
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
             return filter == null

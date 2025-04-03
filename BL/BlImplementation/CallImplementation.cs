@@ -1,7 +1,11 @@
 ﻿using BlApi;
 using BO;
+using Dal;
 using DO;
 using Helpers;
+using System.Net.Mail;
+using System.Net;
+/*using DalApi;*/
 
 namespace BlImplementation;
 
@@ -9,7 +13,16 @@ internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    /// <summary>
+    /// assign's a call to the volunteerId sent
+    /// </summary>
+    /// <param name="volunteerId"></param>
+    /// <param name="callId"></param>
+    /// <exception cref="DalDoesNotExistException"></exception>
+    /// <exception cref="DalAlreadyExistsException"></exception>
+    /// <exception cref="DalArgumentException"></exception>
     public void AssignCall(int volunteerId, int callId)
+
     {
         try
         {
@@ -17,8 +30,7 @@ internal class CallImplementation : ICall
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
 
-            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId &&
-                (a.CallResolutionStatus == CallResolutionStatus.open || a.CallResolutionStatus == CallResolutionStatus.Treated));
+            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId && (a.CallResolutionStatus == CallResolutionStatus.Open || a.CallResolutionStatus == CallResolutionStatus.Treated));
 
             if (existingAssignment != null)
                 throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
@@ -28,11 +40,12 @@ internal class CallImplementation : ICall
 
             var newAssignment = new Assignment
             {
+                Id = Config.NextAssignmentId,
                 CallId = callId,
                 VolunteerId = volunteerId,
                 EntryTime = _dal.Config.Clock,
                 FinishCompletionTime = null,
-                CallResolutionStatus = CallResolutionStatus.open
+                CallResolutionStatus = CallResolutionStatus.Open
             };
 
             _dal.Assignment.Create(newAssignment);
@@ -43,6 +56,11 @@ internal class CallImplementation : ICall
         }
     }
 
+    /// <summary>
+    /// returns calls by status
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="BO.BlGeneralDatabaseException"></exception>
     public IEnumerable<int> GetCallCountsByStatus()
     {
         try
@@ -59,6 +77,12 @@ internal class CallImplementation : ICall
         }
     }
 
+    /// <summary>
+    /// returns a certain call's details
+    /// </summary>
+    /// <param name="callId"></param>
+    /// <returns></returns>
+    /// <exception cref="BO.BlDoesNotExistException"></exception>
     public BO.Call GetCallDetails(int callId)
     {
         try
@@ -80,13 +104,34 @@ internal class CallImplementation : ICall
             BO.Call callBO = CallManager.ConvertToBO(callData, assignmentList);
             return callBO;
         }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"BL Exception: {ex.Message}");
+        }
+        catch (DalAlreadyExistsException ex)
+        {
+            throw new BO.BlAlreadyExistsException($"BL Exception: {ex.Message}");
+        }
+        catch (DalArgumentException ex)
+        {
+            throw new BO.BlArgumentException($"BL Exception: {ex.Message}");
+        }
+        catch (DalFormatException ex)
+        {
+            throw new BO.BlFormatException($"BL Exception: {ex.Message}");
+        }
         catch (Exception ex)
         {
-            CallManager.HandleDalException(ex);
-            throw;
+            throw new BO.BlGeneralDatabaseException($"An unexpected error occurred: {ex.Message}");
         }
     }
 
+
+    /// <summary>
+    /// update a certain call's details
+    /// </summary>
+    /// <param name="call"></param>
+    /// <exception cref="BO.BlInvalidTimeUnitException"></exception>
     public void UpdateCallDetails(BO.Call call)
     {
         if (call == null)
@@ -95,12 +140,12 @@ internal class CallImplementation : ICall
         try
         {
             CallManager.ValidateCall(call);
-            //var (latitude, longitude) = Tools.GetCoordinatesFromAddress(call.Address);
-            /*if (latitude == 0 || longitude == 0)
-                throw new BO.BlInvalidTimeUnitException("Invalid address: Unable to retrieve coordinates.");
+            var (latitude, longitude) = Tools.GetCoordinatesFromAddress(call.Address);
+
+            CallManager.ValidateLogicalFields(call);
 
             call.Latitude = latitude;
-            call.Longitude = longitude;*/
+            call.Longitude = longitude;
 
             DO.Call doCall = CallManager.ConvertToDO(call);
             _dal.Call.Update(doCall);
@@ -111,6 +156,14 @@ internal class CallImplementation : ICall
         }
     }
 
+    /// <summary>
+    /// get the call list
+    /// </summary>
+    /// <param name="filterByField"></param>
+    /// <param name="filterValue"></param>
+    /// <param name="sortByField"></param>
+    /// <returns></returns>
+    /// <exception cref="BO.BlGeneralDatabaseException"></exception>
     public IEnumerable<BO.CallInList> GetCallList(
         CallField? filterByField = null,
         object? filterValue = null,
@@ -137,87 +190,159 @@ internal class CallImplementation : ICall
 
             return callList;
         }
-        catch (Exception ex)
+        catch (BlGeneralDatabaseException ex)
         {
             throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while retrieving the call list: {ex.Message}");
         }
     }
 
+    /// <summary>
+    /// Deletes a call
+    /// </summary>
+    /// <param name="callId">the deleted call id</param>
+    /// <exception cref="BlDoesNotExistException"></exception>
+    /// <exception cref="BO.BlInvalidTimeUnitException"></exception>
     public void DeleteCall(int callId)
     {
         try
         {
+            // Retrieve the call from the DAL by its ID
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
             if (call == null)
                 throw new BlDoesNotExistException("Call not found.");
 
-            var openAssignments = _dal.Assignment.ReadAll(a => a.CallId == callId && a.CallResolutionStatus == DO.CallResolutionStatus.open);
+            // Check if there are any assignments related to the given callId
+            var assignmentsForCall = _dal.Assignment.ReadAll(a => a.CallId == callId);
 
+            // If there are open assignments, prevent deletion
+            var openAssignments = assignmentsForCall.Where(a => a.CallResolutionStatus == DO.CallResolutionStatus.Open);
             if (openAssignments.Any())
-                throw new BO.BlInvalidTimeUnitException("Cannot delete a call that is still open.");
+                throw new BO.BlInvalidTimeUnitException("Cannot delete a call that has open assignments.");
 
+            // If no open assignments exist, proceed with deleting the call
             _dal.Call.Delete(callId);
         }
         catch (Exception ex)
         {
+            // Handle any exceptions that occur, such as DAL exceptions
             CallManager.HandleDalException(ex);
         }
     }
 
-    public void AddCall(BO.Call newCall)
+    /// <summary>
+    /// add a call
+    /// </summary>
+    /// <param name="newCall">the call to add</param>
+    public async Task AddCall(BO.Call newCall)
     {
         try
         {
-            CallManager.ValidateCall(newCall);
+            // Validate the call and get coordinates
+            var coordinates = await CallManager.ValidateCall(newCall);
+
+            // Set the coordinates to the newCall object
+            newCall.Latitude = coordinates.latitude;
+            newCall.Longitude = coordinates.longitude;
+
+            CallManager.ValidateLogicalFields(newCall);
+
+            // Convert the call to Data Object and add it to the database
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
             _dal.Call.Create(newCallDO);
         }
         catch (Exception ex)
         {
-            CallManager.HandleDalException(ex);
+            switch (ex)
+            {
+                case DalDoesNotExistException _:
+                    throw new BlDoesNotExistException($"BL Exception: {ex.Message}");
+                case DalAlreadyExistsException _:
+                    throw new BlAlreadyExistsException($"BL Exception: {ex.Message}");
+                case DalArgumentException _:
+                    throw new BlArgumentException($"BL Exception: {ex.Message}");
+                case DalFormatException _:
+                    throw new BO.BlFormatException($"BL Exception: {ex.Message}");
+                default:
+                    throw new BlGeneralDatabaseException($"An unexpected error occurred: {ex.Message}");
+            }
         }
     }
 
+
+    /// <summary>
+    /// cancel a call
+    /// </summary>
+    /// <param name="requestorId">the assignments voluteerId to cancel</param>
+    /// <param name="assignmentId">the assignments to cancel</param>
+    /// <exception cref="BlUnauthorizedAccessException"></exception>
+    /// <exception cref="BlNoPermitionException"></exception>
+    /// <exception cref="BlGeneralDatabaseException"></exception>
     public void CancelCall(int requestorId, int assignmentId)
     {
         try
         {
+            Console.WriteLine($"Checking Assignment ID: {assignmentId}");
             DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
                 ?? throw new DalDoesNotExistException("The requested assignment does not exist");
 
+            Console.WriteLine($"Assignment found: {assignment.Id}, Volunteer: {assignment.VolunteerId}");
+
+            Console.WriteLine($"Checking Volunteer ID: {assignment.VolunteerId}");
             DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)
                 ?? throw new DalDoesNotExistException("The volunteer was not found in the system");
 
+            Console.WriteLine($"Volunteer found: {volunteer.Id}, Position: {volunteer.Position}");
+
             bool isAdmin = volunteer.Position == DO.PositionEnum.Manager;
-            bool isVolunteer = assignment.VolunteerId == requestorId;
+            bool isVolunteer = (assignment.VolunteerId == requestorId);
+
+            Console.WriteLine($"Requestor ID: {requestorId}, IsAdmin: {isAdmin}, IsVolunteer: {isVolunteer}");
 
             if (!isAdmin && !isVolunteer)
                 throw new DalNoPermitionException("You do not have permission to cancel this call");
 
-            if (assignment.FinishCompletionTime != null || assignment.EntryTime < DateTime.Now)
+            if (assignment.FinishCompletionTime < DateTime.Now)
                 throw new DalGeneralDatabaseException("Cannot cancel a call that has already been closed");
 
             assignment.EntryTime = ClockManager.Now;
+
+            /*            assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? BO.SelfCanceled.SelfCanceled : null;*/
+            assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
+
             _dal.Assignment.Update(assignment);
+
+            Console.WriteLine("Call cancelled successfully.");
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new BlUnauthorizedAccessException($"Login failed: {ex.Message}");
+            Console.WriteLine($"Error: {ex.Message}");
+            throw new BlUnauthorizedAccessException($"canceling failed: {ex.Message}");
         }
         catch (DalNoPermitionException ex)
         {
-            throw new BlNoPermitionException($"Login failed: {ex.Message}");
+            Console.WriteLine($"Error: {ex.Message}");
+            throw new BlNoPermitionException($"canceling failed: {ex.Message}");
         }
         catch (DalGeneralDatabaseException ex)
         {
-            throw new BlGeneralDatabaseException($"Login failed: {ex.Message}");
+            Console.WriteLine($"Error: {ex.Message}");
+            throw new BlGeneralDatabaseException($"canceling failed: {ex.Message}");
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException($"An unexpected error occurred during login: {ex.Message}");
+            Console.WriteLine($"Unexpected Error: {ex.Message}");
+            throw new BlGeneralDatabaseException($"An unexpected error occurred during canceling the call: {ex.Message}");
         }
     }
 
+    /// <summary>
+    /// close a call
+    /// </summary>
+    /// <param name="volunteerId">the assignments voluteerId to close</param>
+    /// <param name="assignmentId">the assignments to close</param>
+    /// <exception cref="BlUnauthorizedAccessException"></exception>
+    /// <exception cref="BlNoPermitionException"></exception>
+    /// <exception cref="BlGeneralDatabaseException"></exception>
     public void CloseCall(int volunteerId, int assignmentId)
     {
         try
@@ -237,29 +362,130 @@ internal class CallImplementation : ICall
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new BlUnauthorizedAccessException($"Login failed: {ex.Message}");
+            throw new BlUnauthorizedAccessException($"failed: {ex.Message}");
         }
         catch (DalNoPermitionException ex)
         {
-            throw new BlNoPermitionException($"Login failed: {ex.Message}");
+            throw new BlNoPermitionException($"failed: {ex.Message}");
         }
         catch (DalGeneralDatabaseException ex)
         {
-            throw new BlGeneralDatabaseException($"Login failed: {ex.Message}");
+            throw new BlGeneralDatabaseException($"failed: {ex.Message}");
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException($"An unexpected error occurred during login: {ex.Message}");
+            throw new BlGeneralDatabaseException($"An unexpected error occurred during the loading: {ex.Message}");
         }
     }
 
+    /// <summary>
+    /// returns open calls for specific volunteer
+    /// </summary>
+    /// <param name="volunteerId">specific volunteer Id</param>
+    /// <param name="callType">bool param close or open</param>
+    /// <param name="sortByField">enum value to sort by</param>
+    /// <returns></returns>
     public IEnumerable<BO.OpenCallInList> GetOpenCallsForVolunteer(int volunteerId, Enum? callType = null, Enum? sortByField = null)
     {
         return CallManager.GetCallsForVolunteer<BO.OpenCallInList>(volunteerId, callType, sortByField, isOpen: true);
     }
 
+    /// <summary>
+    /// returns close calls for specific volunteer
+    /// </summary>
+    /// <param name="volunteerId">specific volunteer Id</param>
+    /// <param name="callType">bool param close or open</param>
+    /// <param name="sortByField">enum value to sort by</param>
+    /// <returns></returns>
     public IEnumerable<BO.ClosedCallInList> GetClosedCallsByVolunteer(int volunteerId, Enum? callType = null, Enum? sortByField = null)
     {
         return CallManager.GetCallsForVolunteer<BO.ClosedCallInList>(volunteerId, callType, sortByField, isOpen: false);
     }
+
+    /// <summary>
+    /// function that Send's Email To Volunteers
+    /// </summary>
+    /// <param name="newCall">the call that was opened to send</param>
+    /// <returns></returns>
+    public async Task SendEmailToVolunteers(BO.Call newCall)
+    {
+        try
+        {
+            var volunteers = _dal.Volunteer.ReadAll();
+            List<Task> emailTasks = new List<Task>();
+            int maxConcurrentEmails = 5;
+
+            foreach (var volunteer in volunteers)
+            {
+                BO.Volunteer boVolunteer = VolunteerManager.ConvertToBO(volunteer);
+
+                if (CallManager.IsWithinMaxDistance(boVolunteer, newCall))
+                {
+                    string subject = $"New call available: {newCall.Description}";
+                    string body = $"A new call has been added.\n" +
+                                  $"Description: {newCall.Description}\n" +
+                                  $"📍 Location: {newCall.Address}\n" +
+                                  $"⚠️ Call Type: {newCall.Type}\n" +
+                                  $"⏳ Start Time: {newCall.OpenTime}\n" +
+                                  $"🚨 Expires At: {newCall.MaxEndTime}\n" +
+                                  $"Please review and take action.";
+
+                    emailTasks.Add(CallManager.SendEmailAsync(boVolunteer.Email, subject, body));
+
+                    if (emailTasks.Count >= maxConcurrentEmails)
+                    {
+                        await Task.WhenAll(emailTasks);
+                        emailTasks.Clear();
+                    }
+                }
+            }
+
+            if (emailTasks.Count > 0)
+            {
+                await Task.WhenAll(emailTasks);
+            }
+        }
+        catch (BlSendingEmailException ex)
+        {
+            Console.WriteLine($"Error sending emails: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// func that Send's Cancellation Email
+    /// </summary>
+    /// <param name="call">tha call that was canceled</param>
+    /// <param name="volunteer">the volunteer that is getting the Cancellation Email</param>
+    /// <returns></returns>
+    public async Task SendCancellationEmailAsync(BO.Call call, BO.Volunteer volunteer)
+    {
+        try
+        {
+            var emailTasks = new List<Task>();
+
+            string subject = $"Assignment Cancelled: {call.Description}";
+            string body = $"Hello {volunteer.FullName},\n\n" +
+                          $"Unfortunately, a new call has been assigned and you are no longer handling it.\n\n" +
+                          $"Call details:\n" +
+                          $"Description: {call.Description}\n" +
+                          $"📍 Location: {call.Address}\n" +
+                          $"⚠️ Call Type: {call.Type}\n" +
+                          $"⏳ Start Time: {call.OpenTime}\n" +
+                          $"🚨 Expiration Time: {call.MaxEndTime}\n\n" +
+                          $"Thank you for your cooperation,\nThe System Team";
+
+
+            emailTasks.Add(CallManager.SendEmailAsync(volunteer.Email, subject, body));  // הוספת מטלה לשלוח מייל למתנדב
+
+            if (emailTasks.Count > 0)
+            {
+                await Task.WhenAll(emailTasks);
+            }
+        }
+        catch (BlSendingEmailException ex)
+        {
+            Console.WriteLine($"Error sending email: {ex.Message}");
+        }
+    }
 }
+

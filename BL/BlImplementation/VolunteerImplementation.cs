@@ -2,6 +2,9 @@
 using BO;
 using DO;
 using Helpers;
+using System.Net.Mail;
+using System.Net;
+using System.Xml;
 
 namespace BlImplementation;
 
@@ -110,8 +113,42 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(predicate) ?? throw new BlDoesNotExistException("Volunteer not found");
-            return VolunteerManager.ConvertToBO(volunteer);
+            var volunteer = _dal.Volunteer.Read(predicate)
+                            ?? throw new BlDoesNotExistException("Volunteer not found");
+
+            var boVolunteer = VolunteerManager.ConvertToBO(volunteer);
+
+            var ongoingAssignment = _dal.Assignment.Read(a =>
+                a.VolunteerId == volunteer.Id &&
+                (CallStatus)a.CallResolutionStatus == CallStatus.Open); // או Open - לפי הלוגיקה שלך
+
+            var relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
+
+            double distance = 0;
+            if (boVolunteer.Latitude.HasValue && boVolunteer.Longitude.HasValue)
+            {
+                distance = Tools.CalculateDistance(
+                    relatedCall.Latitude,
+                    relatedCall.Longitude,
+                    boVolunteer.Latitude.Value,
+                    boVolunteer.Longitude.Value);
+            }
+
+            if (ongoingAssignment != null)
+            {
+                boVolunteer.CurrentCall = new BO.CallInProgress
+                {
+                    Id = ongoingAssignment.Id,
+                    Address = relatedCall.Address,
+                    CallId = ongoingAssignment.CallId,
+                    OpeningTime = ongoingAssignment.EntryTime,
+                    MaxCompletionTime = ongoingAssignment.FinishCompletionTime,
+                    Status = (BO.CallStatus)ongoingAssignment.CallResolutionStatus,
+                    DistanceFromVolunteer = distance,
+                };
+            }
+
+            return boVolunteer; // זו השורה שתוקנה
         }
         catch (DalDoesNotExistException ex)
         {
@@ -126,6 +163,7 @@ internal class VolunteerImplementation : IVolunteer
             throw new BlGeneralDatabaseException($"An unexpected error occurred while retrieving the volunteer details: {ex.Message}");
         }
     }
+
 
 
     /// <summary>
@@ -166,11 +204,14 @@ internal class VolunteerImplementation : IVolunteer
                 throw new BlUnauthorizedAccessException("Unauthorized to update this volunteer.");
             }
 
+            var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
+            volunteerBO.Latitude = latitude;
+            volunteerBO.Longitude = longitude;
             // Validate input format
             VolunteerManager.ValidateInputFormat(volunteerBO);
 
             // Validate logical fields
-            //VolunteerManager.ValidateLogicalFields(volunteerBO);
+            VolunteerManager.ValidateLogicalFields(volunteerBO);
 
             // Handle password update
             if (volunteerBO.Password != existingVolunteer.Password)
@@ -179,23 +220,14 @@ internal class VolunteerImplementation : IVolunteer
                 {
                     throw new BlUnauthorizedAccessException("Only the volunteer or a manager can update the password.");
                 }
-                //volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password);
-                volunteerBO.Password =volunteerBO.Password;
-
+                String HashedPassword = VolunteerManager.HashPassword(volunteerBO.Password);
+                volunteerBO.Password = HashedPassword;
             }
 
             // Ensure field updates are allowed
             if (!VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
             {
                 throw new BlFormatException("You do not have permission to update certain fields.");
-            }
-
-            // Update latitude & longitude if address changed
-            if (volunteerBO.CurrentAddress != existingVolunteer.Address)
-            {
-                var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
-                volunteerBO.Latitude = latitude;
-                volunteerBO.Longitude = longitude;
             }
 
             // Convert BO to DO and update in DAL
@@ -213,6 +245,10 @@ internal class VolunteerImplementation : IVolunteer
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BlDoesNotExistException($"The volunteer with ID={volunteerBO.Id} was not found.");
+        }
+        catch (DO.DalCoordinationExceprion ex)
+        {
+            throw new BlCoordinationExceprion($"{ex.Message}");
         }
         catch (Exception ex)
         {
@@ -234,7 +270,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             var volunteer = _dal.Volunteer.Read(v => v.Id == id) ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
 
-            var currentAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id && a.FinishCompletionTime == null).FirstOrDefault();
+            var currentAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id && a.CallResolutionStatus == CallResolutionStatus.Open).FirstOrDefault();
+
             if (currentAssignment != null)
             {
                 throw new InvalidOperationException("Cannot delete volunteer while they are handling a call.");
@@ -263,7 +300,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BlFormatException">Thrown if the input data for the volunteer is invalid.</exception>
     /// <exception cref="BlUnauthorizedAccessException">Thrown if the operation is not authorized.</exception>
     /// <exception cref="BlGeneralDatabaseException">Thrown if an unexpected error occurs while adding the volunteer.</exception>
-    public void AddVolunteer(BO.Volunteer volunteer)
+    public async void AddVolunteer(BO.Volunteer volunteer)
     {
         try
         {
@@ -274,20 +311,19 @@ internal class VolunteerImplementation : IVolunteer
             }
 
             // Validate input format
-            VolunteerManager.ValidateInputFormat(volunteer);
+            var coordinates = await VolunteerManager.ValidateInputFormat(volunteer);
+            //var coordinates = await CallManager.ValidateCall(newCall);
+
+            // Set the coordinates to the newCall object
+            volunteer.Latitude = coordinates.latitude;
+            volunteer.Longitude = coordinates.longitude;
 
             // Validate logical fields
-            //VolunteerManager.ValidateLogicalFields(volunteer);
+            VolunteerManager.ValidateLogicalFields(volunteer);
 
-            // Hash the initial password before storing it
-            //volunteer.Password = VolunteerManager.HashPassword(volunteer.Password);
-            volunteer.Password = volunteer.Password;
-
-
-            // Get latitude & longitude from address
-            /*var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress!);
-            volunteer.Latitude = latitude;
-            volunteer.Longitude = longitude;*/
+            //Hash the initial password before storing it
+            String HashedPassword = VolunteerManager.HashPassword(volunteer.Password);
+            volunteer.Password = HashedPassword;
 
             // Convert BO to DO
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteer);
@@ -298,6 +334,10 @@ internal class VolunteerImplementation : IVolunteer
         catch (DO.DalAlreadyExistsException ex)
         {
             throw new BlAlreadyExistsException($"Volunteer with ID={volunteer.Id} already exists. {ex.Message}");
+        }
+        catch (DO.DalCoordinationExceprion ex)
+        {
+            throw new BlCoordinationExceprion($"{ex.Message}");
         }
         catch (DO.DalFormatException ex)
         {

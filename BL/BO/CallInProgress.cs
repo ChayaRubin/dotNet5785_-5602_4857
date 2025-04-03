@@ -19,6 +19,22 @@ namespace BO
         public DateTime AssignmentStartTime { get; set; } // זמן כניסה לטיפול
         public double DistanceFromVolunteer { get; set; } // מרחק הקריאה מהמתנדב המטפל
         public CallStatus Status { get; set; } // סטטוס הקריאה
+
+        public override string ToString()
+        {
+            return $"--- Call In Progress ---\n" +
+                   $"Assignment ID: {Id}\n" +
+                   $"Call ID: {CallId}\n" +
+                   $"Call Type: {CallType}\n" +
+                   $"Description: {Description ?? "No description"}\n" +
+                   $"Address: {Address}\n" +
+                   $"Opening Time: {OpeningTime}\n" +
+                   $"Max Completion Time: {(MaxCompletionTime?.ToString() ?? "N/A")}\n" +
+                   $"Assignment Start Time: {AssignmentStartTime}\n" +
+                   $"Distance From Volunteer: {DistanceFromVolunteer:F2} km\n" +
+                   $"Status: {Status}\n";
+        }
+
     }
 
 }
