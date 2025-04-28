@@ -15,6 +15,7 @@ namespace Helpers;
 
 internal static class CallManager
 {
+    internal static ObserverManager Observers = new(); //stage 5 
     private static IDal s_dal = Factory.Get; // stage 4
 
     public static List<CallInList> GetCallList(IEnumerable<DO.Call> calls)

@@ -1,6 +1,6 @@
 ﻿using BO;
 namespace BlApi;
-public interface ICall
+public interface ICall : IObservable //stage 5 
 {
     IEnumerable<int> GetCallCountsByStatus();
     IEnumerable<BO.CallInList> GetCallList(

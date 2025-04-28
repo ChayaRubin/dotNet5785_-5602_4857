@@ -221,6 +221,7 @@ internal class CallImplementation : ICall
 
             // If no open assignments exist, proceed with deleting the call
             _dal.Call.Delete(callId);
+            CallManager.Observers.NotifyListUpdated();  //stage 5  	
         }
         catch (DalInvalidTimeUnitException ex)
         {
@@ -252,6 +253,7 @@ internal class CallImplementation : ICall
             // Convert the call to Data Object and add it to the database
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
             _dal.Call.Create(newCallDO);
+            CallManager.Observers.NotifyListUpdated(); //stage 5                                                    
         }
         catch (Exception ex)
         {
@@ -314,11 +316,14 @@ internal class CallImplementation : ICall
             assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
 
             _dal.Assignment.Update(assignment);
+            AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);  //stage 5
+            AssignmentManager.Observers.NotifyListUpdated();  //stage 5
+
 
             if (isAdmin)  // Only send email if it's an admin cancelling
             {
-                BO.Call call =GetCallDetails(assignment.CallId);
-                DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)?? throw new DalDoesNotExistException("The requested volunteer does not exist");
+                BO.Call call = GetCallDetails(assignment.CallId);
+                DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId) ?? throw new DalDoesNotExistException("The requested volunteer does not exist");
                 BO.Volunteer volunteer2 = VolunteerManager.ConvertToBO(volunteer1);
                 SendCancellationEmailAsync(call, volunteer2);
             }
@@ -494,5 +499,14 @@ internal class CallImplementation : ICall
             Console.WriteLine($"Error sending email: {ex.Message}");
         }
     }
+
+    public void AddObserver(Action listObserver) =>
+    CallManager.Observers.AddListObserver(listObserver); //stage 5
+    public void AddObserver(int id, Action observer) =>
+    CallManager.Observers.AddObserver(id, observer); //stage 5
+    public void RemoveObserver(Action listObserver) =>
+    CallManager.Observers.RemoveListObserver(listObserver); //stage 5
+    public void RemoveObserver(int id, Action observer) =>
+    CallManager.Observers.RemoveObserver(id, observer); //stage 5
 }
 

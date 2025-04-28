@@ -1,7 +1,7 @@
 ﻿using BO;
 namespace BlApi;
 
-public interface IVolunteer
+public interface IVolunteer : IObservable //stage 5 
 {
     // 1. מתודת כניסה למערכת
     string Login(string username, string password);

@@ -233,6 +233,9 @@ internal class VolunteerImplementation : IVolunteer
             // Convert BO to DO and update in DAL
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
             _dal.Volunteer.Update(volunteerDO);
+            VolunteerManager.Observers.NotifyItemUpdated(volunteerDO.Id);  //stage 5
+            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
+
         }
         catch (DO.DalFormatException ex)
         {
@@ -277,6 +280,8 @@ internal class VolunteerImplementation : IVolunteer
                 throw new InvalidOperationException("Cannot delete volunteer while they are handling a call.");
             }
             _dal.Volunteer.Delete(id);
+            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
+
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -330,6 +335,8 @@ internal class VolunteerImplementation : IVolunteer
 
             // Attempt to add volunteer to database
             _dal.Volunteer.Create(volunteerDO);
+            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
+
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -352,4 +359,13 @@ internal class VolunteerImplementation : IVolunteer
             throw new BlGeneralDatabaseException($"An unexpected error occurred while adding the volunteer: {ex.Message}");
         }
     }
+
+    public void AddObserver(Action listObserver) =>
+    VolunteerManager.Observers.AddListObserver(listObserver); //stage 5
+    public void AddObserver(int id, Action observer) =>
+    VolunteerManager.Observers.AddObserver(id, observer); //stage 5
+    public void RemoveObserver(Action listObserver) =>
+    VolunteerManager.Observers.RemoveListObserver(listObserver); //stage 5
+    public void RemoveObserver(int id, Action observer) =>
+    VolunteerManager.Observers.RemoveObserver(id, observer); //stage 5
 }
