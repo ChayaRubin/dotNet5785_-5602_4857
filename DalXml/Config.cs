@@ -55,6 +55,7 @@ internal static class Config
         NextAssignmentId = 1000;
         Clock = DateTime.Now;
         RiskRange = TimeSpan.Zero;
+
     }
 
 }

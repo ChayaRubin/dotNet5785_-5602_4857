@@ -30,8 +30,6 @@ public static class Config
         Clock = DateTime.Now;     
         RiskRange = TimeSpan.Zero; 
     }
-
-
 }
 
 

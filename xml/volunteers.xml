@@ -190,7 +190,7 @@
     <Password>83a0625c3da57693d081581d8dee5cd805324a44cbaba7ebeb6db65b6eb6f005</Password>
     <Address>Keren Hayesod Street 16, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
+    <Longitude>35.215316</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>21.45666133259284</MaxResponseDistance>
@@ -216,12 +216,26 @@
     <Phone>057666807</Phone>
     <Email>chava.shapiro@email.com</Email>
     <Password>28fa57879a86f96acd7d955e8a9d416e449392ad83b5c322254e4232ee78afbe</Password>
-    <Address>25 Shlomzion Hamalka Street, Jerusalem:</Address>
+    <Address>25 Shlomzion Hamalka Street, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
     <Position>Manager</Position>
     <Active>true</Active>
     <MaxResponseDistance>0.3459537434145288</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>329161822</Id>
+    <Name>Ora</Name>
+    <Phone>0583268775</Phone>
+    <Email>oratyh@gmail.com</Email>
+    <Password>45fa463adae4edcbf5243411116e1081caddd916bce727f9c7d62b3813bee7c8</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

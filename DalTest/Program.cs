@@ -358,7 +358,6 @@ namespace DalTest
                             case MainMenuOption.ResetDatabase:
                                 s_dal.ResetDB();//stage 2
                                 break;
-
                             default:
                                 Console.WriteLine("Try again");
                                 break;

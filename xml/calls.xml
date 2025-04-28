@@ -78,7 +78,7 @@
     <Latitude>31.7875022</Latitude>
     <Longitude>35.2265973</Longitude>
     <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
-    <ExpiredTime>2025-04-06T19:10:40.8017502+03:00</ExpiredTime>
+    <ExpiredTime>2027-04-06T19:10:40.8017502+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1008</RadioCallId>
@@ -178,7 +178,7 @@
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
     <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
-    <ExpiredTime>2025-04-06T19:25:40.8017502+03:00</ExpiredTime>
+    <ExpiredTime>2027-04-06T19:25:40.8017502+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1018</RadioCallId>
@@ -269,16 +269,6 @@
     <Longitude>35.2089577</Longitude>
     <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
     <ExpiredTime>2025-04-06T19:55:40.8017502+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1027</RadioCallId>
-    <Description>Car Service Appointment</Description>
-    <CallType>General_Assistance</CallType>
-    <Address>Kiryat Tzahal St 6, Jerusalem</Address>
-    <Latitude>32.0416824</Latitude>
-    <Longitude>34.7904787</Longitude>
-    <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
-    <ExpiredTime>2027-04-06T19:55:40.8017502+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1028</RadioCallId>
@@ -488,7 +478,7 @@
     <Latitude>31.74948</Latitude>
     <Longitude>34.9880954</Longitude>
     <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
-    <ExpiredTime>2025-04-06T20:55:40.8017502+03:00</ExpiredTime>
+    <ExpiredTime>2028-04-06T20:55:40.8017502+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1049</RadioCallId>
@@ -498,6 +488,66 @@
     <Latitude>31.77676</Latitude>
     <Longitude>35.230342</Longitude>
     <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
-    <ExpiredTime>2025-04-06T20:55:40.8017502+03:00</ExpiredTime>
+    <ExpiredTime>2026-04-06T20:55:40.8017502+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1027</RadioCallId>
+    <Description>Car Service Appointment</Description>
+    <CallType>General_Assistance</CallType>
+    <Address>Kiryat Tzahal St 6, Jerusalem</Address>
+    <Latitude>32.0416824</Latitude>
+    <Longitude>34.7904787</Longitude>
+    <StartTime>2025-04-06T18:55:40.8017502+03:00</StartTime>
+    <ExpiredTime>2027-04-06T19:55:40.8017502+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1000</RadioCallId>
+    <Description>gggggggggggg</Description>
+    <CallType>Urgent</CallType>
+    <Address>Kiryat Tzahal St 26, Jerusalem</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <StartTime>2025-04-07T01:00:24.4572944+03:00</StartTime>
+    <ExpiredTime>2025-04-07T01:00:26.5750142+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1001</RadioCallId>
+    <Description>mazal tov!</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 10</Address>
+    <Latitude>32.05317</Latitude>
+    <Longitude>34.791198</Longitude>
+    <StartTime>2025-04-07T01:05:00.5059097+03:00</StartTime>
+    <ExpiredTime>2025-04-07T01:05:01.207852+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1002</RadioCallId>
+    <Description>yayyyyyyyy</Description>
+    <CallType>Urgent</CallType>
+    <Address>1</Address>
+    <Latitude>35.7298752</Latitude>
+    <Longitude>139.71129548269388</Longitude>
+    <StartTime>2025-04-07T01:07:17.7731143+03:00</StartTime>
+    <ExpiredTime>2025-04-07T01:07:22.3154041+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1003</RadioCallId>
+    <Description>yayyyyyyyyyyyyy</Description>
+    <CallType>Urgent</CallType>
+    <Address>Kiryat Tzahal St 26, Jerusalem</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <StartTime>2025-04-07T01:08:02.4135741+03:00</StartTime>
+    <ExpiredTime>2026-08-26T00:00:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1004</RadioCallId>
+    <Description>yayyyyyyyyyyyyyy</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-04-07T01:09:50.7095509+03:00</StartTime>
+    <ExpiredTime>2027-04-07T01:09:51.5173379+03:00</ExpiredTime>
   </Call>
 </ArrayOfCall>

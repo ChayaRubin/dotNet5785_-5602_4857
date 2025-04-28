@@ -112,3 +112,12 @@ public class DalCoordinationExceprion : Exception
 {
     public DalCoordinationExceprion(string? message) : base(message) { }
 }
+
+/// <summary>
+/// Dal Invalid Time Unit Exceprion
+/// </summary>
+[Serializable]
+public class DalInvalidTimeUnitException : Exception
+{
+    public DalInvalidTimeUnitException(string? message) : base(message) { }
+}

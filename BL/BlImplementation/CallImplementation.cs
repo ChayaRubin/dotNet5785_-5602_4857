@@ -135,7 +135,7 @@ internal class CallImplementation : ICall
     public void UpdateCallDetails(BO.Call call)
     {
         if (call == null)
-            throw new BO.BlInvalidTimeUnitException("Call object cannot be null.");
+            throw new DO.DalInvalidTimeUnitException("Call object cannot be null.");
 
         try
         {
@@ -150,9 +150,9 @@ internal class CallImplementation : ICall
             DO.Call doCall = CallManager.ConvertToDO(call);
             _dal.Call.Update(doCall);
         }
-        catch (Exception ex)
+        catch (DalInvalidTimeUnitException ex)
         {
-            CallManager.HandleDalException(ex);
+            throw new BO.BlInvalidTimeUnitException($"BL Exception: {ex.Message}");
         }
     }
 
@@ -209,7 +209,7 @@ internal class CallImplementation : ICall
             // Retrieve the call from the DAL by its ID
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
             if (call == null)
-                throw new BlDoesNotExistException("Call not found.");
+                throw new DalDoesNotExistException("Call not found.");
 
             // Check if there are any assignments related to the given callId
             var assignmentsForCall = _dal.Assignment.ReadAll(a => a.CallId == callId);
@@ -217,15 +217,18 @@ internal class CallImplementation : ICall
             // If there are open assignments, prevent deletion
             var openAssignments = assignmentsForCall.Where(a => a.CallResolutionStatus == DO.CallResolutionStatus.Open);
             if (openAssignments.Any())
-                throw new BO.BlInvalidTimeUnitException("Cannot delete a call that has open assignments.");
+                throw new DO.DalInvalidTimeUnitException("Cannot delete a call that has open assignments.");
 
             // If no open assignments exist, proceed with deleting the call
             _dal.Call.Delete(callId);
         }
-        catch (Exception ex)
+        catch (DalInvalidTimeUnitException ex)
         {
-            // Handle any exceptions that occur, such as DAL exceptions
-            CallManager.HandleDalException(ex);
+            throw new BO.BlInvalidTimeUnitException($"BL Exception: {ex.Message}");
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"BL Exception: {ex.Message}");
         }
     }
 
@@ -293,7 +296,9 @@ internal class CallImplementation : ICall
 
             Console.WriteLine($"Volunteer found: {volunteer.Id}, Position: {volunteer.Position}");
 
-            bool isAdmin = volunteer.Position == DO.PositionEnum.Manager;
+            DO.Volunteer M = _dal.Volunteer.Read(v => v.Id == requestorId)
+                ?? throw new DalDoesNotExistException("The requestor was not found in the system");
+            bool isAdmin = M.Position == DO.PositionEnum.Manager;
             bool isVolunteer = (assignment.VolunteerId == requestorId);
 
             Console.WriteLine($"Requestor ID: {requestorId}, IsAdmin: {isAdmin}, IsVolunteer: {isVolunteer}");
@@ -306,31 +311,33 @@ internal class CallImplementation : ICall
 
             assignment.EntryTime = ClockManager.Now;
 
-            /*            assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? BO.SelfCanceled.SelfCanceled : null;*/
             assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
 
             _dal.Assignment.Update(assignment);
 
+            if (isAdmin)  // Only send email if it's an admin cancelling
+            {
+                BO.Call call =GetCallDetails(assignment.CallId);
+                DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)?? throw new DalDoesNotExistException("The requested volunteer does not exist");
+                BO.Volunteer volunteer2 = VolunteerManager.ConvertToBO(volunteer1);
+                SendCancellationEmailAsync(call, volunteer2);
+            }
             Console.WriteLine("Call cancelled successfully.");
         }
         catch (DalDoesNotExistException ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
             throw new BlUnauthorizedAccessException($"canceling failed: {ex.Message}");
         }
         catch (DalNoPermitionException ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
             throw new BlNoPermitionException($"canceling failed: {ex.Message}");
         }
         catch (DalGeneralDatabaseException ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
             throw new BlGeneralDatabaseException($"canceling failed: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Unexpected Error: {ex.Message}");
             throw new BlGeneralDatabaseException($"An unexpected error occurred during canceling the call: {ex.Message}");
         }
     }
@@ -465,7 +472,7 @@ internal class CallImplementation : ICall
 
             string subject = $"Assignment Cancelled: {call.Description}";
             string body = $"Hello {volunteer.FullName},\n\n" +
-                          $"Unfortunately, a new call has been assigned and you are no longer handling it.\n\n" +
+                          $"Unfortunately, you are no longer handling this call.\n\n" +
                           $"Call details:\n" +
                           $"Description: {call.Description}\n" +
                           $"📍 Location: {call.Address}\n" +
