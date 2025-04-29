@@ -5,6 +5,7 @@ using DO;
 using Helpers;
 using System.Net.Mail;
 using System.Net;
+using DalApi;
 /*using DalApi;*/
 
 namespace BlImplementation;
@@ -149,6 +150,9 @@ internal class CallImplementation : ICall
 
             DO.Call doCall = CallManager.ConvertToDO(call);
             _dal.Call.Update(doCall);
+            CallManager.Observers.NotifyItemUpdated(doCall.RadioCallId);  //stage 5
+            CallManager.Observers.NotifyListUpdated();  //stage 5
+
         }
         catch (DalInvalidTimeUnitException ex)
         {
@@ -371,6 +375,8 @@ internal class CallImplementation : ICall
             existingAssignment.FinishCompletionTime = ClockManager.Now;
             existingAssignment.CallResolutionStatus = DO.CallResolutionStatus.Closed;
             _dal.Assignment.Update(existingAssignment);
+            AssignmentManager.Observers.NotifyItemUpdated(existingAssignment.Id);  //stage 5
+            AssignmentManager.Observers.NotifyListUpdated();  //stage 5
         }
         catch (DalDoesNotExistException ex)
         {

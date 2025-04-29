@@ -45,7 +45,7 @@ internal class AdminImplementation : IAdmin
     /// <returns>The configured risk time range.</returns>
     public TimeSpan GetRiskTimeRange()
     {
-        return _dal.Config.RiskRange;
+        return AdminManager.RiskRange;
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ internal class AdminImplementation : IAdmin
     /// <param name="riskTimeRange">The new risk time range value.</param>
     public void SetRiskTimeRange(TimeSpan riskTimeRange)
     {
-        _dal.Config.RiskRange = riskTimeRange;
+        AdminManager.RiskRange = riskTimeRange;
     }
 
     /// <summary>
@@ -62,8 +62,7 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void ResetDatabase()
     {
-        _dal.Config.Reset();
-        _dal.ResetDB();
+        AdminManager.ResetDB();
     }
 
     /// <summary>
@@ -71,8 +70,20 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDatabase()
     {
-        _dal.Config.Reset();
-        DalTest.Initialization.Do();
-        ClockManager.UpdateClock(ClockManager.Now);
+        //AdminManager.Reset();
+        //DalTest.Initialization.Do();
+        //ClockManager.UpdateClock(ClockManager.Now);
+        AdminManager.InitializeDB();
+
     }
+
+    public void AddClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers += clockObserver;
+    public void RemoveClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers -= clockObserver;
+    public void AddConfigObserver(Action configObserver) =>
+    AdminManager.ConfigUpdatedObservers += configObserver;
+    public void RemoveConfigObserver(Action configObserver) =>
+    AdminManager.ConfigUpdatedObservers -= configObserver;
+
 }
