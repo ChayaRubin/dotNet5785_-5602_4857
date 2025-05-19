@@ -56,6 +56,12 @@ namespace Dal
         /// Resets the configuration to its default state.
         /// This method is used to restore the initial settings for all configuration values.
         /// </summary>
+        /// 
+        public TimeSpan MaxRange
+        {
+            get => Config.MaxRange;  // Gets the current max range
+            set => Config.MaxRange = value;  // Sets the new max range
+        }
         public void Reset() => Config.Reset();
     }
 }

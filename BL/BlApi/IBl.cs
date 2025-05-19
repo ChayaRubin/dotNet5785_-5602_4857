@@ -1,6 +1,7 @@
 ﻿namespace BlApi;
-public interface IBl : IObservable //stage 5 
+public interface IBl 
 {
+
     IVolunteer Volunteer { get; }
     ICall Call { get; }
     IAdmin Admin { get; }

@@ -23,6 +23,8 @@ public static class Config
 
     public static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
 
+    public static TimeSpan MaxRange { get; set; } = TimeSpan.Zero;
+
     public static void Reset()
     {
         nextCallId = firstCallId;

@@ -20,6 +20,10 @@
         /// <summary>
         /// Resets the configuration settings to their default values.
         /// </summary>
+        /// 
+        TimeSpan MaxRange { get; set; }
+
+
         void Reset();
     }
 }

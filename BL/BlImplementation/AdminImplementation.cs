@@ -16,7 +16,7 @@ internal class AdminImplementation : IAdmin
     /// <returns>The current system time.</returns>
     public DateTime GetSystemClock()
     {
-        return ClockManager.Now;
+        return AdminManager.Now;
     }
 
     /// <summary>
@@ -28,15 +28,15 @@ internal class AdminImplementation : IAdmin
     {
         DateTime newClock = timeUnit switch
         {
-            TimeUnit.MINUTE => ClockManager.Now.AddMinutes(1),
-            TimeUnit.HOUR => ClockManager.Now.AddHours(1),
-            TimeUnit.DAY => ClockManager.Now.AddDays(1),
-            TimeUnit.MONTH => ClockManager.Now.AddMonths(1),
-            TimeUnit.YEAR => ClockManager.Now.AddYears(1),
+            TimeUnit.MINUTE => AdminManager.Now.AddMinutes(1),
+            TimeUnit.HOUR => AdminManager.Now.AddHours(1),
+            TimeUnit.DAY => AdminManager.Now.AddDays(1),
+            TimeUnit.MONTH => AdminManager.Now.AddMonths(1),
+            TimeUnit.YEAR => AdminManager.Now.AddYears(1),
             _ => throw new ArgumentOutOfRangeException(nameof(timeUnit), "Invalid time unit")
         };
 
-        ClockManager.UpdateClock(newClock);
+        AdminManager.UpdateClock(newClock);
     }
 
     /// <summary>

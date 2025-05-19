@@ -5,7 +5,7 @@ using DO;
 using Helpers;
 using System.Net.Mail;
 using System.Net;
-using DalApi;
+
 /*using DalApi;*/
 
 namespace BlImplementation;
@@ -315,7 +315,7 @@ internal class CallImplementation : ICall
             if (assignment.FinishCompletionTime < DateTime.Now)
                 throw new DalGeneralDatabaseException("Cannot cancel a call that has already been closed");
 
-            assignment.EntryTime = ClockManager.Now;
+            assignment.EntryTime = AdminManager.Now;
 
             assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
 
@@ -372,7 +372,7 @@ internal class CallImplementation : ICall
             if (existingAssignment.FinishCompletionTime != null)
                 throw new DalGeneralDatabaseException("Call has already been closed or expired");
 
-            existingAssignment.FinishCompletionTime = ClockManager.Now;
+            existingAssignment.FinishCompletionTime = AdminManager.Now;
             existingAssignment.CallResolutionStatus = DO.CallResolutionStatus.Closed;
             _dal.Assignment.Update(existingAssignment);
             AssignmentManager.Observers.NotifyItemUpdated(existingAssignment.Id);  //stage 5
