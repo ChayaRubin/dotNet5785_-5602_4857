@@ -30,6 +30,15 @@ internal class ConfigImplementation : IConfig
     /// Resets all configuration settings to their default values.
     /// This method ensures that the system configuration is cleared and restored to its initial state.
     /// </summary>
+    /// 
+
+    public TimeSpan MaxRange
+    {
+        get => Config.MaxRange;
+        set => Config.MaxRange = value;
+    }
+
+
     public void Reset() => Config.Reset();
 }
 

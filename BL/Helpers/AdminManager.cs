@@ -22,7 +22,7 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// Property for providing/setting current configuration variable value for any BL class that may need it
     /// </summary>
-    internal static int MaxRange
+    internal static TimeSpan MaxRange
     {
         get => s_dal.Config.MaxRange;
         set
@@ -32,6 +32,15 @@ internal static class AdminManager //stage 4
         }
     }
 
+    internal static TimeSpan RiskRange
+    {
+        get => s_dal.Config.RiskRange;
+        set
+        {
+            s_dal.Config.RiskRange = value;
+            ConfigUpdatedObservers?.Invoke(); // stage 5
+        }
+    }
     /// <summary>
     /// Property for providing current application's clock value for any BL class that may need it
     /// </summary>
@@ -60,8 +69,7 @@ internal static class AdminManager //stage 4
         //Go through all students to update properties that are affected by the clock update
         //(students becomes not active after 5 years etc.)
 
-        StudentManager.PeriodicStudentsUpdates(oldClock, newClock); //stage 4
-        //etc ...
+//        //etc ...
 
         //Calling all the observers of clock update
         ClockUpdatedObservers?.Invoke(); //prepared for stage 5
@@ -104,14 +112,14 @@ internal static class AdminManager //stage 4
         {
             UpdateClock(Now.AddMinutes(s_interval));
 
-            #region Stage 7
-            //TO_DO:
-            //Add calls here to any logic simulation that was required in stage 7
-            //for example: course registration simulation
-            StudentManager.SimulateCourseRegistrationAndGrade(); //stage 7
+            //#region Stage 7
+            ////TO_DO:
+            ////Add calls here to any logic simulation that was required in stage 7
+            ////for example: course registration simulation
+            //StudentManager.SimulateCourseRegistrationAndGrade(); //stage 7
 
-            //etc...
-            #endregion Stage 7
+            ////etc...
+            //#endregion Stage 7
 
             try
             {
@@ -130,6 +138,7 @@ internal static class AdminManager //stage 4
             AdminManager.UpdateClock(AdminManager.Now);  // stage 5 - needed for update the PL
             AdminManager.MaxRange = AdminManager.MaxRange; // stage 5 - needed for update the PL
         //}
+
     }
     internal static void ResetDB()
     {
@@ -139,6 +148,7 @@ internal static class AdminManager //stage 4
             AdminManager.UpdateClock(AdminManager.Now); //stage 5 - needed for update PL
             AdminManager.MaxRange = AdminManager.MaxRange; //stage 5 - needed for update PL
         //}
+
     }
 
 }

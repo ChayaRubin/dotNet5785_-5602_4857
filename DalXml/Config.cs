@@ -48,6 +48,12 @@ internal static class Config
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "RiskRange");
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "RiskRange", value);
     }
+
+    internal static TimeSpan MaxRange
+    {
+        get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "MaxRange");
+        set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "MaxRange", value);
+    }
     /// <summary> Resets the configuration to default values. </summary>
     internal static void Reset()
     {
