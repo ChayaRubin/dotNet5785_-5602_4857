@@ -3,9 +3,6 @@ using BO;
 using Dal;
 using DO;
 using Helpers;
-using System.Net.Mail;
-using System.Net;
-using DalApi;
 /*using DalApi;*/
 
 namespace BlImplementation;
