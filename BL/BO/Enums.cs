@@ -38,7 +38,8 @@ public enum CallStatus
     Canceled,
     Expired,             // פג תוקף - לא נבחרה לטיפול או לא הסתיימה בזמן
     OpenAtRisk,          // פתוחה בסיכון - קריאה פתוחה שמתקרבת לזמן הסיום
-    InProgressAtRisk     // בטיפול בסיכון - קריאה בטיפול שמתקרבת לזמן הסיום
+    InProgressAtRisk,
+    None
 }
 
 
