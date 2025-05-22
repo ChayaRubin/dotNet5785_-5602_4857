@@ -305,7 +305,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BlFormatException">Thrown if the input data for the volunteer is invalid.</exception>
     /// <exception cref="BlUnauthorizedAccessException">Thrown if the operation is not authorized.</exception>
     /// <exception cref="BlGeneralDatabaseException">Thrown if an unexpected error occurs while adding the volunteer.</exception>
-    public async void AddVolunteer(BO.Volunteer volunteer)
+    public async Task AddVolunteer(BO.Volunteer volunteer)
     {
         try
         {

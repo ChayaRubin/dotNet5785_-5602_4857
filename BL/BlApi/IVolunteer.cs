@@ -20,7 +20,7 @@ public interface IVolunteer : IObservable //stage 5
     void DeleteVolunteer(int idNumber);
 
     //// 6. מתודת הוספת מתנדב
-    void AddVolunteer(BO.Volunteer volunteer);
+    Task AddVolunteer(BO.Volunteer volunteer);
 }
 
 

@@ -29,6 +29,7 @@ class Program
         {
             try
             {
+                //ManagerMainMenu();
                 Console.WriteLine("\nLogin Menu:");
                 Console.Write("Enter username: ");
                 string username = Console.ReadLine() ?? "";
@@ -62,6 +63,8 @@ class Program
     /// </summary>
     /// <param name="Manager">a parameter that holds the Manager's details</param>
     private static void ManagerMainMenu(string Manager)
+    //private static void ManagerMainMenu()
+
     {
         while (true)
         {
