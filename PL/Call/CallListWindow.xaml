@@ -9,27 +9,31 @@
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <!--External Grid-->
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="83*"/>
+            <ColumnDefinition Width="717*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListView Grid.Row="1" Margin="5" ItemsSource="{Binding Path=CallList}">
+        <ListView Grid.Row="1" Margin="5,5,5,5" ItemsSource="{Binding Path=CallList}" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="Button_Click"/>
+        <Button Content="Add" Grid.Row="1" HorizontalAlignment="Left" Height="50" Width="100" Click="Button_Click" Grid.Column="1" Margin="267,531,0,0" Grid.RowSpan="2"/>
         <!--Internal, Upper Grid-->
-        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
+        <Grid Height="auto" Grid.Row="0" Width="auto" Grid.ColumnSpan="2" Margin="0,0,0,531" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
         </Grid>
         <Label Content="Label" HorizontalAlignment="Left" Margin="10,192,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="0"/>
-        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1"/>
+        <ComboBox Grid.ColumnSpan="2" Margin="0,0,0,531" Grid.RowSpan="2"/>
     </Grid>
 </Window>
