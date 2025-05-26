@@ -84,3 +84,16 @@ public enum CallListSortBy
     CallId,
     StartTime
 }
+
+public enum VolunteerInListProperty
+{
+    VolunteerId,
+    Name,
+    IsActive,
+    TotalCallsHandled,
+    TotalCallsCanceled,
+    TotalExpiredCalls,
+    IdOfTheCallHandled,
+    TypeOfHandledCall,
+    None
+}

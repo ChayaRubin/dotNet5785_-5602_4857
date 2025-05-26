@@ -190,7 +190,7 @@
     <VolunteerId>807874237</VolunteerId>
     <EntryTime>2025-06-27T11:31:29.2462469+03:00</EntryTime>
     <FinishCompletionTime>2025-06-29T11:31:29.2462469+03:00</FinishCompletionTime>
-    <callResolutionStatus>0</callResolutionStatus>
+    <callResolutionStatus>Canceled</callResolutionStatus>
   </Assignment>
   <Assignment>
     <Id>1054</Id>

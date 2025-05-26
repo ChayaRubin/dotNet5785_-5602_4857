@@ -220,7 +220,7 @@
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
     <Position>Volunteer</Position>
-    <Active>true</Active>
+    <Active>false</Active>
     <MaxResponseDistance>18.931905390669897</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
