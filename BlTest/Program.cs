@@ -612,7 +612,7 @@ class Program
             Console.WriteLine("List of Volunteers:");
             foreach (var volunteer in volunteers)
             {
-                Console.WriteLine($"ID: {volunteer.Id}, Name: {volunteer.FullName}, Total Handled Calls: {volunteer.TotalCallsHandled}, Total Canceled Calls: {volunteer.TotalCallsCanceled}, Total Expired Calls: {volunteer.TotalCallsExpired}");
+                Console.WriteLine($"ID: {volunteer.Id}, Name: {volunteer.FullName}, Total Canceled Calls: {volunteer.TotalCanceledCalls}, Total Expired Calls: {volunteer.TotalExpiredCalls}");
             }
         }
         catch (BlFormatException ex)

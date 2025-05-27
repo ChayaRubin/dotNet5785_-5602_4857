@@ -20,10 +20,21 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="volunteers">Collection of DO.Volunteer objects to convert</param>
     /// <returns>List of converted BO.Volunteer objects</returns>
-    public static List<BO.Volunteer> GetVolunteerList(IEnumerable<DO.Volunteer> volunteers)
+    public static List<BO.VolunteerInList> GetVolunteerList(IEnumerable<BO.Volunteer> volunteers)
     {
-        return volunteers.Select(ConvertToBO).ToList();
+        return volunteers.Select(v => new BO.VolunteerInList
+        {
+            Id = v.Id,
+            FullName = v.FullName,
+            IsActive = v.IsActive,
+            TotalHandledCalls = v.TotalCallsHandled,
+            TotalCanceledCalls = v.TotalCallsCanceled,
+            TotalExpiredCalls = v.TotalExpiredCalls,
+            CurrentCallId = v.CurrentCall?.CallId,
+            CurrentCallType = v.CurrentCall?.CallType ?? BO.CallTypeEnum.None
+        }).ToList();
     }
+
 
     /// <summary>
     /// Converts a single DO.Volunteer object to a BO.Volunteer object
@@ -170,7 +181,7 @@ internal static class VolunteerManager
     /// </summary>
     /// <param name="volunteer">Volunteer object to validate</param>
     /// <exception cref="DalFormatException">Thrown when any validation fails</exception>
-    public static async Task<(double latitude, double longitude)> ValidateInputFormat(BO.Volunteer volunteer)
+    public static (double latitude, double longitude) ValidateInputFormat(BO.Volunteer volunteer)
     {
         if (!IsValidIdNumber(volunteer.Id.ToString()))
         {

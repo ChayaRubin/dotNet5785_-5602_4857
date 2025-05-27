@@ -1,44 +1,68 @@
-﻿using BlApi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using BlApi;
+using BO;
 
 namespace PL.Volunteer
 {
-    /// <summary>
-    /// Interaction logic for VolunteerListWindow.xaml
-    /// </summary>
-    public partial class VolunteerListWindow : Window
+    public partial class VolunteersListWindow : Window
     {
-        static readonly IBl s_bl = Factory.Get();
+        private readonly IBl s_bl = Factory.Get();
 
-        public VolunteerListWindow()
+        public IEnumerable<VolunteerInList> VolunteersListView
+        {
+            get => (IEnumerable<VolunteerInList>)GetValue(VolunteersListViewProperty);
+            set => SetValue(VolunteersListViewProperty, value);
+        }
+
+        public static readonly DependencyProperty VolunteersListViewProperty =
+            DependencyProperty.Register(
+                nameof(VolunteersListView),
+                typeof(IEnumerable<VolunteerInList>),
+                typeof(VolunteersListWindow)
+            );
+
+        public VolunteersListWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            FilterByComboBox.ItemsSource = Enum.GetValues(typeof(CallTypeEnum));
+            FilterByComboBox.SelectedItem = CallTypeEnum.None;
+            LoadVolunteers();
         }
 
-        public IEnumerable<BO.VolunteerInList> VolunteerList
+        private void FilterByComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            get { return (IEnumerable<BO.VolunteerInList>)GetValue(CourseListProperty); }
-            set { SetValue(CourseListProperty, value); }
+            LoadVolunteers();
         }
 
-        public static readonly DependencyProperty CourseListProperty =
-            DependencyProperty.Register("CourseList", typeof(IEnumerable<BO.VolunteerInList>), typeof(VolunteerListWindow), new PropertyMetadata(null));
+        private void LoadVolunteers()
+        {
+            var selectedCallType = (CallTypeEnum)FilterByComboBox.SelectedItem;
+            CallTypeEnum? callTypeFilter = selectedCallType == CallTypeEnum.None ? (CallTypeEnum?)null : selectedCallType;
+
+            var volunteers = s_bl.Volunteer.GetVolunteersList(null, null, callTypeFilter);
+
+            VolunteersListView = volunteers.ToList();
+
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            FilterByComboBox.SelectedItem = CallTypeEnum.None;
+            LoadVolunteers();
+        }
     }
 }

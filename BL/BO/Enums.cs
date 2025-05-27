@@ -26,6 +26,7 @@ public enum CallTypeEnum
     Medium_Urgency,
     General_Assistance,
     Non_Urgent,
+    None
 }
 
 // סטטוס הקריאה (ENUM)
@@ -39,6 +40,7 @@ public enum CallStatus
     Expired,             // פג תוקף - לא נבחרה לטיפול או לא הסתיימה בזמן
     OpenAtRisk,          // פתוחה בסיכון - קריאה פתוחה שמתקרבת לזמן הסיום
     InProgressAtRisk,
+    Treated,          // טופלה - מתנדב סיים לטפל בה, אך לא נבחרה לסגירה
     None
 }
 
@@ -85,15 +87,20 @@ public enum CallListSortBy
     StartTime
 }
 
+public enum VolunteerInListSort
+{
+    Id,
+    FullName,
+    IsActive,
+    TotalHandledCalls,
+    TotalCanceledCalls,
+    TotalExpiredCalls,
+    CurrentCallId,
+    CurrentCallType,
+    None
+}
+
 public enum VolunteerInListProperty
 {
-    VolunteerId,
-    Name,
-    IsActive,
-    TotalCallsHandled,
-    TotalCallsCanceled,
-    TotalExpiredCalls,
-    IdOfTheCallHandled,
-    TypeOfHandledCall,
     None
 }

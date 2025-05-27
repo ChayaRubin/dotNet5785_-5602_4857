@@ -8,7 +8,8 @@ public interface IVolunteer : IObservable //stage 5
     string Login(string username, string password);
 
     //// 2. מתודת בקשת רשימת מתנדבים
-    IEnumerable<BO.Volunteer> GetVolunteersList(bool? isActive, VolunteerSortBy? fieldToSortBy);
+    //IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive, VolunteerSortBy? fieldToSortBy);
+    IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive = null, VolunteerSortBy? fieldToSortBy = null, CallTypeEnum? callType = null);
 
     //// 3. מתודת בקשת פרטי מתנדב
     BO.Volunteer GetVolunteerDetails(string idNumber);
@@ -20,7 +21,7 @@ public interface IVolunteer : IObservable //stage 5
     void DeleteVolunteer(int idNumber);
 
     //// 6. מתודת הוספת מתנדב
-    Task AddVolunteer(BO.Volunteer volunteer);
+    void AddVolunteer(BO.Volunteer volunteer);
 }
 
 

@@ -18,7 +18,7 @@ namespace BO
         public DistanceType TypeOfDistance { get; set; }
         public int TotalCallsHandled { get; set; }
         public int TotalCallsCanceled { get; set; }
-        public int TotalCallsExpired { get; set; }
+        public int TotalExpiredCalls { get; set; }
         public CallInProgress CurrentCall { get; set; }
 
         // Override ToString method
@@ -31,7 +31,7 @@ namespace BO
                    $"Active: {IsActive}\n" +
                    $"Total Calls Handled: {TotalCallsHandled}\n" +
                    $"Total Calls Canceled: {TotalCallsCanceled}\n" +
-                   $"Total Calls Expired: {TotalCallsExpired}\n" +
+                   $"Total Calls Expired: {TotalExpiredCalls}\n" +
                    $"Current Address: {CurrentAddress}\n" +
                    $"Latitude: {Latitude}\n" +
                    $"Longitude: {Longitude}\n" +

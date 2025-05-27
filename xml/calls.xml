@@ -3,42 +3,42 @@
   <Call>
     <RadioCallId>1000</RadioCallId>
     <Description>Medical Emergency</Description>
-    <CallType>Urgent</CallType>
+    <CallType>Non_Urgent</CallType>
     <Address>Meah Shearim St 10, Jerusalem</Address>
     <Latitude>31.7865608</Latitude>
     <Longitude>35.2208052</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1001</RadioCallId>
     <Description>Accident Assistance</Description>
-    <CallType>Urgent</CallType>
+    <CallType>Non_Urgent</CallType>
     <Address>Chazon Ish St 6, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1002</RadioCallId>
     <Description>Vehicle Recovery</Description>
-    <CallType>Urgent</CallType>
+    <CallType>Non_Urgent</CallType>
     <Address>Ramat Eshkol St 11, Jerusalem</Address>
     <Latitude>31.8017893</Latitude>
     <Longitude>35.2228759</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1003</RadioCallId>
     <Description>Emergency Towing</Description>
-    <CallType>Urgent</CallType>
+    <CallType>Non_Urgent</CallType>
     <Address>Har Safra St 1, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1004</RadioCallId>
@@ -47,8 +47,8 @@
     <Address>Mount Scopus St 4, Jerusalem</Address>
     <Latitude>31.794767</Latitude>
     <Longitude>35.2425346</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1005</RadioCallId>
@@ -57,8 +57,8 @@
     <Address>Keren Hayesod St 30, Jerusalem</Address>
     <Latitude>31.7723879</Latitude>
     <Longitude>35.2215257</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1006</RadioCallId>
@@ -67,8 +67,8 @@
     <Address>Neve Yaakov St 17, Jerusalem</Address>
     <Latitude>31.842212</Latitude>
     <Longitude>35.24206</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1007</RadioCallId>
@@ -77,8 +77,8 @@
     <Address>Shmuel HaNavi St 12, Jerusalem</Address>
     <Latitude>31.7875022</Latitude>
     <Longitude>35.2265973</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1008</RadioCallId>
@@ -87,8 +87,8 @@
     <Address>Yechiel St 3, Jerusalem</Address>
     <Latitude>31.7472349</Latitude>
     <Longitude>35.2326395</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1009</RadioCallId>
@@ -97,8 +97,8 @@
     <Address>Rav Kook St 4, Jerusalem</Address>
     <Latitude>31.7831088</Latitude>
     <Longitude>35.2203032</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-06T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1010</RadioCallId>
@@ -107,18 +107,18 @@
     <Address>Talmud Torah St 8, Jerusalem</Address>
     <Latitude>31.898714</Latitude>
     <Longitude>35.185758</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1011</RadioCallId>
     <Description>Flat Tire</Description>
-    <CallType>Medium_Urgency</CallType>
+    <CallType>Urgent</CallType>
     <Address>Sanhedria St 18, Jerusalem</Address>
     <Latitude>31.8051921</Latitude>
     <Longitude>35.2157309</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1012</RadioCallId>
@@ -127,8 +127,8 @@
     <Address>Kiryat Moshe St 6, Jerusalem</Address>
     <Latitude>31.7857651</Latitude>
     <Longitude>35.1968887</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1013</RadioCallId>
@@ -137,8 +137,8 @@
     <Address>Achad Ha'am St 2, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1014</RadioCallId>
@@ -147,8 +147,8 @@
     <Address>Bar Ilan St 7, Jerusalem</Address>
     <Latitude>31.7957696</Latitude>
     <Longitude>35.2198077</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1015</RadioCallId>
@@ -157,8 +157,8 @@
     <Address>City Center St 14, Jerusalem</Address>
     <Latitude>31.7259643</Latitude>
     <Longitude>34.7437502</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1016</RadioCallId>
@@ -167,8 +167,8 @@
     <Address>Rechov Yechiel 3, Jerusalem</Address>
     <Latitude>31.7476677</Latitude>
     <Longitude>35.2323345</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1017</RadioCallId>
@@ -177,8 +177,8 @@
     <Address>Giv'at Shaul St 7, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1018</RadioCallId>
@@ -187,8 +187,8 @@
     <Address>Nachlaot St 7, Jerusalem</Address>
     <Latitude>31.703275</Latitude>
     <Longitude>35.194809</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1019</RadioCallId>
@@ -197,8 +197,8 @@
     <Address>Rav Kook St 5, Jerusalem</Address>
     <Latitude>31.7831088</Latitude>
     <Longitude>35.2203032</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-06-21T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1020</RadioCallId>
@@ -207,8 +207,8 @@
     <Address>Har Nof St 18, Jerusalem</Address>
     <Latitude>31.7858115</Latitude>
     <Longitude>35.1741509</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1021</RadioCallId>
@@ -217,8 +217,8 @@
     <Address>Ramat Shlomo St 15, Jerusalem</Address>
     <Latitude>31.8111253</Latitude>
     <Longitude>35.2174861</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1022</RadioCallId>
@@ -227,8 +227,8 @@
     <Address>Sderot Yitzhak Rabin St 5, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1023</RadioCallId>
@@ -237,8 +237,8 @@
     <Address>Har Hatzofim St 8, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1024</RadioCallId>
@@ -247,8 +247,8 @@
     <Address>Giv'at HaMivtar St 6, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1025</RadioCallId>
@@ -257,8 +257,8 @@
     <Address>Tefilat Yisrael St 14, Jerusalem</Address>
     <Latitude>31.779042</Latitude>
     <Longitude>35.229702</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1026</RadioCallId>
@@ -267,8 +267,8 @@
     <Address>Malkhei Yisrael St 10, Jerusalem</Address>
     <Latitude>31.7909196</Latitude>
     <Longitude>35.2089577</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1027</RadioCallId>
@@ -277,8 +277,8 @@
     <Address>Kiryat Tzahal St 6, Jerusalem</Address>
     <Latitude>32.0416824</Latitude>
     <Longitude>34.7904787</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1028</RadioCallId>
@@ -287,8 +287,8 @@
     <Address>Nachal Noach St 17, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1029</RadioCallId>
@@ -297,8 +297,8 @@
     <Address>Maalot Dafna St 6, Jerusalem</Address>
     <Latitude>31.7933736</Latitude>
     <Longitude>35.2246764</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1030</RadioCallId>
@@ -307,8 +307,8 @@
     <Address>Har HaMor St 3, Jerusalem</Address>
     <Latitude>31.7854673</Latitude>
     <Longitude>35.1001866</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1031</RadioCallId>
@@ -317,8 +317,8 @@
     <Address>Ramat HaSharon St 2, Jerusalem</Address>
     <Latitude>32.3260388</Latitude>
     <Longitude>34.8511049</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1032</RadioCallId>
@@ -327,8 +327,8 @@
     <Address>Yakar St 3, Jerusalem</Address>
     <Latitude>31.8405465</Latitude>
     <Longitude>35.2454408</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1033</RadioCallId>
@@ -337,8 +337,8 @@
     <Address>Rav Haim Ozer St 9, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1034</RadioCallId>
@@ -347,8 +347,8 @@
     <Address>Yehoshua Ben-Nun St 5, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1035</RadioCallId>
@@ -357,8 +357,8 @@
     <Address>Meir Schauer St 12, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1036</RadioCallId>
@@ -367,8 +367,8 @@
     <Address>Menachem Begin St 11, Jerusalem</Address>
     <Latitude>31.7686856</Latitude>
     <Longitude>35.1950858</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1037</RadioCallId>
@@ -377,8 +377,8 @@
     <Address>Yisrael Yaakov St 13, Jerusalem</Address>
     <Latitude>31.8383352</Latitude>
     <Longitude>35.2441809</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1038</RadioCallId>
@@ -387,8 +387,8 @@
     <Address>Ben Yehuda St 6, Jerusalem</Address>
     <Latitude>31.7815767</Latitude>
     <Longitude>35.2180856</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1039</RadioCallId>
@@ -397,8 +397,8 @@
     <Address>Hadar St 3, Jerusalem</Address>
     <Latitude>32.8089768</Latitude>
     <Longitude>34.997939</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2026-05-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1040</RadioCallId>
@@ -407,8 +407,8 @@
     <Address>Maharal St 8, Jerusalem</Address>
     <Latitude>31.7215207</Latitude>
     <Longitude>35.2284413</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1041</RadioCallId>
@@ -417,8 +417,8 @@
     <Address>Yosef Schwartz St 4, Jerusalem</Address>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1042</RadioCallId>
@@ -427,8 +427,8 @@
     <Address>Jabotinsky St 7, Jerusalem</Address>
     <Latitude>31.7709719</Latitude>
     <Longitude>35.2210202</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1043</RadioCallId>
@@ -437,8 +437,8 @@
     <Address>Shazar St 5, Jerusalem</Address>
     <Latitude>31.7135737</Latitude>
     <Longitude>34.9838857</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1044</RadioCallId>
@@ -447,8 +447,8 @@
     <Address>Gonenim St 12, Jerusalem</Address>
     <Latitude>31.906037</Latitude>
     <Longitude>35.203005</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1045</RadioCallId>
@@ -457,8 +457,8 @@
     <Address>Talpiot St 14, Jerusalem</Address>
     <Latitude>31.7515394</Latitude>
     <Longitude>35.2160228</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1046</RadioCallId>
@@ -467,8 +467,8 @@
     <Address>Bilu St 9, Jerusalem</Address>
     <Latitude>31.762803</Latitude>
     <Longitude>35.2099602</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1047</RadioCallId>
@@ -477,8 +477,8 @@
     <Address>Yovel St 2, Jerusalem</Address>
     <Latitude>31.780514</Latitude>
     <Longitude>35.217981</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1048</RadioCallId>
@@ -487,8 +487,8 @@
     <Address>Herzl St 3, Jerusalem</Address>
     <Latitude>31.74948</Latitude>
     <Longitude>34.9880954</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1049</RadioCallId>
@@ -497,7 +497,7 @@
     <Address>Hashmonai St 6, Jerusalem</Address>
     <Latitude>31.77676</Latitude>
     <Longitude>35.230342</Longitude>
-    <StartTime>2025-05-22T16:41:29.2462469+03:00</StartTime>
-    <ExpiredTime>2025-07-22T16:41:29.2462469+03:00</ExpiredTime>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
 </ArrayOfCall>

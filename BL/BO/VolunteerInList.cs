@@ -17,7 +17,7 @@ namespace BO
         public int TotalCanceledCalls { get; set; } // סך הקריאות שבוטלו
         public int TotalExpiredCalls { get; set; } // סך הקריאות שפג תוקפן
         public int? CurrentCallId { get; set; } // מספר מזהה של הקריאה בטיפולו (אם קיימת)
-        public CallTypeEnum CurrentCallType { get; set; } // סוג הקריאה שבטיפולו
+        public CallTypeEnum CurrentCallType { get; set; } 
 
         /// <summary>
         /// Provides a string representation of the object for debugging purposes.

@@ -55,48 +55,218 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="isActive">Optional parameter to filter volunteers by activity status.</param>
     /// <param name="sortBy">Optional parameter to specify how to sort the volunteers.</param>
     /// <returns>A list of volunteers that match the criteria.</returns>
-    public IEnumerable<BO.Volunteer> GetVolunteersList(bool? isActive, VolunteerSortBy? sortBy)
+    //public IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive, VolunteerSortBy? sortBy)
+    //{
+    //    try
+    //    {
+    //        // Retrieve volunteers with activity filtering
+    //        IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll(v =>
+    //            !isActive.HasValue || v.Active == isActive.Value);
+
+    //        // Convert DO volunteers to BO volunteers
+
+    //        var BoVolunteers = volunteers.Select(VolunteerManager.ConvertToBO);
+
+
+    //        var volunteerList = VolunteerManager.GetVolunteerList(BoVolunteers);
+
+    //        // Loop through each volunteer to count the calls they have handled, canceled, and expired
+    //        foreach (var volunteer in volunteerList)
+    //        {
+    //            // Retrieve all assignments for the volunteer
+    //            var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
+
+    //            // Calculate the total number of calls handled, canceled, and expired
+    //            volunteer.TotalHandledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
+
+    //            volunteer.TotalCanceledCalls = assignments.Count(a =>
+    //                a.CallResolutionStatus == CallResolutionStatus.Canceled
+    //                || a.CallResolutionStatus == CallResolutionStatus.SelfCanceled);
+
+    //            volunteer.TotalExpiredCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
+
+    //        }
+
+    //        // Sort the list based on selected criteria
+    //        volunteerList = sortBy.HasValue ? sortBy.Value switch
+    //        {
+    //            VolunteerSortBy.FullName => volunteerList.OrderBy(v => v.FullName).ToList(),
+    //            VolunteerSortBy.TotalHandledCalls => volunteerList.OrderByDescending(v => v.TotalHandledCalls).ToList(),
+    //            VolunteerSortBy.TotalCanceledCalls => volunteerList.OrderByDescending(v => v.TotalCanceledCalls).ToList(),
+    //            VolunteerSortBy.TotalExpiredCalls => volunteerList.OrderByDescending(v => v.TotalExpiredCalls).ToList(),
+    //            _ => volunteerList.OrderBy(v => v.Id).ToList()
+    //        } : volunteerList.OrderBy(v => v.Id).ToList();
+
+    //        // Return the sorted list of volunteers
+    //        return volunteerList;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new BlGeneralDatabaseException($"An unexpected error occurred while retrieving the volunteer list: {ex.Message}");
+    //    }
+    //}
+
+    /* public IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive, VolunteerSortBy? sortBy, CallTypeEnum? callTypeFilter = null)
+     {
+         try
+         {
+             // Step 1: Filter volunteers by isActive if specified
+             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll(v =>
+                 !isActive.HasValue || v.Active == isActive.Value);
+
+             // Convert DO.Volunteer to BO.VolunteerInList (assuming you have such a method)
+             var boVolunteers = volunteers.Select(VolunteerManager.ConvertToBO);
+
+             var volunteerList = VolunteerManager.GetVolunteerList(boVolunteers);
+
+             foreach (var volunteer in volunteerList)
+             {
+                 // Get all assignments for this volunteer
+                 var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
+
+                 // Calculate handled, canceled, expired calls counts
+                 volunteer.TotalHandledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
+                 volunteer.TotalCanceledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Canceled
+                                                                    || a.CallResolutionStatus == CallResolutionStatus.SelfCanceled);
+                 volunteer.TotalExpiredCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
+
+                 // Optional: find current active assignment (e.g. InProgress)
+                 var currentAssignment = assignments.FirstOrDefault(a => a.CallResolutionStatus == CallResolutionStatus.InProgress);
+                 if (currentAssignment != null)
+                 {
+                     volunteer.CurrentCallId = currentAssignment.CallId;
+
+                     // Get the call to check its type
+                     var call = _dal.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
+                     if (call != null)
+                     {
+                         // Convert DO.CallType to BO.CallTypeEnum safely
+                         volunteer.CurrentCallType = (BO.CallTypeEnum)(int)call.CallType;
+                     }
+                     else
+                     {
+                         volunteer.CurrentCallType = BO.CallTypeEnum.None;
+                     }
+                 }
+                 else
+                 {
+                     volunteer.CurrentCallId = null;
+                     volunteer.CurrentCallType = BO.CallTypeEnum.None;
+                 }
+             }
+
+             // Step 2: Filter by CallTypeEnum if specified
+             if (callTypeFilter.HasValue)
+             {
+                 volunteerList = volunteerList
+                     .Where(v => v.CurrentCallType == callTypeFilter.Value)
+                     .ToList();
+             }
+
+             // Step 3: Sort the list based on sortBy parameter or default by Id
+             volunteerList = sortBy.HasValue ? sortBy.Value switch
+             {
+                 VolunteerSortBy.FullName => volunteerList.OrderBy(v => v.FullName).ToList(),
+                 VolunteerSortBy.TotalHandledCalls => volunteerList.OrderByDescending(v => v.TotalHandledCalls).ToList(),
+                 VolunteerSortBy.TotalCanceledCalls => volunteerList.OrderByDescending(v => v.TotalCanceledCalls).ToList(),
+                 VolunteerSortBy.TotalExpiredCalls => volunteerList.OrderByDescending(v => v.TotalExpiredCalls).ToList(),
+                 _ => volunteerList.OrderBy(v => v.Id).ToList()
+             } : volunteerList.OrderBy(v => v.Id).ToList();
+
+             return volunteerList;
+         }
+         catch (Exception ex)
+         {
+             throw new BlGeneralDatabaseException($"Unexpected error while retrieving volunteers: {ex.Message}");
+         }
+     }*/
+    public IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive, VolunteerSortBy? sortBy, CallTypeEnum? callTypeFilter = null)
     {
         try
         {
-            // Retrieve volunteers with activity filtering
+            // Step 1: Filter volunteers by isActive if specified
             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll(v =>
                 !isActive.HasValue || v.Active == isActive.Value);
 
-            // Convert DO volunteers to BO volunteers
-            var volunteerList = VolunteerManager.GetVolunteerList(volunteers);
+            // Convert DO.Volunteer to BO.VolunteerInList (assuming you have such a method)
+            var boVolunteers = volunteers.Select(VolunteerManager.ConvertToBO);
 
-            // Loop through each volunteer to count the calls they have handled, canceled, and expired
+            var volunteerList = VolunteerManager.GetVolunteerList(boVolunteers);
+
             foreach (var volunteer in volunteerList)
             {
-                // Retrieve all assignments for the volunteer
+                // Get all assignments for this volunteer
                 var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
 
-                // Calculate the total number of calls handled, canceled, and expired
-                volunteer.TotalCallsHandled = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
-                volunteer.TotalCallsCanceled = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.SelfCanceled);
-                volunteer.TotalCallsExpired = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
+                // Calculate handled, canceled, expired calls counts
+                volunteer.TotalHandledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
+                volunteer.TotalCanceledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Canceled
+                                                                   || a.CallResolutionStatus == CallResolutionStatus.SelfCanceled);
+                volunteer.TotalExpiredCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
 
+                // Optional: find current active assignment (e.g. InProgress)
+                var currentAssignment = assignments.FirstOrDefault(a => a.CallResolutionStatus == CallResolutionStatus.InProgress);
+                if (currentAssignment != null)
+                {
+                    volunteer.CurrentCallId = currentAssignment.CallId;
+
+                    // Get the call to check its type
+                    var call = _dal.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
+                    if (call != null)
+                    {
+                        volunteer.CurrentCallType = (BO.CallTypeEnum)(int)call.CallType;
+                    }
+                    else
+                    {
+                        volunteer.CurrentCallType = BO.CallTypeEnum.None;
+                    }
+                }
+                else
+                {
+                    volunteer.CurrentCallId = null;
+                    volunteer.CurrentCallType = BO.CallTypeEnum.None;
+                }
             }
 
-            // Sort the list based on selected criteria
+            // Step 2: Filter by CallTypeEnum if specified (check all calls for each volunteer)
+            if (callTypeFilter.HasValue)
+            {
+                volunteerList = volunteerList
+                    .Where(v =>
+                    {
+                        // Get all assignments for this volunteer
+                        var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == v.Id);
+
+                        // Check if any of the calls in assignments match the filter type
+                        foreach (var assignment in assignments)
+                        {
+                            var call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId);
+                            if (call != null && (BO.CallTypeEnum)(int)call.CallType == callTypeFilter.Value)
+                                return true;
+                        }
+                        return false;
+                    })
+                    .ToList();
+            }
+
+            // Step 3: Sort the list based on sortBy parameter or default by Id
             volunteerList = sortBy.HasValue ? sortBy.Value switch
             {
                 VolunteerSortBy.FullName => volunteerList.OrderBy(v => v.FullName).ToList(),
-                VolunteerSortBy.TotalHandledCalls => volunteerList.OrderByDescending(v => v.TotalCallsHandled).ToList(),
-                VolunteerSortBy.TotalCanceledCalls => volunteerList.OrderByDescending(v => v.TotalCallsCanceled).ToList(),
-                VolunteerSortBy.TotalExpiredCalls => volunteerList.OrderByDescending(v => v.TotalCallsExpired).ToList(),
+                VolunteerSortBy.TotalHandledCalls => volunteerList.OrderByDescending(v => v.TotalHandledCalls).ToList(),
+                VolunteerSortBy.TotalCanceledCalls => volunteerList.OrderByDescending(v => v.TotalCanceledCalls).ToList(),
+                VolunteerSortBy.TotalExpiredCalls => volunteerList.OrderByDescending(v => v.TotalExpiredCalls).ToList(),
                 _ => volunteerList.OrderBy(v => v.Id).ToList()
             } : volunteerList.OrderBy(v => v.Id).ToList();
 
-            // Return the sorted list of volunteers
             return volunteerList;
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException($"An unexpected error occurred while retrieving the volunteer list: {ex.Message}");
+            throw new BlGeneralDatabaseException($"Unexpected error while retrieving volunteers: {ex.Message}");
         }
     }
+
 
     /// <summary>
     /// Retrieves detailed information about a volunteer based on their ID number.
@@ -305,7 +475,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BlFormatException">Thrown if the input data for the volunteer is invalid.</exception>
     /// <exception cref="BlUnauthorizedAccessException">Thrown if the operation is not authorized.</exception>
     /// <exception cref="BlGeneralDatabaseException">Thrown if an unexpected error occurs while adding the volunteer.</exception>
-    public async Task AddVolunteer(BO.Volunteer volunteer)
+    public void AddVolunteer(BO.Volunteer volunteer)
     {
         try
         {
@@ -316,7 +486,7 @@ internal class VolunteerImplementation : IVolunteer
             }
 
             // Validate input format
-            var coordinates = await VolunteerManager.ValidateInputFormat(volunteer);
+            var coordinates =  VolunteerManager.ValidateInputFormat(volunteer);
             //var coordinates = await CallManager.ValidateCall(newCall);
 
             // Set the coordinates to the newCall object
