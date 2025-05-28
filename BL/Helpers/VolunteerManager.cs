@@ -264,6 +264,7 @@ internal static class VolunteerManager
     /// <returns>True if phone number is valid, false otherwise</returns>
     public static bool IsValidPhoneNumber(string phoneNumber)
     {
+        phoneNumber = phoneNumber.Replace(" ", "").Trim();
         return phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
     }
 
