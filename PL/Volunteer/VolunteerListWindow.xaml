@@ -78,14 +78,16 @@
                                 <GridViewColumn Header="Canceled" DisplayMemberBinding="{Binding TotalCanceledCalls}" Width="100"/>
                                 <GridViewColumn Header="Expired" DisplayMemberBinding="{Binding TotalExpiredCalls}" Width="100"/>
                                 <!-- Delete Button Column -->
-                                <GridViewColumn Header="Delete" Width="100">
+                                <GridViewColumn  Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Content="Delete"
-                                                    Background="#D9534F"
+                                                    Background="#C25C9E"
                                                     Foreground="White"
                                                     FontWeight="Bold"
+                                                    BorderBrush="#C25C9E"
                                                     Padding="5"
+                                                    Style="{StaticResource RoundedButtonStyle}"
                                                     Click="DeleteVolunteer_Click"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -96,9 +98,9 @@
 
                     <!-- Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-                        <Button Content="Add" Click="BtnAdd_Click" Background="#6FA8DC" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Add A Volunteer" Click="BtnAdd_Click" Background="#6FA8DC" Width="150" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
 
                 </StackPanel>

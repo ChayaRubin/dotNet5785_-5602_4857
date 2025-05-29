@@ -1,214 +1,148 @@
-﻿<!--<Window x:Class="PL.VolunteerWindow"
+﻿<Window x:Class="PL.VolunteerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Volunteer Details" Height="600" Width="450"
+        Title="Volunteer Details" Height="600" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Background="#E6F0FA"
+        WindowStartupLocation="CenterScreen"
+        
         Closing="VolunteerPage_Closing">
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TextBlock />
-        <TextBlock Text="Volunteer Details" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+        <Style x:Key="ColoredComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#C25C9E"/>
+            <Setter Property="BorderBrush" Value="#C25C9E"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Id:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.Id, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
+    <Viewbox Stretch="Uniform">
+        <Grid>
+            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#0F425F" BorderThickness="2" Margin="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Full Name:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.FullName, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
+                    <TextBlock Text="Volunteer Details" FontSize="22" FontWeight="Bold" Margin="0,0,0,10" Foreground="#0F425F" HorizontalAlignment="Center"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Phone Number:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Email:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.Email, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
+                            <!-- שדות -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Id:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.Id}" Width="250"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="10">
-                    <TextBlock Text="Password:" Width="100"/>
-                    <PasswordBox x:Name="PasswordBox" Width="200" PasswordChanged="PasswordBox_PasswordChanged"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Full Name:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.FullName}" Width="250"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Current Address:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.CurrentAddress, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Phone Number:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.PhoneNumber}" Width="250"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Latitude:" Width="120"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.Latitude}" />
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Email:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.Email}" Width="250"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Longitude:" Width="120"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.Longitude}" />
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Password:" Width="120" VerticalAlignment="Center"/>
+                                <PasswordBox x:Name="PasswordBox" Width="250" PasswordChanged="PasswordBox_PasswordChanged"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Role:" Width="120"/>
-                    <ComboBox Width="150" SelectedValue="{Binding CurrentVolunteer.Role, UpdateSourceTrigger=PropertyChanged}"
-                              ItemsSource="{Binding Roles}"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Current Address:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.CurrentAddress}" Width="250"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Is Active:" Width="120"/>
-                    <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Latitude:" Width="120"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.Latitude}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Max Distance:" Width="120"/>
-                    <TextBox Text="{Binding CurrentVolunteer.MaxDistance, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Longitude:" Width="120"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.Longitude}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Distance Type:" Width="120"/>
-                    <ComboBox Width="150" SelectedValue="{Binding CurrentVolunteer.TypeOfDistance, UpdateSourceTrigger=PropertyChanged}"
-                              ItemsSource="{Binding DistanceTypes}"/>
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Role:" Width="120"/>
+                                <ComboBox Width="250" ItemsSource="{Binding Roles}" SelectedValue="{Binding CurrentVolunteer.Role}" Style="{StaticResource ColoredComboBox}"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
-                    <TextBlock Text="Total Calls Handled:" Width="120"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalCallsHandled}" />
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Is Active:" Width="120"/>
+                                <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Total Calls Canceled:" Width="120"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalCallsCanceled}" />
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Max Distance:" Width="120"/>
+                                <TextBox Text="{Binding CurrentVolunteer.MaxDistance}" Width="100"/>
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Total Calls Expired:" Width="120"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalExpiredCalls}" />
-                </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Distance Type:" Width="120"/>
+                                <ComboBox Width="250" ItemsSource="{Binding DistanceTypes}" SelectedValue="{Binding CurrentVolunteer.TypeOfDistance}" Style="{StaticResource ColoredComboBox}"/>
+                            </StackPanel>
 
-            </StackPanel>
-        </ScrollViewer>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
+                                <TextBlock Text="Total Handled:" Width="120"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.TotalCallsHandled}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" >
-            <Button Content="{Binding ButtonText}" Width="120" Height="30" Margin="0,0,10,0"
-                    Click="ButtonAddUpdate_Click"/>
-            <Button Content="Close" Width="80" Height="30" Click="ButtonClose_Click"/>
-        </StackPanel>
-    </Grid>
-</Window>-->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Total Canceled:" Width="120"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.TotalCallsCanceled}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-<Window x:Class="PL.VolunteerWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Volunteer Details" Height="600" Width="450"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Closing="VolunteerPage_Closing">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Total Expired:" Width="120"/>
+                                <TextBlock Text="{Binding CurrentVolunteer.TotalExpiredCalls}" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+                        </StackPanel>
+                    </ScrollViewer>
 
-        <TextBlock Text="Volunteer Details" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Id:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.Id, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Full Name:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.FullName, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Phone Number:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Email:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.Email, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="10,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Password:" Width="120" VerticalAlignment="Center"/>
-                    <PasswordBox x:Name="PasswordBox" Width="250" PasswordChanged="PasswordBox_PasswordChanged"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Current Address:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.CurrentAddress, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Latitude:" Width="120" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.Latitude}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Longitude:" Width="120" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.Longitude}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Role:" Width="120" VerticalAlignment="Center"/>
-                    <ComboBox Width="250" SelectedValue="{Binding CurrentVolunteer.Role, UpdateSourceTrigger=PropertyChanged}" 
-                              ItemsSource="{Binding Roles}"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Is Active:" Width="120" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Max Distance:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding CurrentVolunteer.MaxDistance, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
-                    <TextBlock Text="Distance Type:" Width="120" VerticalAlignment="Center"/>
-                    <ComboBox Width="250" SelectedValue="{Binding CurrentVolunteer.TypeOfDistance, UpdateSourceTrigger=PropertyChanged}" 
-                              ItemsSource="{Binding DistanceTypes}"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
-                    <TextBlock Text="Total Calls Handled:" Width="120" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalCallsHandled}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Total Calls Canceled:" Width="120" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalCallsCanceled}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Total Calls Expired:" Width="120" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding CurrentVolunteer.TotalExpiredCalls}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-            </StackPanel>
-        </ScrollViewer>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="{Binding ButtonText}" Width="120" Height="30" Margin="0,0,10,0" Click="ButtonAddUpdate_Click"/>
-            <Button Content="Close" Width="80" Height="30" Click="ButtonClose_Click"/>
-        </StackPanel>
-    </Grid>
+                    <!-- כפתורים -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="{Binding ButtonText}"  Click="ButtonAddUpdate_Click" Background="#6FA8DC" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Close"  Click="ButtonClose_Click" Background="#F9B350" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Viewbox>
 </Window>
+
 
 
