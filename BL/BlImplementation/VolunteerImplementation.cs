@@ -277,7 +277,8 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BlDoesNotExistException">Thrown if no volunteer is found with the given ID.</exception>
     public BO.Volunteer GetVolunteerDetails(int idNumber) => GetVolunteer(v => v.Id == idNumber, idNumber.ToString());
 
-    public BO.Volunteer GetVolunteerDetails(string name) => GetVolunteer(v => v.Name == name, name);
+    public BO.Volunteer GetVolunteerDetails(string idNumber) =>
+        GetVolunteer(v => v.Id == int.Parse(idNumber), idNumber);
 
     private BO.Volunteer GetVolunteer(Func<DO.Volunteer, bool> predicate, string identifier)
     {
@@ -292,7 +293,9 @@ internal class VolunteerImplementation : IVolunteer
                 a.VolunteerId == volunteer.Id &&
                 (CallStatus)a.CallResolutionStatus == CallStatus.Open); // או Open - לפי הלוגיקה שלך
 
-            var relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
+            if (ongoingAssignment != null)
+            {
+                var relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
 
             double distance = 0;
             if (boVolunteer.Latitude.HasValue && boVolunteer.Longitude.HasValue)
@@ -317,7 +320,7 @@ internal class VolunteerImplementation : IVolunteer
                     DistanceFromVolunteer = distance,
                 };
             }
-
+         }      
             return boVolunteer; // זו השורה שתוקנה
         }
         catch (DalDoesNotExistException ex)
@@ -355,8 +358,11 @@ internal class VolunteerImplementation : IVolunteer
             //DO.Volunteer? existingVolunteer = _dal.Volunteer.Read(v => v.Id == idNumber);
             DO.Volunteer? existingVolunteer;
 
+            System.Diagnostics.Debug.WriteLine($"Received idNumber: '{idNumber}'");
+
             if (int.TryParse(idNumber, out int id))
             {
+                Console.WriteLine($"Parsed ID: {id}, Success: {int.TryParse(idNumber, out id)}");
                 existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
             }
             else
@@ -425,7 +431,8 @@ internal class VolunteerImplementation : IVolunteer
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException("An unexpected error occurred while updating the volunteer.");
+            //throw new BlGeneralDatabaseException("An unexpected error occurred while updating the volunteer.");
+            throw new BlGeneralDatabaseException($"An unexpected error occurred while updating the volunteer: {ex.Message}");
         }
     }
 

@@ -141,20 +141,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>829322787</Id>
-    <Name>Yitzhak Mizrahi</Name>
-    <Phone>054942959</Phone>
-    <Email>yitzhak.mizrahi@email.com</Email>
-    <Password>3d567a5d8d7c28a1dfc9564bd1710195c2ab9f2765e39577d18be68bfef262d1</Password>
-    <Address>Yafo Road 34, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>41.201071303403616</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>178113122</Id>
     <Name>Naomi Rosen</Name>
     <Phone>056323634</Phone>
@@ -183,20 +169,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>130024254</Id>
-    <Name>Shoshana Cohen</Name>
-    <Phone>052825754</Phone>
-    <Email>shoshana.cohen@email.com</Email>
-    <Password>2d5a134b74dc10c7ca6fc7e84a2d61a711a268d083e317bbf47e920b31f9012a</Password>
-    <Address>Keren Hayesod Street 16, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>18.36157809392024</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>662518994</Id>
     <Name>Eliezer Glick</Name>
     <Phone>051746027</Phone>
@@ -222,6 +194,20 @@
     <Position>Manager</Position>
     <Active>true</Active>
     <MaxResponseDistance>22.05345948702923</MaxResponseDistance>
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>327934857</Id>
+    <Name>Eli</Name>
+    <Phone>0583251389</Phone>
+    <Email>E@gmail.com</Email>
+    <Password>5ef870f98f4b5abbf2c1d0218470f934aef2b0572e98ee066b5b9532098731a2</Password>
+    <Address>CCC</Address>
+    <Latitude>22.461469049999998</Latitude>
+    <Longitude>-78.33163052799658</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>300</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>
