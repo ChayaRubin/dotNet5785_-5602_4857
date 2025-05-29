@@ -177,24 +177,6 @@ namespace PL
             }
         }
 
-
-        //
-        //public VolunteerWindow(VolunteerInList selectedVolunteer)
-        //{
-        //    InitializeComponent();
-        //    try
-        //    {
-        //        CurrentVolunteer = s_bl.Volunteer.GetVolunteerDetails(selectedVolunteer.Id.ToString());
-        //        ButtonText = "Update";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Failed to load volunteer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        CurrentVolunteer = new BO.Volunteer();
-        //        ButtonText = "Add";
-        //    }
-        //}
-
         // קונסטרקטור שמקבל מחרוזת idNumber לעריכה
         public VolunteerWindow(string idNumber)
         {
@@ -266,11 +248,6 @@ namespace PL
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void VolunteerPage_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Optional: Add logic if needed before window closes
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,26 +10,56 @@ using BO;
 
 namespace PL.Volunteer
 {
-    public partial class VolunteersListWindow : Window
+    public partial class VolunteersListWindow : Window, INotifyPropertyChanged
     {
         private readonly IBl s_bl = Factory.Get();
 
-        // רשימת מתנדבים
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private IEnumerable<VolunteerInList> volunteersListView = new List<VolunteerInList>();
         public IEnumerable<VolunteerInList> VolunteersListView
         {
-            get => (IEnumerable<VolunteerInList>)GetValue(VolunteersListViewProperty);
-            set => SetValue(VolunteersListViewProperty, value);
+            get => volunteersListView;
+            set
+            {
+                if (volunteersListView != value)
+                {
+                    volunteersListView = value;
+                    OnPropertyChanged(nameof(VolunteersListView));
+                }
+            }
         }
 
-        public static readonly DependencyProperty VolunteersListViewProperty =
-            DependencyProperty.Register(
-                nameof(VolunteersListView),
-                typeof(IEnumerable<VolunteerInList>),
-                typeof(VolunteersListWindow)
-            );
+        private CallTypeEnum selectedCallType = CallTypeEnum.None; // Default to None (no filter)
+        public CallTypeEnum SelectedCallType
+        {
+            get => selectedCallType;
+            set
+            {
+                if (selectedCallType != value)
+                {
+                    selectedCallType = value;
+                    OnPropertyChanged(nameof(SelectedCallType));
+                    LoadVolunteers();
+                }
+            }
+        }
 
-        // המתנדב הנבחר
-        public VolunteerInList? SelectedVolunteer { get; set; }
+        private VolunteerInList? selectedVolunteer;
+        public VolunteerInList? SelectedVolunteer
+        {
+            get => selectedVolunteer;
+            set
+            {
+                if (selectedVolunteer != value)
+                {
+                    selectedVolunteer = value;
+                    OnPropertyChanged(nameof(SelectedVolunteer));
+                }
+            }
+        }
+
+        public IEnumerable<CallTypeEnum> CallTypes => Enum.GetValues(typeof(CallTypeEnum)).Cast<CallTypeEnum>();
 
         public VolunteersListWindow()
         {
@@ -36,25 +67,12 @@ namespace PL.Volunteer
             DataContext = this;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            FilterByComboBox.ItemsSource = Enum.GetValues(typeof(CallTypeEnum));
-            FilterByComboBox.SelectedItem = CallTypeEnum.Non_Urgent;
-            LoadVolunteers();
-        }
-
-        private void FilterByComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            LoadVolunteers();
-        }
-
         private void LoadVolunteers()
         {
             try
             {
-                var selectedCallType = (CallTypeEnum)FilterByComboBox.SelectedItem;
-                CallTypeEnum? callTypeFilter = selectedCallType == CallTypeEnum.Non_Urgent ? null : selectedCallType;
-                var volunteers = s_bl.Volunteer.GetVolunteersList(null, null, callTypeFilter);
+                CallTypeEnum? filter = SelectedCallType == CallTypeEnum.None ? null : SelectedCallType;
+                var volunteers = s_bl.Volunteer.GetVolunteersList(null, null, filter);
                 VolunteersListView = volunteers.ToList();
             }
             catch (Exception ex)
@@ -63,9 +81,15 @@ namespace PL.Volunteer
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // No need to set ItemsSource or SelectedItem here - bound in XAML & ViewModel
+            LoadVolunteers();
+        }
+
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            FilterByComboBox.SelectedItem = CallTypeEnum.Non_Urgent;
+            SelectedCallType = CallTypeEnum.None; // Clear filter on refresh
             LoadVolunteers();
         }
 
@@ -76,17 +100,16 @@ namespace PL.Volunteer
 
         private void VolunteersListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (VolunteersListViewControl.SelectedItem is VolunteerInList selected)
+            if (sender is ListView listView && listView.SelectedItem is VolunteerInList selected)
             {
-                string idAsString = selected.Id.ToString();
-                var window = new VolunteerWindow(idAsString);
+                var window = new VolunteerWindow(selected.Id.ToString());
                 window.Show();
             }
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var window = new VolunteerWindow(); // מצב הוספה אמיתי
+            var window = new VolunteerWindow();
             window.Show();
         }
 
@@ -94,17 +117,18 @@ namespace PL.Volunteer
         {
             if (sender is Button button && button.DataContext is VolunteerInList volunteer)
             {
-                var result = MessageBox.Show($"Are you sure you want to delete volunteer {volunteer.FullName} (ID {volunteer.Id})?",
-                                             "Confirm Deletion",
-                                             MessageBoxButton.YesNo,
-                                             MessageBoxImage.Warning);
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete volunteer {volunteer.FullName} (ID {volunteer.Id})?",
+                    "Confirm Deletion",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
                         s_bl.Volunteer.DeleteVolunteer(volunteer.Id);
-                        LoadVolunteers(); // רענון הרשימה לאחר המחיקה
+                        LoadVolunteers();
                     }
                     catch (Exception ex)
                     {
@@ -113,5 +137,9 @@ namespace PL.Volunteer
                 }
             }
         }
+
+        private void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
+
