@@ -71,20 +71,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>327725602</Id>
-    <Name>Chaya Rubin</Name>
-    <Phone>0583227200</Phone>
-    <Email>ct3227200@gmail.com</Email>
-    <Password>8474504f97be37e72ccca3a8d24512eacf319f76b23eb2edb3cfca4eae871b61</Password>
-    <Address>Agrippas Street 22, Jerusalem</Address>
-    <Latitude>31.69916</Latitude>
-    <Longitude>35.196286</Longitude>
-    <Position>Manager</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>38.71739820340145</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>336717954</Id>
     <Name>shuly</Name>
     <Phone>0589874569</Phone>
@@ -96,6 +82,34 @@
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>331781468</Id>
+    <Name>hadasah</Name>
+    <Phone>5897659848</Phone>
+    <Email>h@gmail.com</Email>
+    <Password>9cddf91fadaba91beb4893e5aee3a0b51c830800c60be65d570223dcba03fafe</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>327725602</Id>
+    <Name>Chaya Tzivi Rubin</Name>
+    <Phone>0583227200</Phone>
+    <Email>ct3227200@gmail.com</Email>
+    <Password>8474504f97be37e72ccca3a8d24512eacf319f76b23eb2edb3cfca4eae871b61</Password>
+    <Address>Agrippas Street 22, Jerusalem</Address>
+    <Latitude>31.69916</Latitude>
+    <Longitude>35.196286</Longitude>
+    <Position>Manager</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>38.71739820340145</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>
