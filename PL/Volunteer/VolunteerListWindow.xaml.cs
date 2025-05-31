@@ -85,6 +85,7 @@ namespace PL.Volunteer
             s_bl.Volunteer.AddObserver(OnVolunteerListChanged);
         }
 
+
         /// <summary>
         /// Observer callback method - called when the volunteer list changes
         /// </summary>
