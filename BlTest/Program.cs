@@ -36,20 +36,20 @@ class Program
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine() ?? "";
 
-                string role = s_bl.Volunteer.Login(username, password);
+                //string role = s_bl.Volunteer.Login(username, password);
 
-                switch (role.ToLower())
-                {
-                    case "manager":
-                        ManagerMainMenu(username);
-                        break;
-                    case "volunteer":
-                        VolunteerMainMenu(username);
-                        break;
-                    default:
-                        Console.WriteLine("Invalid login credentials. Please try again.");
-                        break;
-                }
+                //switch (role.ToLower())
+                //{
+                //    case "manager":
+                //        ManagerMainMenu(username);
+                //        break;
+                //    case "volunteer":
+                //        VolunteerMainMenu(username);
+                //        break;
+                //    default:
+                //        Console.WriteLine("Invalid login credentials. Please try again.");
+                //        break;
+                //}
             }
             catch (BlProgramException ex)
             {

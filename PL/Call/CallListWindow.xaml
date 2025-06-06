@@ -1,19 +1,15 @@
-﻿
-<Window
-    x:Class="PL.Volunteer.VolunteersListWindow"
+﻿<Window
+    x:Class="PL.Call.CallsListWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:BO="clr-namespace:BO;assembly=BL"
-    xmlns:local="clr-namespace:PL"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    mc:Ignorable="d"
-    Title="Volunteer List"
+    Title="Call List"
     Height="500"
     Width="850"
     Background="#E6F0FA"
-    WindowStartupLocation="CenterScreen"
-    Loaded="Window_Loaded">
+    Loaded="Window_Loaded"
+    Closing="Window_Closing"
+    WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
@@ -22,7 +18,6 @@
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -51,57 +46,63 @@
             <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#0F425F" BorderThickness="2" Margin="40">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                    <!-- Filter Section -->
+                    <!-- Filter -->
                     <StackPanel Orientation="Horizontal" Margin="0 0 0 20" HorizontalAlignment="Left">
                         <TextBlock Text="Filter by Call Type:" VerticalAlignment="Center" Margin="0 10 10 0"
                                    Foreground="#C25C9E" FontWeight="Bold"/>
                         <ComboBox
-                            Name="FilterByComboBox"
                             ItemsSource="{Binding CallTypes}"
                             SelectedItem="{Binding SelectedCallType, Mode=TwoWay}"
                             Width="200"
-                            Style="{StaticResource ColoredComboBox}" />
+                            Style="{StaticResource ColoredComboBox}"/>
                     </StackPanel>
 
-                    <!-- Volunteer List -->
-                    <ListView 
-                        ItemsSource="{Binding VolunteersListView}" 
-                        SelectedItem="{Binding SelectedVolunteer, Mode=TwoWay}"
-                        BorderBrush="#B0C4DE" 
-                        BorderThickness="1" 
+                    <!-- Call List -->
+                    <ListView
+                        ItemsSource="{Binding CallsListView}"
+                        SelectedItem="{Binding SelectedCall, Mode=TwoWay}"
                         Height="300"
-                        MouseDoubleClick="VolunteersListView_MouseDoubleClick">
+                        BorderBrush="#B0C4DE"
+                        BorderThickness="1"
+                        MouseDoubleClick="CallsListView_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="100"/>
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding FullName}" Width="200"/>
-                                <GridViewColumn Header="Is Active" DisplayMemberBinding="{Binding IsActive}" Width="100"/>
-                                <GridViewColumn Header="Handled" DisplayMemberBinding="{Binding TotalHandledCalls}" Width="100"/>
-                                <GridViewColumn Header="Canceled" DisplayMemberBinding="{Binding TotalCanceledCalls}" Width="100"/>
-                                <GridViewColumn Header="Expired" DisplayMemberBinding="{Binding TotalExpiredCalls}" Width="100"/>
+                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="100"/>
+                                <GridViewColumn Header="Status" DisplayMemberBinding="{Binding StatusText}" Width="100"/>
+                                <GridViewColumn Header="Time Left" DisplayMemberBinding="{Binding RemainingTime}" Width="100"/>
+                                <GridViewColumn Header="Treatment Time" DisplayMemberBinding="{Binding TotalTreatmentTime}" Width="120"/>
+                                <GridViewColumn Header="Last Volunteer" DisplayMemberBinding="{Binding LastVolunteerName}" Width="150"/>
+                                <GridViewColumn Header="# Assignments" DisplayMemberBinding="{Binding TotalAssignments}" Width="100"/>
                                 <GridViewColumn Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Content="Delete"
-                                                    Background="#C25C9E"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    BorderBrush="#C25C9E"
-                                                    Padding="5"
-                                                    Style="{StaticResource RoundedButtonStyle}"
-                                                    Click="DeleteVolunteer_Click"/>
+                                                Background="#C25C9E"
+                                                Style="{StaticResource RoundedButtonStyle}"
+                                                Click="DeleteCall_Click"
+                                                Visibility="{Binding Path=CanDelete}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                            </GridView>
+                                <GridViewColumn Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Cancel Assignment"
+                                                    Background="#F9B350"
+                                                    Style="{StaticResource RoundedButtonStyle}"
+                                                    Click="CancelAssignment_Click"
+                                                    Visibility="{Binding Path=CanCancelAssignment}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView> 
                         </ListView.View>
                     </ListView>
 
                     <!-- Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-                        <Button Content="Add A Volunteer" Click="BtnAdd_Click" Background="#6FA8DC" Width="150" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
 
                 </StackPanel>
@@ -109,4 +110,3 @@
         </Grid>
     </Viewbox>
 </Window>
-

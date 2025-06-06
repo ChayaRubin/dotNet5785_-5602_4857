@@ -23,6 +23,8 @@ public class CallInList
     public DateTime? MaxEndTime { get; set; } // זמן מקסימלי לסיום הקריאה
 
     public CallStatus Status { get; set; } // סטטוס הקריאה (ENUM)
+    public string StatusText => Status.ToString();
+
 
     public List<CallAssignInList>? Assignments { get; set; } // רשימת הקצאות עבור הקריאה
 

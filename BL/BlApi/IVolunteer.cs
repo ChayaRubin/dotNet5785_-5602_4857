@@ -5,7 +5,7 @@ public interface IVolunteer : IObservable //stage 5
 {
 
     // 1. מתודת כניסה למערכת
-    string Login(string username, string password);
+    string Login(int userId, string password);
 
     //// 2. מתודת בקשת רשימת מתנדבים
     //IEnumerable<BO.VolunteerInList> GetVolunteersList(bool? isActive, VolunteerSortBy? fieldToSortBy);

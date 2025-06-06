@@ -1,52 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfCall xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Call>
-    <RadioCallId>1000</RadioCallId>
-    <Description>Medical Emergency</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Meah Shearim St 10, Jerusalem</Address>
-    <Latitude>31.7865608</Latitude>
-    <Longitude>35.2208052</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1001</RadioCallId>
-    <Description>Accident Assistance</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Chazon Ish St 6, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1002</RadioCallId>
     <Description>Vehicle Recovery</Description>
     <CallType>Non_Urgent</CallType>
     <Address>Ramat Eshkol St 11, Jerusalem</Address>
     <Latitude>31.8017893</Latitude>
     <Longitude>35.2228759</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1003</RadioCallId>
-    <Description>Emergency Towing</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Har Safra St 1, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1004</RadioCallId>
-    <Description>Stuck in Mud</Description>
-    <CallType>Urgent</CallType>
-    <Address>Mount Scopus St 4, Jerusalem</Address>
-    <Latitude>31.794767</Latitude>
-    <Longitude>35.2425346</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
@@ -71,32 +31,12 @@
     <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1007</RadioCallId>
-    <Description>Emergency Tow</Description>
-    <CallType>Urgent</CallType>
-    <Address>Shmuel HaNavi St 12, Jerusalem</Address>
-    <Latitude>31.7875022</Latitude>
-    <Longitude>35.2265973</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1008</RadioCallId>
     <Description>Battery Issues</Description>
     <CallType>Urgent</CallType>
     <Address>Yechiel St 3, Jerusalem</Address>
     <Latitude>31.7472349</Latitude>
     <Longitude>35.2326395</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1009</RadioCallId>
-    <Description>Fire in Vehicle</Description>
-    <CallType>Urgent</CallType>
-    <Address>Rav Kook St 4, Jerusalem</Address>
-    <Latitude>31.7831088</Latitude>
-    <Longitude>35.2203032</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
@@ -217,16 +157,6 @@
     <Address>Ramat Shlomo St 15, Jerusalem</Address>
     <Latitude>31.8111253</Latitude>
     <Longitude>35.2174861</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1022</RadioCallId>
-    <Description>Car Repair Advice</Description>
-    <CallType>General_Assistance</CallType>
-    <Address>Sderot Yitzhak Rabin St 5, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
@@ -431,32 +361,12 @@
     <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1043</RadioCallId>
-    <Description>Insurance Policy Questions</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Shazar St 5, Jerusalem</Address>
-    <Latitude>31.7135737</Latitude>
-    <Longitude>34.9838857</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1044</RadioCallId>
     <Description>Basic Vehicle Maintenance</Description>
     <CallType>Non_Urgent</CallType>
     <Address>Gonenim St 12, Jerusalem</Address>
     <Latitude>31.906037</Latitude>
     <Longitude>35.203005</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1045</RadioCallId>
-    <Description>Navigation Assistance</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Talpiot St 14, Jerusalem</Address>
-    <Latitude>31.7515394</Latitude>
-    <Longitude>35.2160228</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
@@ -471,32 +381,12 @@
     <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1047</RadioCallId>
-    <Description>Tire Pressure Check</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Yovel St 2, Jerusalem</Address>
-    <Latitude>31.780514</Latitude>
-    <Longitude>35.217981</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1048</RadioCallId>
     <Description>Late Night Assistance</Description>
     <CallType>Non_Urgent</CallType>
     <Address>Herzl St 3, Jerusalem</Address>
     <Latitude>31.74948</Latitude>
     <Longitude>34.9880954</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1049</RadioCallId>
-    <Description>General Car Troubleshooting</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Hashmonai St 6, Jerusalem</Address>
-    <Latitude>31.77676</Latitude>
-    <Longitude>35.230342</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>

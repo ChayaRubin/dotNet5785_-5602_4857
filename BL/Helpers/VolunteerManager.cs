@@ -144,11 +144,6 @@ internal static class VolunteerManager
         {
             return false;
         }
-
-        if (requester.Position.ToString() != BO.PositionEnum.Manager.ToString()) // אם המשתמש המבצע הוא לא מנהל, נחסום אותו
-        {
-            throw new DalUnauthorizedAccessException("Only a manager can update the volunteer's role.");
-        }
         return true;
     }
 

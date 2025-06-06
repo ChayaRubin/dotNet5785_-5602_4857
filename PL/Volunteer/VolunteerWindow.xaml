@@ -89,7 +89,7 @@
                                 <TextBox Text="{Binding CurrentVolunteer.CurrentAddress}" Width="250"/>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Latitude:" Width="120"/>
                                 <TextBlock Text="{Binding CurrentVolunteer.Latitude}" VerticalAlignment="Center"/>
                             </StackPanel>
@@ -97,7 +97,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Longitude:" Width="120"/>
                                 <TextBlock Text="{Binding CurrentVolunteer.Longitude}" VerticalAlignment="Center"/>
-                            </StackPanel>
+                            </StackPanel>-->
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Role:" Width="120"/>

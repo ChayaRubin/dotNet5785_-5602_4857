@@ -43,34 +43,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>327006516</Id>
-    <Name>Ma Rubin</Name>
-    <Phone>0548428809</Phone>
-    <Email>shanirubin26@gmail.com</Email>
-    <Password>5f71c4312ec641f032d05e693dc3f301de54724a26cf3b319ac11fd29a39a122</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>60</MaxResponseDistance>
-    <TypeOfDistance>DrivingDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <Id>225028885</Id>
-    <Name>Ta Rubin</Name>
-    <Phone>0527642411</Phone>
-    <Email>mrubin1980@gmail.com</Email>
-    <Password>eba429e1f866fd7385ead2095b5fe6814786519ebcd5bd924a4d8d63c0a8ff62</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>90</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>336717954</Id>
     <Name>shuly</Name>
     <Phone>0589874569</Phone>
@@ -85,22 +57,8 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>331781468</Id>
-    <Name>hadasah</Name>
-    <Phone>5897659848</Phone>
-    <Email>h@gmail.com</Email>
-    <Password>9cddf91fadaba91beb4893e5aee3a0b51c830800c60be65d570223dcba03fafe</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance xsi:nil="true" />
-    <TypeOfDistance>AirDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>327725602</Id>
-    <Name>Chaya Tzivi Rubin</Name>
+    <Name>Chaya Rubin</Name>
     <Phone>0583227200</Phone>
     <Email>ct3227200@gmail.com</Email>
     <Password>8474504f97be37e72ccca3a8d24512eacf319f76b23eb2edb3cfca4eae871b61</Password>
@@ -110,6 +68,48 @@
     <Position>Manager</Position>
     <Active>true</Active>
     <MaxResponseDistance>38.71739820340145</MaxResponseDistance>
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>218431161</Id>
+    <Name>ma Rubin</Name>
+    <Phone>0548428809</Phone>
+    <Email>shanirubin26@gmail.com</Email>
+    <Password>5f71c4312ec641f032d05e693dc3f301de54724a26cf3b319ac11fd29a39a122</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Manager</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>225028885</Id>
+    <Name>Ta Rubin</Name>
+    <Phone>0527642411</Phone>
+    <Email>mrubin1980@gmail.com</Email>
+    <Password>eba429e1f866fd7385ead2095b5fe6814786519ebcd5bd924a4d8d63c0a8ff62</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Manager</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>90</MaxResponseDistance>
+    <TypeOfDistance>AirDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>331781468</Id>
+    <Name>hadasah</Name>
+    <Phone>5897659848</Phone>
+    <Email>h@gmail.com</Email>
+    <Password>ef6db3c005ed5f40820a9cc0c0cef3a70b1e7d3935138aeb6905c95baf0c28c5</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Manager</Position>
+    <Active>true</Active>
+    <MaxResponseDistance xsi:nil="true" />
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

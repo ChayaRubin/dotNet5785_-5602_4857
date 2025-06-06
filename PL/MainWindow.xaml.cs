@@ -32,7 +32,7 @@ namespace PL
 
         public MainWindow()
         {
-            // InitializeComponent();
+            InitializeComponent();
 
             // הגדרת אירועים
             Loaded += MainWindow_Loaded;
@@ -180,6 +180,11 @@ namespace PL
         private void BtnVolunteers_Click(object sender, RoutedEventArgs e)
         {
             new PL.Volunteer.VolunteersListWindow().Show();
+        }
+
+        private void BtnCalls_Click(object sender, RoutedEventArgs e)
+        {
+            new PL.Call.CallsListWindow().Show();
         }
 
 

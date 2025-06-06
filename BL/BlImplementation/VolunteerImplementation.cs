@@ -20,17 +20,17 @@ internal class VolunteerImplementation : IVolunteer
     /// <returns>The position of the volunteer if authentication is successful.</returns>
     /// <exception cref="BlUnauthorizedAccessException">Thrown if the username or password is incorrect.</exception>
 
-    public string Login(string username, string password)
+    public string Login(int id, string password)
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(v => v.Name == username);
+            var volunteer = _dal.Volunteer.Read(v => v.Id == id);
 
             if (volunteer == null)
                 throw new DalUnauthorizedAccessException("Invalid username or password");
 
             // Debug logging
-            Console.WriteLine($"Input username: '{username}'");
+            Console.WriteLine($"Input username: '{id}'");
             Console.WriteLine($"Input password: '{password}'");
             Console.WriteLine($"Stored password: '{volunteer.Password}'");
 
@@ -273,6 +273,18 @@ internal class VolunteerImplementation : IVolunteer
                 }
                 String HashedPassword = VolunteerManager.HashPassword(volunteerBO.Password);
                 volunteerBO.Password = HashedPassword;
+            }
+
+            if (volunteerBO.Role.ToString() != existingVolunteer.Position.ToString() && volunteerBO.Role.ToString() == "Manager")
+            {
+                // סופר את מספר המנהלים הקיימים
+                int currentManagers = _dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
+
+                // אם כבר יש 2 מנהלים, לא ניתן להוסיף עוד אחד
+                if (currentManagers >= 2)
+                {
+                    throw new BlUnauthorizedAccessException("Too many managers");
+                }
             }
 
             // Ensure field updates are allowed
