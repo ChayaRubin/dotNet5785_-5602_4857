@@ -1,23 +1,22 @@
-﻿<Window
-    x:Class="PL.Call.CallsListWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:BO="clr-namespace:BO;assembly=BL"
-    Title="Call List"
-    Height="500"
-    Width="850"
-    Background="#E6F0FA"
-    Loaded="Window_Loaded"
-    Closing="Window_Closing"
-    WindowStartupLocation="CenterScreen">
+﻿<Window x:Class="PL.Call.CallListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PL.Call"
+        xmlns:bo="clr-namespace:BO;assembly=BL"
+        Title="Calls List" Height="600" Width="1000"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
+        Background="#f0f8ff">
 
     <Window.Resources>
+        <!-- Rounded Button Style -->
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -32,81 +31,85 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-        <Style x:Key="ColoredComboBox" TargetType="ComboBox">
-            <Setter Property="Foreground" Value="#C25C9E"/>
-            <Setter Property="BorderBrush" Value="#C25C9E"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="4"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
+        <!-- Converters -->
+        <local:CanDeleteCallConverter x:Key="CanDeleteCallConverter"/>
+        <local:CanCancelAssignmentConverter x:Key="CanCancelAssignmentConverter"/>
+
+        <!-- Grouped CollectionView -->
+        <CollectionViewSource x:Key="GroupedCalls" Source="{Binding CallsListView}">
+            <!-- Grouping by Type (can change to Status if needed) -->
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Type"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
     </Window.Resources>
 
-    <Viewbox Stretch="Uniform">
-        <Grid>
-            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#0F425F" BorderThickness="2" Margin="40">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                    <!-- Filter -->
-                    <StackPanel Orientation="Horizontal" Margin="0 0 0 20" HorizontalAlignment="Left">
-                        <TextBlock Text="Filter by Call Type:" VerticalAlignment="Center" Margin="0 10 10 0"
-                                   Foreground="#C25C9E" FontWeight="Bold"/>
-                        <ComboBox
-                            ItemsSource="{Binding CallTypes}"
-                            SelectedItem="{Binding SelectedCallType, Mode=TwoWay}"
-                            Width="200"
-                            Style="{StaticResource ColoredComboBox}"/>
-                    </StackPanel>
+        <!-- Filter -->
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="Filter by Call Type: " VerticalAlignment="Center" Margin="0 0 5 0" FontWeight="Bold" Foreground="#d87093"/>
+            <ComboBox ItemsSource="{Binding CallTypes}" SelectedItem="{Binding SelectedCallType}" Width="150"/>
+        </StackPanel>
 
-                    <!-- Call List -->
-                    <ListView
-                        ItemsSource="{Binding CallsListView}"
-                        SelectedItem="{Binding SelectedCall, Mode=TwoWay}"
-                        Height="300"
-                        BorderBrush="#B0C4DE"
-                        BorderThickness="1"
-                        MouseDoubleClick="CallsListView_MouseDoubleClick">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="100"/>
-                                <GridViewColumn Header="Status" DisplayMemberBinding="{Binding StatusText}" Width="100"/>
-                                <GridViewColumn Header="Time Left" DisplayMemberBinding="{Binding RemainingTime}" Width="100"/>
-                                <GridViewColumn Header="Treatment Time" DisplayMemberBinding="{Binding TotalTreatmentTime}" Width="120"/>
-                                <GridViewColumn Header="Last Volunteer" DisplayMemberBinding="{Binding LastVolunteerName}" Width="150"/>
-                                <GridViewColumn Header="# Assignments" DisplayMemberBinding="{Binding TotalAssignments}" Width="100"/>
-                                <GridViewColumn Width="100">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Delete"
-                                                Background="#C25C9E"
-                                                Style="{StaticResource RoundedButtonStyle}"
-                                                Click="DeleteCall_Click"
-                                                Visibility="{Binding Path=CanDelete}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Width="120">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Cancel Assignment"
-                                                    Background="#F9B350"
-                                                    Style="{StaticResource RoundedButtonStyle}"
-                                                    Click="CancelAssignment_Click"
-                                                    Visibility="{Binding Path=CanCancelAssignment}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView> 
-                        </ListView.View>
-                    </ListView>
+        <!-- Calls Table with Grouping -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Source={StaticResource GroupedCalls}}"
+                  SelectedItem="{Binding SelectedCall}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  MouseDoubleClick="CallsListView_MouseDoubleClick"
+                  Margin="0 0 0 10"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="All">
 
-                    <!-- Buttons -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-                        <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
-                    </StackPanel>
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontSize="14" FontWeight="Bold" Foreground="DarkSlateBlue"
+                                       Text="{Binding Name}" Background="#dbeeff" Padding="5" />
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
 
-                </StackPanel>
-            </Border>
-        </Grid>
-    </Viewbox>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="Volunteer" Binding="{Binding Assignments[0].VolunteerName}" Width="150"/>
+                <DataGridTextColumn Header="Total Assignments" Binding="{Binding Assignments.Count}" Width="120"/>
+                <DataGridTemplateColumn Header="Actions" Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="Delete" Click="DeleteCall_Click" 
+                                        Visibility="{Binding ., Converter={StaticResource CanDeleteCallConverter}}"
+                                        Background="#d87093" Style="{StaticResource RoundedButtonStyle}"/>
+                                <Button Content="Cancel" Click="CancelAssignment_Click"
+                                        Visibility="{Binding ., Converter={StaticResource CanCancelAssignmentConverter}}"
+                                        Background="#6495ed" Style="{StaticResource RoundedButtonStyle}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button Content="Add Call" Click="BtnAdd_Click" Background="#6FA8DC" Width="150" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+            <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+            <Button Content="Close" Click="BtnClose_Click" Background="#F9B350" Width="80" Height="35" FontSize="14" Style="{StaticResource RoundedButtonStyle}"/>
+        </StackPanel>
+    </Grid>
 </Window>

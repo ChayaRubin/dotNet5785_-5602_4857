@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:PL"
              StartupUri="Login.xaml">
     <Application.Resources>
-        <local:SemestersCollection x:Key="CallStatusCollectionKey" />
+        <local:CallTypeEnumToStringConverter x:Key="CallTypeEnumToStringConverter" />
+        <!--<local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->
     </Application.Resources>
 </Application>
 

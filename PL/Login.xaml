@@ -8,7 +8,6 @@
         WindowStartupLocation="CenterScreen"
         Background="#E6F0FA">
 
-
     <Window.Resources>
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Template">
@@ -29,6 +28,22 @@
             <Setter Property="Padding" Value="10 5"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <!-- Property Trigger for Hover -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#A34D89"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Validation Style for TextBox -->
+        <Style TargetType="TextBox" x:Key="ValidationTextBoxStyle">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Background" Value="#F8D7DA"/>
+                    <Setter Property="ToolTip" Value="This field is required"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -43,6 +58,7 @@
 
                 <TextBlock Text="Id:" Margin="0 5 0 2"/>
                 <TextBox Text="{Binding Id, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource ValidationTextBoxStyle}"
                          Width="200" Height="30" Margin="0 0 0 10"/>
 
                 <TextBlock Text="Password:" Margin="0 5 0 2"/>
@@ -53,6 +69,7 @@
                 <Button Content="Login"
                         Command="{Binding LoginCommand}"
                         Background="#C25C9E"
+                        IsDefault="True"
                         Style="{StaticResource RoundedButtonStyle}"/>
 
                 <TextBlock Text="{Binding ErrorMessage}"

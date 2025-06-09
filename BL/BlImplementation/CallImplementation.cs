@@ -256,6 +256,7 @@ internal class CallImplementation : ICall
             // Convert the call to Data Object and add it to the database
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
             _dal.Call.Create(newCallDO);
+            SendEmailToVolunteers(newCall);
             CallManager.Observers.NotifyListUpdated(); //stage 5                                                    
         }
         catch (Exception ex)

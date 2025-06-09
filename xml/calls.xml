@@ -321,16 +321,6 @@
     <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1039</RadioCallId>
-    <Description>Flat Tire Change</Description>
-    <CallType>General_Assistance</CallType>
-    <Address>Hadar St 3, Jerusalem</Address>
-    <Latitude>32.8089768</Latitude>
-    <Longitude>34.997939</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2026-05-26T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1040</RadioCallId>
     <Description>Road Advice</Description>
     <CallType>Non_Urgent</CallType>
@@ -389,5 +379,65 @@
     <Longitude>34.9880954</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-07-26T14:45:36.0239968+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1050</RadioCallId>
+    <Description>tyh</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T11:25:16.5823036+03:00</StartTime>
+    <ExpiredTime>2025-06-09T12:25:16.5823424+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1051</RadioCallId>
+    <Description>pleaseeeeee</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T11:29:49.7219574+03:00</StartTime>
+    <ExpiredTime>2025-06-09T12:29:49.7589148+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1052</RadioCallId>
+    <Description>ct</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T11:39:32.2951442+03:00</StartTime>
+    <ExpiredTime>2025-06-09T12:39:32.2951937+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1053</RadioCallId>
+    <Description>nnnnnnnnnnnnnnnnnnn</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T11:40:51.8794753+03:00</StartTime>
+    <ExpiredTime>2025-06-09T12:40:51.90993+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1054</RadioCallId>
+    <Description>הההההההההההההההה</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T11:47:36.6089115+03:00</StartTime>
+    <ExpiredTime>2025-06-09T12:47:36.6410152+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1055</RadioCallId>
+    <Description>sdfghj</Description>
+    <CallType>Urgent</CallType>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <StartTime>2025-06-09T22:27:42.4500332+03:00</StartTime>
+    <ExpiredTime>2025-06-09T23:27:42.450073+03:00</ExpiredTime>
   </Call>
 </ArrayOfCall>

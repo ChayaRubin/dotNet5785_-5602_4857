@@ -112,4 +112,18 @@
     <MaxResponseDistance xsi:nil="true" />
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
+  <Volunteer>
+    <Id>218796761</Id>
+    <Name>malka</Name>
+    <Phone>0549580014</Phone>
+    <Email>m0549580014@gmail.com</Email>
+    <Password>24f4ddebc0722250803ef4a6b9b3b9d5ced130b6482cda4a2643b38d22b3f6cb</Password>
+    <Address>hagana 9</Address>
+    <Latitude>30.1746471</Latitude>
+    <Longitude>31.2376043</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
 </ArrayOfVolunteer>

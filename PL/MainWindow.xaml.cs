@@ -184,7 +184,7 @@ namespace PL
 
         private void BtnCalls_Click(object sender, RoutedEventArgs e)
         {
-            new PL.Call.CallsListWindow().Show();
+            new PL.Call.CallListWindow().Show();
         }
 
 
