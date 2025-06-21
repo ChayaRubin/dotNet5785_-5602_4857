@@ -13,7 +13,7 @@ namespace PL
     {
         public LoginWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
             DataContext = new LoginViewModel(this);
         }
     }
@@ -73,18 +73,20 @@ namespace PL
 
             if (!int.TryParse(Id, out int userId))
             {
-                ErrorMessage = "Invalid ID format.";
+                ErrorMessage = "מספר תעודת זהות חייב להכיל ספרות בלבד.";
+                MessageBox.Show(ErrorMessage, "שגיאת קלט", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             string role;
             try
             {
-                role = _bl.Volunteer.Login(userId, Password); // שורת 84 – תקין אם login דורש int
+                role = _bl.Volunteer.Login(userId, Password);
             }
-            catch (Exception ex)
+            catch
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "ת.ז. או סיסמה אינם נכונים. אנא נסה שוב.";
+                MessageBox.Show(ErrorMessage, "שגיאה בהתחברות", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -92,8 +94,8 @@ namespace PL
             {
                 if (role == "Volunteer")
                 {
-                    var volunteer = _bl.Volunteer.GetVolunteerDetails(Id); // שורת 96 – תקין אם GetVolunteerDetails דורש string
-                    new VolunteerWindow(Id).Show();
+                    var volunteer = _bl.Volunteer.GetVolunteerDetails(Id);
+                    new VolunteerMainWindow("327725602").Show();
                 }
                 else if (role == "Manager")
                 {
@@ -101,17 +103,20 @@ namespace PL
                 }
                 else
                 {
-                    ErrorMessage = "Unknown role.";
+                    ErrorMessage = "סוג המשתמש אינו מוכר במערכת.";
+                    MessageBox.Show(ErrorMessage, "שגיאה בזיהוי משתמש", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 _loginWindow.Close();
             }
-            catch (Exception ex)
+            catch
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "אירעה שגיאה בעת טעינת הנתונים. אנא נסה שוב מאוחר יותר.";
+                MessageBox.Show(ErrorMessage, "שגיאת מערכת", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")

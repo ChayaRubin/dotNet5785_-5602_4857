@@ -493,7 +493,7 @@ internal class CallImplementation : ICall
                           $"Thank you for your cooperation,\nThe System Team";
 
 
-            emailTasks.Add(CallManager.SendEmailAsync(volunteer.Email, subject, body));  // הוספת מטלה לשלוח מייל למתנדב
+            emailTasks.Add(CallManager.SendEmailAsync(volunteer.Email, subject, body));  
 
             if (emailTasks.Count > 0)
             {
