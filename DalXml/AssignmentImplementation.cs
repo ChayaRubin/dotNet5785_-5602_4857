@@ -19,21 +19,14 @@ internal class AssignmentImplementation : IAssignment
     static Assignment getAssignment(XElement a)
     {
         var status = a.ToEnumNullable<CallResolutionStatus>("callResolutionStatus");
-
-        if (status == null)
-        {
-            //Console.WriteLine("Invalid callResolutionStatus: " + a.Element("callResolutionStatus")?.Value);
-            // Either assign a default value or log the error properly
-            status = CallResolutionStatus.Closed; // Replace with an appropriate default
-        }
         return new DO.Assignment()
         {
             Id = a.ToIntNullable("Id") ?? 0,
             CallId = a.ToIntNullable("CallId") ?? 0,
             VolunteerId = a.ToIntNullable("VolunteerId") ?? 0,
             EntryTime = a.ToDateTimeNullable("EntryTime") ?? new DateTime(2025, 3, 27),
-            FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime") ?? null,
-            CallResolutionStatus = status.Value
+            FinishCompletionTime = a.ToDateTimeNullable("FinishCompletionTime"),
+            CallResolutionStatus = status
         };
     }
 
@@ -167,7 +160,9 @@ internal class AssignmentImplementation : IAssignment
         ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
                 .Remove();
 
-        assignmentsRootElem.Add(new XElement("Assignment", CreateXElement(item)));
+        /*        assignmentsRootElem.Add(new XElement("Assignment", CreateXElement(item)));*/
+        assignmentsRootElem.Add(CreateXElement(item));
+
 
         XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
     }

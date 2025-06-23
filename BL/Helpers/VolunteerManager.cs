@@ -328,34 +328,54 @@ internal static class VolunteerManager
         return hashedInput == storedHash;
     }
 
-    /// <summary>
-    /// returns a randoml strong password
-    /// </summary>
-    /// <returns></returns>
-    /*    public static string GenerateStrongPassword()
+    public static BO.CallStatus CalculateCallStatus(int callId)
+    {
+        try
         {
-            const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string lowercase = "abcdefghijklmnopqrstuvwxyz";
-            const string digits = "0123456789";
-            const string special = "!@#$%^&*";
-            const string allChars = uppercase + lowercase + digits + special;
+            // Get the call from database
+            var call = s_dal.Call.Read(c => c.RadioCallId == callId);
+            if (call == null)
+                throw new ArgumentException($"Call with ID={callId} does not exist.");
 
-            char[] password = new char[8];
+            // Get all assignments for this call
+            var assignments = s_dal.Assignment.ReadAll(a => a.CallId == callId);
+            if (assignments == null)
+                throw new ArgumentException($"Call with ID={callId} does not has assignment.");
 
-            // Ensure at least one of each required character type
-            password[0] = uppercase[RandomNumberGenerator.GetInt32(uppercase.Length)];
-            password[1] = lowercase[RandomNumberGenerator.GetInt32(lowercase.Length)];
-            password[2] = digits[RandomNumberGenerator.GetInt32(digits.Length)];
-            password[3] = special[RandomNumberGenerator.GetInt32(special.Length)];
-
-            // Fill the remaining characters randomly from all types
-            for (int i = 4; i < 8; i++)
+            // If there are no assignments at all
+            if (!assignments.Any())
             {
-                password[i] = allChars[RandomNumberGenerator.GetInt32(allChars.Length)];
+                // Check if call has expired
+                if (AdminManager.Now > call.ExpiredTime)
+                    return BO.CallStatus.Expired;
+
+                // Check if call is at risk (less than 30 minutes to expiration)
+                TimeSpan timeToExpiration = (DateTime)call.ExpiredTime - AdminManager.Now;
+                if (timeToExpiration <= AdminManager.RiskRange)
+                    return BO.CallStatus.OpenAtRisk;
+
+                return BO.CallStatus.Open;
             }
 
-            // Shuffle the password to avoid any predictable ordering
-            return new string(password.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
-        }*/
+            // Get the latest active assignment (no EndTime)
+            var activeAssignment = assignments.FirstOrDefault(a => a.FinishCompletionTime == null);
+            // If there's no active assignment but there are completed assignments
+            if (activeAssignment == null)
+            {
+                // Check if any assignment was completed successfully
+                var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
+                return successfulAssignment ? BO.CallStatus.Closed : BO.CallStatus.Open;
+            }
+            // There is an active assignment - check if it's at risk
+            var remainingTime = (DateTime)call.ExpiredTime - AdminManager.Now;
+            if (remainingTime <= AdminManager.RiskRange)
+                return BO.CallStatus.InProgressAtRisk;
 
+            return BO.CallStatus.InProgress;
+        }
+        catch (Exception ex)
+        {
+            throw new BlSendingEmailException($"Error calculating call status: {ex.Message}");
+        }
+    }
 }

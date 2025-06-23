@@ -1,8 +1,8 @@
 ﻿<Application x:Class="PL.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PL">
-    <!--StartupUri="VolunteerMainWindow.xaml">-->
+             xmlns:local="clr-namespace:PL"
+    StartupUri="LoginWindow.xaml">
     <Application.Resources>
         <local:CallTypeEnumToStringConverter x:Key="CallTypeEnumToStringConverter" />
         <!--<local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->

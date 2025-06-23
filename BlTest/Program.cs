@@ -771,7 +771,7 @@ class Program
                 Console.WriteLine("Enter Assignment ID: ");
                 if (int.TryParse(Console.ReadLine(), out int assignmentId))
                 {
-                    s_bl.Call.CloseCall(volunteerId, assignmentId);
+                    //s_bl.Call.CloseCall(volunteerId, assignmentId);
                     Console.WriteLine("Call closed successfully.");
                 }
                 else

@@ -144,7 +144,7 @@ internal static class CallManager
     /// <summary>
     /// מחזירה רשימה ממיונת של קריאות עבור מתנדב מסוים.
     /// </summary>
-    
+
     public static IEnumerable<T> GetCallsForVolunteer<T>(int volunteerId, Enum? callType, Enum? sortByField, bool isOpen) where T : class
     {
         try
@@ -153,25 +153,29 @@ internal static class CallManager
             if (volunteer == null)
                 throw new BO.BlNullPropertyException($"Volunteer with ID {volunteerId} not found.");
 
+            var now = DateTime.Now;
+
+            // כל ההקצאות של המתנדב
             var assignments = s_dal.Assignment.ReadAll()
-                .Where(a => a.VolunteerId == volunteerId &&
-                           (isOpen
-                                ? (a.CallResolutionStatus == DO.CallResolutionStatus.Open ||
-                                   a.CallResolutionStatus == DO.CallResolutionStatus.InProgress ||
-                                   a.CallResolutionStatus == DO.CallResolutionStatus.OpenAtRisk)
-                                : a.CallResolutionStatus == DO.CallResolutionStatus.Closed))
+                .Where(a => a.VolunteerId == volunteerId)
                 .ToList();
 
             if (assignments.Count == 0)
                 throw new BO.BlDoesNotExistException("No assignments found for the volunteer.");
 
+            // חיבור בין הקריאות להקצאות
             var calls = from assign in assignments
                         join call in s_dal.Call.ReadAll() on assign.CallId equals call.RadioCallId
+                        where isOpen
+                            ? assign.CallResolutionStatus == null && call.ExpiredTime > now
+                            : assign.CallResolutionStatus != null || call.ExpiredTime <= now
                         select new { call, assign };
 
+            // סינון לפי סוג קריאה (אם נבחר)
             if (callType != null)
                 calls = calls.Where(x => x.call.CallType.Equals(callType));
 
+            // המרה ל-BL לפי האם פתוחה או סגורה
             var result = calls.Select(x => isOpen
                 ? new BO.OpenCallInList
                 {
@@ -181,7 +185,9 @@ internal static class CallManager
                     FullAddress = x.call.Address,
                     OpenTime = x.call.StartTime,
                     MaxCloseTime = x.call.ExpiredTime,
-                    DistanceFromVolunteer = CalculateDistance(volunteer.Latitude, volunteer.Longitude, x.call.Latitude, x.call.Longitude)
+                    DistanceFromVolunteer = CalculateDistance(
+                        volunteer.Latitude, volunteer.Longitude,
+                        x.call.Latitude, x.call.Longitude)
                 } as T
                 : new BO.ClosedCallInList
                 {
@@ -191,13 +197,14 @@ internal static class CallManager
                     OpenTime = x.call.StartTime,
                     StartTreatmentTime = x.assign.EntryTime,
                     EndTreatmentTime = x.assign.FinishCompletionTime.HasValue
-                        ? x.assign.FinishCompletionTime.Value // אם FinishCompletionTime לא null, השתמש בערך
-                        : (DateTime?)null, // אם הוא null, שמור אותו כ-null
-                    CompletionType = Enum.TryParse<CallStatus>(x.assign.CallResolutionStatus.ToString(), out CallStatus completionStatus)
-                                       ? (CallStatus?)completionStatus
-                                       : null
+                        ? x.assign.FinishCompletionTime.Value
+                        : (DateTime?)null,
+                    CompletionType = Enum.TryParse<CallStatus>(x.assign.CallResolutionStatus.ToString(), out CallStatus status)
+                        ? (CallStatus?)status
+                        : null
                 } as T);
 
+            // מיון לפי שדה נבחר
             if (sortByField != null)
             {
                 var property = typeof(T).GetProperty(sortByField.ToString());
@@ -222,6 +229,7 @@ internal static class CallManager
             throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while fetching calls. Details: {ex.Message}");
         }
     }
+
 
 
     /// <summary>

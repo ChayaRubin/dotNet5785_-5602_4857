@@ -42,4 +42,7 @@ public interface ICall : IObservable //stage 5
     //מתודת בחירת קריאה לטיפול
     void AssignCall(int volunteerId, int callId);
     Task SendEmailToVolunteers(Call call);
+    int? GetAssignmentId(int callId, int volunteerId);
+    IEnumerable<OpenCallInList> GetAvailableOpenCalls(int volunteerId);
+
 }
