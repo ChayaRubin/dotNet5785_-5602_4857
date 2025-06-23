@@ -13,7 +13,7 @@ namespace PL
     {
         public LoginWindow()
         {
-            //InitializeComponent();
+            InitializeComponent();
             DataContext = new LoginViewModel(this);
         }
     }

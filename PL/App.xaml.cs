@@ -14,11 +14,13 @@ namespace PL
         {
             base.OnStartup(e);
 
-            // לדוגמה, תזין ID ידני לצורך בדיקה
-            string volunteerId = "327725602"; // תחליף ל-ID אמיתי
+            //// לדוגמה, תזין ID ידני לצורך בדיקה
+            //string volunteerId = "327725602"; // תחליף ל-ID אמיתי
 
-            var window = new VolunteerMainWindow(volunteerId);
-            window.Show();
+            //var window = new VolunteerMainWindow(volunteerId);
+            //window.Show();
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
         }
 
     }
