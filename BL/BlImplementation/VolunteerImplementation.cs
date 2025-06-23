@@ -80,7 +80,7 @@ internal class VolunteerImplementation : IVolunteer
                 volunteer.TotalExpiredCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
 
                 // Optional: find current active assignment (e.g. InProgress)
-                var currentAssignment = assignments.FirstOrDefault(a => a.CallResolutionStatus == CallResolutionStatus.InProgress);
+                var currentAssignment = assignments.FirstOrDefault(a => a.CallResolutionStatus == null);
                 if (currentAssignment != null)
                 {
                     volunteer.CurrentCallId = currentAssignment.CallId;
@@ -155,48 +155,52 @@ internal class VolunteerImplementation : IVolunteer
     public BO.Volunteer GetVolunteerDetails(string idNumber) =>
         GetVolunteer(v => v.Id == int.Parse(idNumber), idNumber);
 
+    //private BO.Volunteer GetVolunteer(Func<DO.Volunteer, bool> predicate, string identifier)
     private BO.Volunteer GetVolunteer(Func<DO.Volunteer, bool> predicate, string identifier)
     {
         try
         {
             var volunteer = _dal.Volunteer.Read(predicate)
-                            ?? throw new BlDoesNotExistException("Volunteer not found");
+                             ?? throw new BlDoesNotExistException("Volunteer not found");
 
             var boVolunteer = VolunteerManager.ConvertToBO(volunteer);
 
+            // בדיקה האם קיימת הקצאה פתוחה
             var ongoingAssignment = _dal.Assignment.Read(a =>
                 a.VolunteerId == volunteer.Id &&
-                (CallStatus)a.CallResolutionStatus == CallStatus.Open); // או Open - לפי הלוגיקה שלך
+                a.CallResolutionStatus.HasValue &&  // בדיקה אם יש ערך בכלל
+                (BO.CallStatus)a.CallResolutionStatus.Value == BO.CallStatus.Open);
 
             if (ongoingAssignment != null)
             {
                 var relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
 
-            double distance = 0;
-            if (boVolunteer.Latitude.HasValue && boVolunteer.Longitude.HasValue)
-            {
-                distance = Tools.CalculateDistance(
-                    relatedCall.Latitude,
-                    relatedCall.Longitude,
-                    boVolunteer.Latitude.Value,
-                    boVolunteer.Longitude.Value);
-            }
+                double distance = Tools.CalculateDistance(volunteer.Latitude, volunteer.Longitude, relatedCall.Latitude, relatedCall.Longitude);
+                if (boVolunteer.Latitude.HasValue && boVolunteer.Longitude.HasValue)
+                {
+                    distance = Tools.CalculateDistance(
+                        relatedCall.Latitude,
+                        relatedCall.Longitude,
+                        boVolunteer.Latitude.Value,
+                        boVolunteer.Longitude.Value);
+                }
 
-            if (ongoingAssignment != null)
-            {
                 boVolunteer.CurrentCall = new BO.CallInProgress
                 {
                     Id = ongoingAssignment.Id,
+                    CallType = (BO.CallTypeEnum)relatedCall.CallType,
+                    Description = relatedCall.Description,
                     Address = relatedCall.Address,
                     CallId = ongoingAssignment.CallId,
                     OpeningTime = ongoingAssignment.EntryTime,
                     MaxCompletionTime = ongoingAssignment.FinishCompletionTime,
-                    Status = (BO.CallStatus)ongoingAssignment.CallResolutionStatus,
+                    AssignmentStartTime = ongoingAssignment.EntryTime, // אל תשכחי לעדכן
+                    Status = (BO.CallStatus?)ongoingAssignment.CallResolutionStatus, // עם ? לשמור Nullable
                     DistanceFromVolunteer = distance,
                 };
             }
-         }      
-            return boVolunteer; // זו השורה שתוקנה
+
+            return boVolunteer;
         }
         catch (DalDoesNotExistException ex)
         {
@@ -337,7 +341,7 @@ internal class VolunteerImplementation : IVolunteer
         {
             var volunteer = _dal.Volunteer.Read(v => v.Id == id) ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
 
-            var currentAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id && a.CallResolutionStatus == CallResolutionStatus.Open).FirstOrDefault();
+            var currentAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id && a.CallResolutionStatus == null).FirstOrDefault();
 
             if (currentAssignment != null)
             {

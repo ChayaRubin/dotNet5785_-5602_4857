@@ -22,7 +22,6 @@ internal class CallImplementation : ICall
     /// <exception cref="DalAlreadyExistsException"></exception>
     /// <exception cref="DalArgumentException"></exception>
     public void AssignCall(int volunteerId, int callId)
-
     {
         try
         {
@@ -30,7 +29,7 @@ internal class CallImplementation : ICall
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
 
-            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId && (a.CallResolutionStatus == CallResolutionStatus.Open || a.CallResolutionStatus == CallResolutionStatus.Treated));
+            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId && (a.CallResolutionStatus == CallResolutionStatus.Treated));
 
             if (existingAssignment != null)
                 throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
@@ -45,7 +44,7 @@ internal class CallImplementation : ICall
                 VolunteerId = volunteerId,
                 EntryTime = _dal.Config.Clock,
                 FinishCompletionTime = null,
-                CallResolutionStatus = CallResolutionStatus.Open
+                CallResolutionStatus = null
             };
 
             _dal.Assignment.Create(newAssignment);
@@ -209,20 +208,16 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // Retrieve the call from the DAL by its ID
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
             if (call == null)
                 throw new DalDoesNotExistException("Call not found.");
 
-            // Check if there are any assignments related to the given callId
             var assignmentsForCall = _dal.Assignment.ReadAll(a => a.CallId == callId);
 
-            // If there are open assignments, prevent deletion
-            var openAssignments = assignmentsForCall.Where(a => a.CallResolutionStatus == DO.CallResolutionStatus.Open);
+            var openAssignments = assignmentsForCall.Where(a => a.CallResolutionStatus == null);
             if (openAssignments.Any())
                 throw new DO.DalInvalidTimeUnitException("Cannot delete a call that has open assignments.");
 
-            // If no open assignments exist, proceed with deleting the call
             _dal.Call.Delete(callId);
             CallManager.Observers.NotifyListUpdated();  //stage 5  	
         }
@@ -286,7 +281,7 @@ internal class CallImplementation : ICall
     /// <exception cref="BlUnauthorizedAccessException"></exception>
     /// <exception cref="BlNoPermitionException"></exception>
     /// <exception cref="BlGeneralDatabaseException"></exception>
-    public void CancelCall(int requestorId, int assignmentId)
+    /*public void CancelCall(int requestorId, int assignmentId)
     {
         try
         {
@@ -324,7 +319,7 @@ internal class CallImplementation : ICall
             AssignmentManager.Observers.NotifyListUpdated();  //stage 5
 
 
-            if (isAdmin)  // Only send email if it's an admin cancelling
+            if (isAdmin)  
             {
                 BO.Call call = GetCallDetails(assignment.CallId);
                 DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId) ?? throw new DalDoesNotExistException("The requested volunteer does not exist");
@@ -349,50 +344,101 @@ internal class CallImplementation : ICall
         {
             throw new BlGeneralDatabaseException($"An unexpected error occurred during canceling the call: {ex.Message}");
         }
+    }*/
+    public void CancelCall(int requestorId, int assignmentId)
+    {
+        try
+        {
+            DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+                ?? throw new DalDoesNotExistException("The requested assignment does not exist");
+
+            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)
+                ?? throw new DalDoesNotExistException("The volunteer was not found");
+
+            DO.Volunteer requestor = _dal.Volunteer.Read(v => v.Id == requestorId)
+                ?? throw new DalDoesNotExistException("The requestor was not found");
+
+            bool isAdmin = requestor.Position == DO.PositionEnum.Manager;
+            bool isSameVolunteer = assignment.VolunteerId == requestorId;
+
+            if (!isAdmin && !isSameVolunteer)
+                throw new DalNoPermitionException("You do not have permission to cancel this call");
+
+            if (assignment.FinishCompletionTime.HasValue)
+                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been closed");
+
+            assignment.CallResolutionStatus =
+                isSameVolunteer ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
+
+            _dal.Assignment.Update(assignment);
+            AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);
+            AssignmentManager.Observers.NotifyListUpdated();
+
+            if (isAdmin)
+            {
+                BO.Call call = GetCallDetails(assignment.CallId);
+                BO.Volunteer boVolunteer = VolunteerManager.ConvertToBO(volunteer);
+                SendCancellationEmailAsync(call, boVolunteer).Wait();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new BlGeneralDatabaseException($"Error cancelling the call: {ex.Message}");
+        }
     }
 
-    /// <summary>
-    /// close a call
-    /// </summary>
-    /// <param name="volunteerId">the assignments voluteerId to close</param>
-    /// <param name="assignmentId">the assignments to close</param>
-    /// <exception cref="BlUnauthorizedAccessException"></exception>
-    /// <exception cref="BlNoPermitionException"></exception>
-    /// <exception cref="BlGeneralDatabaseException"></exception>
+
     public void CloseCall(int volunteerId, int assignmentId)
     {
         try
         {
-            var existingAssignment = _dal.Assignment.Read(a => a.Id == assignmentId)
-                ?? throw new DalDoesNotExistException($"Assignment with ID {assignmentId} not found");
+            string logPath = "log.txt";
+            File.AppendAllText(logPath,
+                $"[CloseCall CALLED at {DateTime.Now:HH:mm:ss}] VolunteerId={volunteerId}, AssignmentId={assignmentId}\n");
+            File.AppendAllText("log.txt", Environment.StackTrace + "\n\n");
 
-            if (existingAssignment.VolunteerId != volunteerId)
-                throw new DalNoPermitionException("Volunteer is not authorized to close this call");
+            var assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+                ?? throw new DalDoesNotExistException($"Assignment with ID {assignmentId} not found.");
 
-            if (existingAssignment.FinishCompletionTime != null)
-                throw new DalGeneralDatabaseException("Call has already been closed or expired");
+            File.AppendAllText("log.txt", $"FinishCompletionTime: {(assignment.FinishCompletionTime?.ToString() ?? "NULL")}{Environment.NewLine}");
 
-            existingAssignment.FinishCompletionTime = AdminManager.Now;
-            existingAssignment.CallResolutionStatus = DO.CallResolutionStatus.Closed;
-            _dal.Assignment.Update(existingAssignment);
-            AssignmentManager.Observers.NotifyItemUpdated(existingAssignment.Id);  //stage 5
-            AssignmentManager.Observers.NotifyListUpdated();  //stage 5
+
+            if (assignment.VolunteerId != volunteerId)
+                throw new DalNoPermitionException("Volunteer is not authorized to close this call.");
+
+            if (assignment.FinishCompletionTime.HasValue && assignment.FinishCompletionTime.Value > DateTime.MinValue)
+                throw new DalGeneralDatabaseException("This assignment has already been marked as completed.");
+
+            var call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId)
+                ?? throw new DalDoesNotExistException($"Call with ID {assignment.CallId} not found.");
+
+            // Ensure the call is still active
+            if (call.ExpiredTime < AdminManager.Now)
+                throw new DalGeneralDatabaseException("Cannot close a call that has expired.");
+
+            // Update the assignment to mark it as completed
+            assignment.FinishCompletionTime = AdminManager.Now;
+            assignment.CallResolutionStatus = DO.CallResolutionStatus.Treated;
+
+            _dal.Assignment.Update(assignment);
+            AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);
+            AssignmentManager.Observers.NotifyListUpdated();
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new BlUnauthorizedAccessException($"failed: {ex.Message}");
+            throw new BlDoesNotExistException($"Failed to close call: {ex.Message}");
         }
         catch (DalNoPermitionException ex)
         {
-            throw new BlNoPermitionException($"failed: {ex.Message}");
+            throw new BlNoPermitionException($"Authorization error: {ex.Message}");
         }
         catch (DalGeneralDatabaseException ex)
         {
-            throw new BlGeneralDatabaseException($"failed: {ex.Message}");
+            throw new BlGeneralDatabaseException($"Business rule error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            throw new BlGeneralDatabaseException($"An unexpected error occurred during the loading: {ex.Message}");
+            throw new BlGeneralDatabaseException($"Unexpected error: {ex.Message}");
         }
     }
 
@@ -505,6 +551,56 @@ internal class CallImplementation : ICall
             Console.WriteLine($"Error sending email: {ex.Message}");
         }
     }
+
+    public int? GetAssignmentId(int callId, int volunteerId)
+    {
+        var assignment = _dal.Assignment.Read(a => a.CallId == callId && a.VolunteerId == volunteerId);
+        return assignment?.Id;
+    }
+
+    public IEnumerable<BO.OpenCallInList> GetAvailableOpenCalls(int volunteerId)
+    {
+        var volunteerDO = _dal.Volunteer.Read(v => v.Id == volunteerId)
+            ?? throw new BO.BlNullPropertyException($"Volunteer with ID {volunteerId} not found.");
+
+        var volunteer = new BO.Volunteer
+        {
+            Id = volunteerDO.Id,
+            Latitude = volunteerDO.Latitude,
+            Longitude = volunteerDO.Longitude,
+            MaxDistance = volunteerDO.MaxResponseDistance,
+            CurrentAddress = volunteerDO.Address
+        };
+
+        var openCalls = _dal.Call.ReadAll()
+            .Where(c => !_dal.Assignment.ReadAll().Any(a => a.CallId == c.RadioCallId))
+            .Where(c => c.ExpiredTime > DateTime.Now) 
+            .Select(c => new BO.Call
+            {
+                Id = c.RadioCallId,
+                Description = c.Description,
+                Type = (BO.CallTypeEnum)c.CallType,
+                Address = c.Address,
+                Latitude = c.Latitude,
+                Longitude = c.Longitude,
+                OpenTime = c.StartTime,
+                MaxEndTime = c.ExpiredTime
+            })
+            .Where(call => CallManager.IsWithinMaxDistance(volunteer, call)) 
+            .Select(call => new BO.OpenCallInList
+            {
+                Id = call.Id,
+                CallType = call.Type,
+                Description = call.Description,
+                FullAddress = call.Address,
+                OpenTime = call.OpenTime,
+                MaxCloseTime = call.MaxEndTime,
+                DistanceFromVolunteer = CallManager.CalculateDistance(volunteer.Latitude, volunteer.Longitude, call.Latitude, call.Longitude)
+            });
+
+        return openCalls;
+    }
+
 
     public void AddObserver(Action listObserver) =>
     CallManager.Observers.AddListObserver(listObserver); //stage 5

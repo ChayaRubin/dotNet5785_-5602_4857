@@ -1,11 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Assignments>
-	<Assignment>
-		<Id>1076</Id>
-		<CallId>1011</CallId>
-		<VolunteerId>327725602</VolunteerId>
-		<EntryTime>2025-06-06T04:39:36.0239968+03:00</EntryTime>
-		<FinishCompletionTime>2026-06-08T04:39:36.0239968+03:00</FinishCompletionTime>
-		<callResolutionStatus>Open</callResolutionStatus>
-	</Assignment>
+  <Assignment>
+    <Id>1032</Id>
+    <CallId>1002</CallId>
+    <VolunteerId>327725602</VolunteerId>
+    <EntryTime>2029-11-05T21:00:35</EntryTime>
+    <FinishCompletionTime>2029-11-05T21:00:35</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1030</Id>
+    <CallId>1006</CallId>
+    <VolunteerId>327725602</VolunteerId>
+    <EntryTime>2025-06-23T00:00:00</EntryTime>
+    <FinishCompletionTime>2025-06-23T00:00:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1031</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>327725602</VolunteerId>
+    <EntryTime>2029-11-05T21:00:35</EntryTime>
+    <FinishCompletionTime>2025-06-23T00:00:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1030</Id>
+    <CallId>1008</CallId>
+    <VolunteerId>327725602</VolunteerId>
+    <EntryTime>2025-06-23T00:00:00</EntryTime>
+    <FinishCompletionTime />
+    <callResolutionStatus />
+  </Assignment>
 </Assignments>

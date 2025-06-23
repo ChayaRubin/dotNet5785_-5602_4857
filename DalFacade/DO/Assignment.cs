@@ -18,7 +18,7 @@ public record Assignment
     public int VolunteerId { get; set; }
     public DateTime EntryTime { get; set; }
     public DateTime? FinishCompletionTime { get; set; }
-    public CallResolutionStatus CallResolutionStatus { get; set; }
+    public CallResolutionStatus? CallResolutionStatus { get; set; }
 
     public Assignment()
     {
@@ -27,7 +27,7 @@ public record Assignment
         VolunteerId = 0;  
         EntryTime = DateTime.Now; 
         FinishCompletionTime = null; 
-        CallResolutionStatus = CallResolutionStatus.Treated;  
+        CallResolutionStatus = null;  
     }
     public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus 
         

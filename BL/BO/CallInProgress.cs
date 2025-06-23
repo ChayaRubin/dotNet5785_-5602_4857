@@ -18,7 +18,7 @@ namespace BO
         public DateTime? MaxCompletionTime { get; set; } // זמן מקסימלי לסיום הקריאה
         public DateTime AssignmentStartTime { get; set; } // זמן כניסה לטיפול
         public double DistanceFromVolunteer { get; set; } // מרחק הקריאה מהמתנדב המטפל
-        public CallStatus Status { get; set; } // סטטוס הקריאה
+        public CallStatus? Status { get; set; } // סטטוס הקריאה
 
         public override string ToString()
         {

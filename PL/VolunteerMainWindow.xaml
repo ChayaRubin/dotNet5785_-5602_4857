@@ -1,64 +1,126 @@
 ﻿<Window x:Class="PL.VolunteerMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behaviors="clr-namespace:PL" 
         Title="Volunteer Main Window" Height="600" Width="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="#E6F0FA">
 
-    <Grid Margin="20">
-        <Border CornerRadius="10" BorderBrush="#0F425F" BorderThickness="2" Padding="20">
-            <StackPanel>
-                <TextBlock Text="{Binding Volunteer.FullName, StringFormat='Welcome, {0}'}"
-                           FontSize="18" FontWeight="Bold" Margin="0 0 0 20"/>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-                <!-- Volunteer Info -->
-                <GroupBox Header="Personal Information" Margin="0 0 0 10">
-                    <Grid Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
 
-                        <TextBlock Text="Full Name:" Grid.Row="0" Grid.Column="0"/>
-                        <TextBlock Text="{Binding Volunteer.FullName}" Grid.Row="0" Grid.Column="1"/>
+    <Viewbox Stretch="Uniform">
+        <Grid>
+            <Border CornerRadius="12" BorderBrush="#0F425F" BorderThickness="2" Padding="20" Background="White" Margin="40">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                        <TextBlock Text="Phone:" Grid.Row="1" Grid.Column="0"/>
-                        <TextBlock Text="{Binding Volunteer.PhoneNumber}" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="{Binding Volunteer.FullName, StringFormat='Welcome, {0}'}"
+                               FontSize="26" FontWeight="Bold" Foreground="#2798D5" Margin="0 0 0 20"
+                               HorizontalAlignment="Center"/>
 
-                        <TextBlock Text="Email:" Grid.Row="2" Grid.Column="0"/>
-                        <TextBlock Text="{Binding Volunteer.Email}" Grid.Row="2" Grid.Column="1"/>
-                    </Grid>
-                </GroupBox>
+                    <!-- Volunteer Info -->
+                    <GroupBox Header="Personal Information" Margin="0 0 0 10">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                <!-- Assigned Calls -->
-                <GroupBox Header="My Assignments">
-                    <ListBox ItemsSource="{Binding VolunteerCalls}" Margin="10">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderThickness="1" BorderBrush="Gray" Padding="10" Margin="5">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Id, StringFormat='Call ID: {0}'}"/>
-                                        <TextBlock Text="{Binding Address, StringFormat='Address: {0}'}"/>
-                                        <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}"/>
-                                        <TextBlock Text="{Binding Distance, StringFormat='Distance: {0:F1} km'}"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </GroupBox>
+                            <TextBlock Text="Full Name:" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Volunteer.FullName}" Grid.Row="0" Grid.Column="1"/>
 
-                <!-- Buttons -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-                    <Button Content="Update Details" Command="{Binding UpdateCommand}" Width="120" Margin="5"/>
-                    <Button Content="Call History" Command="{Binding HistoryCommand}" Width="120" Margin="5"/>
-                    <Button Content="Logout" Command="{Binding LogoutCommand}" Width="120" Margin="5"/>
+                            <TextBlock Text="Phone:" Grid.Row="1" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Volunteer.PhoneNumber}" Grid.Row="1" Grid.Column="1"/>
+
+                            <TextBlock Text="Email:" Grid.Row="2" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Volunteer.Email}" Grid.Row="2" Grid.Column="1"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Current Call -->
+                    <GroupBox Header="Current Assignment"
+                              Visibility="{Binding HasCallInProgress, Converter={StaticResource BoolToVis}}">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="{Binding CurrentCall.Id, StringFormat='Call ID: {0}'}"/>
+                            <TextBlock Text="{Binding CurrentCall.Description, StringFormat='Description: {0}'}"/>
+                            <TextBlock Text="{Binding CurrentCall.Address, StringFormat='Address: {0}'}"/>
+                            <TextBlock Text="{Binding CurrentCall.StatusText, StringFormat='Status: {0}'}"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Map Display -->
+                    <TextBlock Text="View Route on Map" FontWeight="Bold" Margin="0,10,0,5"/>
+                    <TextBlock HorizontalAlignment="Center">
+    <Hyperlink NavigateUri="{Binding MapLink}" RequestNavigate="Hyperlink_RequestNavigate">
+        Open in Google Maps
+    </Hyperlink>
+                    </TextBlock>
+
+
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
+                        <Button Content="Finish Treatment"
+                                Command="{Binding FinishCommand}"
+                                Background="#C25C9E"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+
+                        <Button Content="Assign Call"
+                                Command="{Binding AssignCallCommand}"
+                                IsEnabled="{Binding CanAssignCall}"
+                                Background="#6C9EDF"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+
+                        <Button Content="Cancel Treatment"
+                                Command="{Binding CancelCommand}"
+                                IsEnabled="{Binding CanCancelCall}"
+                                Background="#D16868"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+
+                        <Button Content="Update Details"
+                                Command="{Binding UpdateCommand}"
+                                Background="#F9B350"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+
+                        <Button Content="Call History"
+                                Command="{Binding HistoryCommand}"
+                                Background="#B9D15F"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+
+                        <Button Content="Logout"
+                                Command="{Binding LogoutCommand}"
+                                Background="#2798D5"
+                                Style="{StaticResource RoundedButtonStyle}"/>
+                    </StackPanel>
+
                 </StackPanel>
-            </StackPanel>
-        </Border>
-    </Grid>
+            </Border>
+        </Grid>
+    </Viewbox>
 </Window>
