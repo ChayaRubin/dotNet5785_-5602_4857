@@ -10,6 +10,11 @@ namespace BO
     public class CallAssignInList
     {
         /// <summary>
+        /// Gets or sets the unique ID of the assignment.
+        /// </summary>
+        public int Id { get; init; } // Sourced from DO.Assignment
+   
+        /// <summary>
         /// Gets or sets the ID of the volunteer.
         /// Nullable: This can be null in cases where the assignment was created artificially
         /// due to an unhandled call being updated to the "Expired Cancellation" end type.

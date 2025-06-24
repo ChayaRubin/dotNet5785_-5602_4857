@@ -405,22 +405,19 @@ namespace PL
         // לחצנים לפתיחת רשימות מסוננות לפי סטטוס
         private void BtnOpenCalls_Click(object sender, RoutedEventArgs e)
         {
-            //new PL.Call.CallListWindow(CallStatus.Open).Show();
-            new PL.Call.CallListWindow().Show();
+            new PL.Call.CallListWindow(CallStatus.Open).Show();
 
         }
 
         private void BtnInProgressCalls_Click(object sender, RoutedEventArgs e)
         {
-            //new PL.Call.CallListWindow(CallStatus.InProgress).Show();
-            new PL.Call.CallListWindow().Show();
+            new PL.Call.CallListWindow(CallStatus.InProgress).Show();
 
         }
 
         private void BtnClosedCalls_Click(object sender, RoutedEventArgs e)
         {
-            //new PL.Call.CallListWindow(CallStatus.Closed).Show();
-            new PL.Call.CallListWindow().Show();
+            new PL.Call.CallListWindow(CallStatus.Closed).Show();
 
         }
     }

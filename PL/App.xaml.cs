@@ -19,8 +19,8 @@ namespace PL
 
             //var window = new VolunteerMainWindow(volunteerId);
             //window.Show();
-            var loginWindow = new LoginWindow();
-            loginWindow.Show();
+            //var loginWindow = new LoginWindow();
+            //loginWindow.Show();
         }
 
     }
