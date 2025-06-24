@@ -71,7 +71,8 @@
                             <TextBlock Text="{Binding CurrentCall.Id, StringFormat='Call ID: {0}'}"/>
                             <TextBlock Text="{Binding CurrentCall.Description, StringFormat='Description: {0}'}"/>
                             <TextBlock Text="{Binding CurrentCall.Address, StringFormat='Address: {0}'}"/>
-                            <TextBlock Text="{Binding CurrentCall.StatusText, StringFormat='Status: {0}'}"/>
+                            <TextBlock Text="{Binding CurrentCall.Status, StringFormat='Status: {0}'}"/>
+                            <TextBlock Text="{Binding DistanceToCall, StringFormat='Distance: {0:F1} km'}"/>
                         </StackPanel>
                     </GroupBox>
 
@@ -94,13 +95,13 @@
                         <Button Content="Assign Call"
                                 Command="{Binding AssignCallCommand}"
                                 IsEnabled="{Binding CanAssignCall}"
-                                Background="#6C9EDF"
+                                Background="#C25C9E"
                                 Style="{StaticResource RoundedButtonStyle}"/>
 
                         <Button Content="Cancel Treatment"
                                 Command="{Binding CancelCommand}"
                                 IsEnabled="{Binding CanCancelCall}"
-                                Background="#D16868"
+                                Background="#C25C9E"
                                 Style="{StaticResource RoundedButtonStyle}"/>
 
                         <Button Content="Update Details"

@@ -26,12 +26,6 @@ internal class CallImplementation : ICall
         DataSource.Calls.Clear();
     }
 
-
-    //public Call? Read(int id)
-    //{
-    //    return DataSource.Calls.FirstOrDefault(item => item.RadioCallId == id); //stage 2
-    //}
-
     public Call? Read(Func<Call, bool> filter)
     {
         return DataSource.Calls.FirstOrDefault(filter);

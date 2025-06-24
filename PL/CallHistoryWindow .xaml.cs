@@ -86,3 +86,5 @@ namespace PL
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
+
+

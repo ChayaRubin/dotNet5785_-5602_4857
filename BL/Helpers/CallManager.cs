@@ -364,6 +364,34 @@ internal static class CallManager
             Console.WriteLine($"Error sending email to {toEmail}: {ex.Message}");
         }
     }
+
+    public static CallStatus GetCallStatus(DO.Call callData, List<BO.CallAssignInList> assignmentData)
+    {
+        if (callData.ExpiredTime < s_dal.Config.Clock)
+            return CallStatus.Expired;
+
+        if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
+            return CallStatus.Treated;
+
+        /*if (assignmentData.Any() &&
+            callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+            callData.ExpiredTime > s_dal.Config.Clock)
+            {
+                return CallStatus.InProgressAtRisk;
+            }*/
+        if (
+            callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+            callData.ExpiredTime > s_dal.Config.Clock)
+        {
+            return CallStatus.OpenAtRisk;
+        }
+        else
+        {
+            return CallStatus.InProgressAtRisk;
+        }
+
+    }
+
 }
 
 

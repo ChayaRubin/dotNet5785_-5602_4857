@@ -7,7 +7,6 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Background="#E6F0FA"
         WindowStartupLocation="CenterScreen"
-        
         Closing="VolunteerPage_Closing">
 
     <Window.Resources>
@@ -56,10 +55,9 @@
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
 
-                            <!-- Fields -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Id:" Width="120" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding CurrentVolunteer.Id}" Width="250"/>
+                                <TextBox Text="{Binding CurrentVolunteer.Id}" Width="250" IsEnabled="{Binding CanEditId}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -80,8 +78,8 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Password:" Width="120" VerticalAlignment="Center"/>
                                 <PasswordBox Width="250"
-                                helpers:PasswordBoxHelper.BindPassword="True"
-                                helpers:PasswordBoxHelper.BoundPassword="{Binding VolunteerPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                             helpers:PasswordBoxHelper.BindPassword="True"
+                                             helpers:PasswordBoxHelper.BoundPassword="{Binding VolunteerPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -89,24 +87,19 @@
                                 <TextBox Text="{Binding CurrentVolunteer.CurrentAddress}" Width="250"/>
                             </StackPanel>
 
-                            <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBlock Text="Latitude:" Width="120"/>
-                                <TextBlock Text="{Binding CurrentVolunteer.Latitude}" VerticalAlignment="Center"/>
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBlock Text="Longitude:" Width="120"/>
-                                <TextBlock Text="{Binding CurrentVolunteer.Longitude}" VerticalAlignment="Center"/>
-                            </StackPanel>-->
-
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Role:" Width="120"/>
-                                <ComboBox Width="250" ItemsSource="{Binding Roles}" SelectedValue="{Binding CurrentVolunteer.Role}" Style="{StaticResource ColoredComboBox}"/>
+                                <ComboBox Width="250"
+                                          ItemsSource="{Binding Roles}"
+                                          SelectedValue="{Binding CurrentVolunteer.Role}"
+                                          IsEnabled="{Binding CanEditRole}"
+                                          Style="{StaticResource ColoredComboBox}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Is Active:" Width="120"/>
-                                <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive}" VerticalAlignment="Center"/>
+                                <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive}"
+                                          IsEnabled="{Binding CanEditActiveStatus}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -116,7 +109,10 @@
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                 <TextBlock Text="Distance Type:" Width="120"/>
-                                <ComboBox Width="250" ItemsSource="{Binding DistanceTypes}" SelectedValue="{Binding CurrentVolunteer.TypeOfDistance}" Style="{StaticResource ColoredComboBox}"/>
+                                <ComboBox Width="250"
+                                          ItemsSource="{Binding DistanceTypes}"
+                                          SelectedValue="{Binding CurrentVolunteer.TypeOfDistance}"
+                                          Style="{StaticResource ColoredComboBox}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
@@ -137,17 +133,13 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Buttons -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="{Binding ButtonText}"  Click="ButtonAddUpdate_Click" Background="#6FA8DC" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="{Binding ButtonCallText}"  Click="ButtonSeeCallinProgress_Click" Background="#B9D15F" Width="140" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Close"  Click="ButtonClose_Click" Background="#F9B350" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="{Binding ButtonText}" Click="ButtonAddUpdate_Click" Background="#6FA8DC" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="{Binding ButtonCallText}" Click="ButtonSeeCallinProgress_Click" Background="#B9D15F" Width="140" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Close" Click="ButtonClose_Click" Background="#F9B350" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
     </Viewbox>
 </Window>
-
-
-

@@ -1,4 +1,4 @@
-﻿using BO;
+﻿/*using BO;
 using BlApi;
 using System;
 using System.Collections.ObjectModel;
@@ -199,6 +199,7 @@ namespace PL
             }
         }
 
+
         /// <summary>
         /// function that closes the window when the close button is clicked.
         /// </summary>
@@ -218,5 +219,175 @@ namespace PL
         {
             // Implementation for seeing calls in progress
         }
+    }
+}*/
+
+using BO;
+using BlApi;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace PL
+{
+    public partial class VolunteerWindow : Window, INotifyPropertyChanged
+    {
+        static readonly IBl s_bl = Factory.Get();
+
+        private readonly bool isSelfEdit;
+        private readonly bool isAdmin;
+
+        public BO.Volunteer CurrentVolunteer
+        {
+            get { return (BO.Volunteer)GetValue(CurrentVolunteerProperty); }
+            set { SetValue(CurrentVolunteerProperty, value); }
+        }
+
+        public static readonly DependencyProperty CurrentVolunteerProperty =
+            DependencyProperty.Register(nameof(CurrentVolunteer), typeof(BO.Volunteer), typeof(VolunteerWindow), new PropertyMetadata(null));
+
+        public ObservableCollection<PositionEnum> Roles { get; } = new ObservableCollection<PositionEnum>((PositionEnum[])Enum.GetValues(typeof(PositionEnum)));
+        public ObservableCollection<DistanceType> DistanceTypes { get; } = new ObservableCollection<DistanceType>((DistanceType[])Enum.GetValues(typeof(DistanceType)));
+
+        public string ButtonText
+        {
+            get { return (string)GetValue(ButtonTextProperty); }
+            set { SetValue(ButtonTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty ButtonTextProperty =
+            DependencyProperty.Register(nameof(ButtonText), typeof(string), typeof(VolunteerWindow), new PropertyMetadata("Add"));
+
+        public string ButtonCallText
+        {
+            get { return (string)GetValue(ButtonCallTextProperty); }
+            set { SetValue(ButtonCallTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty ButtonCallTextProperty =
+            DependencyProperty.Register(nameof(ButtonCallText), typeof(string), typeof(VolunteerWindow), new PropertyMetadata("See Calls In Progress"));
+
+        public string VolunteerPassword
+        {
+            get { return (string)GetValue(VolunteerPasswordProperty); }
+            set { SetValue(VolunteerPasswordProperty, value); }
+        }
+
+        public static readonly DependencyProperty VolunteerPasswordProperty =
+            DependencyProperty.Register(nameof(VolunteerPassword), typeof(string), typeof(VolunteerWindow),
+                new PropertyMetadata(string.Empty, OnPasswordChanged));
+
+        private static void OnPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is VolunteerWindow window && window.CurrentVolunteer != null)
+            {
+                window.CurrentVolunteer.Password = e.NewValue?.ToString() ?? string.Empty;
+            }
+        }
+
+        public bool CanEditId => false;
+        public bool CanEditRole => isAdmin;
+        public bool CanEditActiveStatus => !s_bl.Call.GetOpenCallsForVolunteer(CurrentVolunteer.Id).Any();
+
+        public VolunteerWindow(string idNumber, bool isSelfEdit = false, bool isAdmin = false)
+        {
+            InitializeComponent();
+            this.isSelfEdit = isSelfEdit;
+            this.isAdmin = isAdmin;
+            DataContext = this;
+
+            try
+            {
+                CurrentVolunteer = s_bl.Volunteer.GetVolunteerDetails(idNumber);
+                if (CurrentVolunteer != null)
+                    VolunteerPassword = string.Empty;
+
+                ButtonText = "Update";
+                ButtonCallText = "See Calls In Progress";
+                OnPropertyChanged(nameof(CanEditRole));
+                OnPropertyChanged(nameof(CanEditId));
+                OnPropertyChanged(nameof(CanEditActiveStatus));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load volunteer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+            }
+        }
+
+        private void ButtonAddUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (CurrentVolunteer == null)
+                {
+                    MessageBox.Show("No volunteer data available.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(CurrentVolunteer.Id.ToString()) ||
+                    string.IsNullOrWhiteSpace(CurrentVolunteer.FullName))
+                {
+                    MessageBox.Show("Please fill all required fields.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (ButtonText == "Add")
+                {
+                    if (string.IsNullOrWhiteSpace(VolunteerPassword))
+                    {
+                        MessageBox.Show("Password is required.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (VolunteerPassword.Length < 8)
+                    {
+                        MessageBox.Show("Password must be at least 8 characters.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    CurrentVolunteer.Password = VolunteerPassword;
+                    s_bl.Volunteer.AddVolunteer(CurrentVolunteer);
+                    MessageBox.Show("Volunteer added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(VolunteerPassword))
+                    {
+                        if (VolunteerPassword.Length < 8)
+                        {
+                            MessageBox.Show("Password must be at least 8 characters.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        CurrentVolunteer.Password = VolunteerPassword;
+                    }
+
+                    s_bl.Volunteer.UpdateVolunteerDetails(CurrentVolunteer.Id.ToString(), CurrentVolunteer);
+                    MessageBox.Show("Volunteer updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Operation failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ButtonClose_Click(object sender, RoutedEventArgs e) => Close();
+
+        private void VolunteerPage_Closing(object sender, CancelEventArgs e) { }
+
+        private void ButtonSeeCallinProgress_Click(object sender, RoutedEventArgs e)
+        {
+            // Optional: implement viewing active calls
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

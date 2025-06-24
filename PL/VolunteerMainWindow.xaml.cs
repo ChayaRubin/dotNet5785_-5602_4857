@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -8,9 +7,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using BlApi;
 using BO;
-using DO;
-using System.Diagnostics;
-using System.Windows.Navigation;
+
 namespace PL
 {
     public partial class VolunteerMainWindow : Window, INotifyPropertyChanged
@@ -28,17 +25,25 @@ namespace PL
                 currentCall = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasCallInProgress));
+                OnPropertyChanged(nameof(CanAssignCall));
+                OnPropertyChanged(nameof(CanCancelCall));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
         public bool HasCallInProgress => CurrentCall != null;
+
+        public bool CanAssignCall => !HasCallInProgress && Volunteer?.IsActive == true;
+
+        public bool CanCancelCall => HasCallInProgress;
+
         public ICommand UpdateCommand { get; set; }
         public ICommand HistoryCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand FinishCommand { get; set; }
         public ICommand AssignCallCommand { get; set; }
         public ICommand CancelCommand { get; set; }
-        private string mapUrl;
+
         private string mapLink;
         public string MapLink
         {
@@ -50,17 +55,16 @@ namespace PL
             }
         }
 
-
-
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-    {
-        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-        e.Handled = true;
-    }
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
 
-    public bool CanAssignCall => !HasCallInProgress && Volunteer.IsActive;
-        public bool CanCancelCall => HasCallInProgress;
-
+        /// <summary>
+        /// construcer
+        /// </summary>
+        /// <param name="volunteerId"></param>
         public VolunteerMainWindow(string volunteerId)
         {
             InitializeComponent();
@@ -78,38 +82,39 @@ namespace PL
                 MessageBox.Show("Initialization failed: " + ex.Message);
                 Close();
             }
+
             FinishCommand = new RelayCommand(_ => FinishCurrentCall(), _ => HasCallInProgress);
             UpdateCommand = new RelayCommand(_ => OpenUpdateWindow());
             HistoryCommand = new RelayCommand(_ => OpenHistoryWindow());
             LogoutCommand = new RelayCommand(_ => LogOut());
             AssignCallCommand = new RelayCommand(_ => OpenAssignCallWindow(), _ => CanAssignCall);
             CancelCommand = new RelayCommand(_ => CancelCall(), _ => CanCancelCall);
+
             DataContext = this;
         }
 
+        /// <summary>
+        /// refreshes calls after diferent actions
+        /// </summary>
+        /// <param name="volunteerId"></param>
         private void RefreshCall(int volunteerId)
         {
             try
             {
-                // שלב 1: קבל את הקריאות הפתוחות של המתנדב
                 var openCalls = _bl.Call.GetOpenCallsForVolunteer(volunteerId);
-
-                // שלב 2: קח את הקריאה הראשונה (אם קיימת)
                 var firstOpenCall = openCalls.FirstOrDefault();
 
                 if (firstOpenCall != null)
                 {
-                    // שלב 3: הבא את הפרטים המלאים
                     var call = _bl.Call.GetCallDetails(firstOpenCall.Id);
                     CurrentCall = call?.Status == CallStatus.Expired ? null : call;
+                    
                 }
                 else
                 {
                     CurrentCall = null;
                 }
 
-                OnPropertyChanged(nameof(CurrentCall));
-                CommandManager.InvalidateRequerySuggested();
                 if (CurrentCall != null && CurrentCall.Status != CallStatus.Expired)
                 {
                     string origin = Uri.EscapeDataString(Volunteer.CurrentAddress);
@@ -120,18 +125,18 @@ namespace PL
                 {
                     MapLink = string.Empty;
                 }
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error while loading open calls: " + ex.Message);
                 CurrentCall = null;
-                OnPropertyChanged(nameof(CurrentCall));
-                CommandManager.InvalidateRequerySuggested();
+                MapLink = string.Empty;
             }
         }
 
+        /// <summary>
+        /// a function that finishes the calls with treated status.
+        /// </summary>
         private void FinishCurrentCall()
         {
             if (CurrentCall == null)
@@ -139,9 +144,7 @@ namespace PL
 
             try
             {
-                // שימוש בפונקציה מה-BL כדי לקבל את ה-ID של ההקצאה
                 int? assignmentId = _bl.Call.GetAssignmentId(CurrentCall.Id, Volunteer.Id);
-
                 if (assignmentId == null)
                 {
                     MessageBox.Show("No assignment found for this volunteer.");
@@ -152,8 +155,6 @@ namespace PL
                 MessageBox.Show($"Call {CurrentCall.Id} marked as Treated.");
 
                 CurrentCall = null;
-                OnPropertyChanged(nameof(CurrentCall));
-                CommandManager.InvalidateRequerySuggested();
                 RefreshCall(Volunteer.Id);
             }
             catch (Exception ex)
@@ -162,26 +163,43 @@ namespace PL
             }
         }
 
-        private void LogOut()
+        /// <summary>
+        /// a function that ends the call with a canceld status.
+        /// </summary>
+        private void CancelCall()
         {
+            if (CurrentCall == null)
+                return;
+
             try
             {
-                var loginWindow = new LoginWindow();
-                loginWindow.Show();
+                int? assignmentId = _bl.Call.GetAssignmentId(CurrentCall.Id, Volunteer.Id);
+                if (assignmentId == null)
+                {
+                    MessageBox.Show("No assignment found to cancel.");
+                    return;
+                }
 
-                this.Close();
+                _bl.Call.CancelCall(Volunteer.Id, assignmentId.Value);
+                MessageBox.Show($"Call {CurrentCall.Id} was cancelled.");
+
+                CurrentCall = null;
+                RefreshCall(Volunteer.Id);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Logout failed: " + ex.Message);
+                MessageBox.Show("Failed to cancel call: " + ex.Message);
             }
         }
 
+        /// <summary>
+        /// a function that assgns a call to a specific volunteer.
+        /// </summary>
         private void OpenAssignCallWindow()
         {
             try
             {
-                new AssignCallWindow(Volunteer.Id).ShowDialog(); 
+                new AssignCallWindow(Volunteer.Id).ShowDialog();
                 RefreshCall(Volunteer.Id);
             }
             catch (Exception ex)
@@ -191,33 +209,26 @@ namespace PL
             }
         }
 
-        private void CancelCall()
+        /// <summary>
+        /// a func that logsout from the current volunteer.
+        /// </summary>
+        private void LogOut()
         {
             try
             {
-                int? assignmentId = _bl.Call.GetAssignmentId(CurrentCall.Id, Volunteer.Id);
-                if (assignmentId == null)
-                {
-                    MessageBox.Show("No active assignment found.", "Cancel Error",
-                                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                _bl.Call.CancelCall(Volunteer.Id, assignmentId.Value);
-                MessageBox.Show("Call assignment has been canceled.", "Canceled",
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                CurrentCall = null;
-
-                RefreshCall(Volunteer.Id);
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+                this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to cancel call: " + ex.Message,
-                                "Cancel Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Logout failed: " + ex.Message);
             }
         }
 
-
+        /// <summary>
+        /// a func that allows a volunteer to update it's details.
+        /// </summary>
         private void OpenUpdateWindow()
         {
             new VolunteerWindow(Volunteer.Id.ToString()).ShowDialog();
@@ -225,6 +236,9 @@ namespace PL
             OnPropertyChanged(nameof(Volunteer));
         }
 
+        /// <summary>
+        /// a func that opens the volunteers history calls window.
+        /// </summary>
         private void OpenHistoryWindow()
         {
             new CallHistoryWindow(Volunteer.Id).ShowDialog();

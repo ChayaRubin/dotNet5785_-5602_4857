@@ -50,10 +50,12 @@ internal class AssignmentImplementation : IAssignment
     /// </summary>
     public void Create(Assignment item)
     {
+        item.Id = Config.NextAssignmentId;
         XElement assignmentsRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
         assignmentsRootElem.Add(CreateXElement(item));
         XMLTools.SaveListToXMLElement(assignmentsRootElem, Config.s_assignments_xml);
     }
+
 
     /// <summary>
     /// Deletes a Assignment by ID from the XML file.

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using BlApi;
 using BO;
+using DO;
 
 namespace PL.Volunteer
 {
@@ -166,8 +167,7 @@ namespace PL.Volunteer
         {
             if (SelectedVolunteer != null)
             {
-                var window = new VolunteerWindow(SelectedVolunteer);
-                window.Show();
+                var window = new VolunteerWindow(SelectedVolunteer.Id.ToString(), isSelfEdit: false, isAdmin: true).ShowDialog();
             }
         }
 
@@ -178,8 +178,8 @@ namespace PL.Volunteer
         /// <param name="e"></param>
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var window = new VolunteerWindow();
-            window.Show();
+            var window =new VolunteerWindow(SelectedVolunteer.Id.ToString(), isSelfEdit: false, isAdmin: true).ShowDialog();
+
         }
 
         /// <summary>

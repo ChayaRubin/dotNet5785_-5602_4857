@@ -179,39 +179,35 @@ internal static class VolunteerManager
     public static (double latitude, double longitude) ValidateInputFormat(BO.Volunteer volunteer)
     {
         if (!IsValidIdNumber(volunteer.Id.ToString()))
-        {
             throw new DalFormatException("Invalid ID number.");
-        }
 
         if (string.IsNullOrWhiteSpace(volunteer.CurrentAddress))
-        {
             throw new DalFormatException("Address cannot be empty.");
-        }
 
         if (!IsValidPhoneNumber(volunteer.PhoneNumber))
-        {
             throw new DalFormatException("Invalid phone number.");
-        }
 
         if (!IsValidEmail(volunteer.Email))
-        {
             throw new DalFormatException("Invalid email.");
-        }
 
-        if (!IsValidPassword(volunteer.Password))
+        // ✅ בדוק חוזק סיסמה רק אם היא לא מוצפנת (בהנחה שההאש תמיד בפורמט קבוע לדוגמה 64 תווים ל-SHA256)
+        if (!string.IsNullOrWhiteSpace(volunteer.Password))
         {
-            throw new DalFormatException("Password is not strong enough.");
+            if (volunteer.Password.Length < 30) // אם זו סיסמה גולמית (לא מוצפנת)
+            {
+                if (!IsValidPassword(volunteer.Password))
+                    throw new DalFormatException("Password is not strong enough.");
+            }
         }
 
-            var coordinates = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress); 
+        var coordinates = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress);
+        volunteer.Latitude = coordinates.latitude;
+        volunteer.Longitude = coordinates.longitude;
 
-            // Set the coordinates to the volunteer object
-            volunteer.Latitude = coordinates.latitude;
-            volunteer.Longitude = coordinates.longitude;
-
-            //CallManager.ValidateLogicalFields(newCall);
-            return coordinates;
+        return coordinates;
     }
+
+
 
     /// <summary>
     /// Validates an Israeli ID number using the check digit algorithm

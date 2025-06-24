@@ -233,76 +233,65 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            // Retrieve existing volunteer from DAL
-            //DO.Volunteer? existingVolunteer = _dal.Volunteer.Read(v => v.Id == idNumber);
             DO.Volunteer? existingVolunteer;
 
-            System.Diagnostics.Debug.WriteLine($"Received idNumber: '{idNumber}'");
-
-            if (int.TryParse(idNumber, out int id))
-            {
-                Console.WriteLine($"Parsed ID: {id}, Success: {int.TryParse(idNumber, out id)}");
-                existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
-            }
-            else
-            {
+            if (!int.TryParse(idNumber, out int id))
                 throw new DalFormatException("Invalid ID format");
-            }
+
+            existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
             if (existingVolunteer == null)
-            {
                 throw new BlDoesNotExistException($"The volunteer with ID={idNumber} was not found.");
-            }
 
-            // Check for authorization
+            // בדיקת הרשאה
             if (!VolunteerManager.IsRequesterAuthorized(idNumber, volunteerBO))
-            {
                 throw new BlUnauthorizedAccessException("Unauthorized to update this volunteer.");
+
+            // שמירה על סיסמה קיימת אם לא הוזנה חדשה
+            bool isPasswordUpdateRequested = !string.IsNullOrWhiteSpace(volunteerBO.Password);
+            if (!isPasswordUpdateRequested)
+            {
+                volunteerBO.Password = existingVolunteer.Password; // שימור ההאש הקיים
             }
 
+            // מיקום
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
             volunteerBO.Latitude = latitude;
             volunteerBO.Longitude = longitude;
-            // Validate input format
+
+            // אימות פורמט (כולל סיסמה רק אם הוזנה)
             VolunteerManager.ValidateInputFormat(volunteerBO);
 
-            // Validate logical fields
+            // אימות לוגי
             VolunteerManager.ValidateLogicalFields(volunteerBO);
 
-            // Handle password update
-            if (volunteerBO.Password != existingVolunteer.Password)
+            // עדכון סיסמה אם הוזנה חדשה
+            if (isPasswordUpdateRequested && volunteerBO.Password != existingVolunteer.Password)
             {
                 if (idNumber != volunteerBO.Id.ToString() && volunteerBO.Role != BO.PositionEnum.Manager)
-                {
                     throw new BlUnauthorizedAccessException("Only the volunteer or a manager can update the password.");
-                }
-                String HashedPassword = VolunteerManager.HashPassword(volunteerBO.Password);
-                volunteerBO.Password = HashedPassword;
+
+                volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password);
             }
 
-            if (volunteerBO.Role.ToString() != existingVolunteer.Position.ToString() && volunteerBO.Role.ToString() == "Manager")
+            // מגבלת מנהלים
+            if (volunteerBO.Role.ToString() != existingVolunteer.Position.ToString() &&
+                volunteerBO.Role.ToString() == "Manager")
             {
-                // סופר את מספר המנהלים הקיימים
                 int currentManagers = _dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
-
-                // אם כבר יש 2 מנהלים, לא ניתן להוסיף עוד אחד
                 if (currentManagers >= 2)
-                {
                     throw new BlUnauthorizedAccessException("Too many managers");
-                }
             }
 
-            // Ensure field updates are allowed
+            // בדיקת הרשאות לפי שדות
             if (!VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
-            {
                 throw new BlFormatException("You do not have permission to update certain fields.");
-            }
 
-            // Convert BO to DO and update in DAL
+            // המרה ל-DO ועדכון בפועל
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
             _dal.Volunteer.Update(volunteerDO);
-            VolunteerManager.Observers.NotifyItemUpdated(volunteerDO.Id);  //stage 5
-            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
 
+            VolunteerManager.Observers.NotifyItemUpdated(volunteerDO.Id);
+            VolunteerManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalFormatException ex)
         {
@@ -322,10 +311,10 @@ internal class VolunteerImplementation : IVolunteer
         }
         catch (Exception ex)
         {
-            //throw new BlGeneralDatabaseException("An unexpected error occurred while updating the volunteer.");
             throw new BlGeneralDatabaseException($"An unexpected error occurred while updating the volunteer: {ex.Message}");
         }
     }
+
 
 
     /// <summary>

@@ -95,7 +95,7 @@ namespace PL
                 if (role == "Volunteer")
                 {
                     var volunteer = _bl.Volunteer.GetVolunteerDetails(Id);
-                    new VolunteerMainWindow("327725602").Show();
+                    new VolunteerMainWindow(Id).Show();
                 }
                 else if (role == "Manager")
                 {

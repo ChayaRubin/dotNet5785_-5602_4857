@@ -1,63 +1,165 @@
 ﻿<Window x:Class="PL.AssignCallWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Assign a Call" Height="500" Width="800"
+        Title="Assign a Call"
+        Height="700"
+        Width="900"
+        Background="#E6F0FA"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="6 2"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- ListBox Item Highlight Style -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                BorderThickness="0">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#DEF0FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <!-- Title -->
             <RowDefinition Height="Auto"/>
+            <!-- Column Headers -->
+            <RowDefinition Height="300"/>
+            <!-- Calls List -->
+            <RowDefinition Height="Auto"/>
+            <!-- Description + Map -->
+            <RowDefinition Height="Auto"/>
+            <!-- Close Button -->
         </Grid.RowDefinitions>
 
         <!-- Title -->
-        <TextBlock Text="Available Calls Nearby"
-                   FontSize="20"
+        <TextBlock Grid.Row="0"
+                   Grid.Column="2"
+                   Text="Available Calls Nearby"
+                   FontSize="24"
                    FontWeight="Bold"
-                   Margin="0 0 0 10"/>
+                   Foreground="#0F425F"
+                   HorizontalAlignment="Center"
+                   Margin="0 0 0 20"/>
 
-        <!-- DataGrid of Available Calls -->
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding AvailableCalls}"
-                  SelectedItem="{Binding SelectedCall, Mode=TwoWay}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  Margin="0 10 0 10">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Call ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding CallType}" Width="*"/>
-                <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}" Width="2*"/>
-                <DataGridTextColumn Header="Distance (km)" Binding="{Binding DistanceFromVolunteer}" Width="Auto"/>
-                <DataGridTemplateColumn Header="Action" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
+        <!-- Column Headers -->
+        <Grid Grid.Row="1" Margin="0 0 0 6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="310"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Call ID" FontWeight="Bold" Margin="24,0,0,0" Foreground="#0F425F" Grid.Column="0" HorizontalAlignment="Left"/>
+            <TextBlock Text="Type" FontWeight="Bold" Margin="38,0,0,0" Foreground="#0F425F" Grid.Column="1" HorizontalAlignment="Left"/>
+            <TextBlock Text="Address" FontWeight="Bold" Margin="100,0,0,0" Foreground="#0F425F" Grid.Column="2" HorizontalAlignment="Left"/>
+            <TextBlock Text="Distance" FontWeight="Bold" Foreground="#0F425F" Grid.Column="3" HorizontalAlignment="Left"/>
+        </Grid>
+
+        <!-- Calls List -->
+        <ListBox Grid.Row="2"
+                 ItemsSource="{Binding AvailableCalls}"
+                 SelectedItem="{Binding SelectedCall, Mode=TwoWay}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 HorizontalContentAlignment="Stretch">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="#D0DCE7"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="8"
+                            Margin="0 4"
+                            Background="White">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="210"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="110"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding Id}" Margin="20,0,0,0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CallType}" Grid.Column="1" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding FullAddress}" Grid.Column="2" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding DistanceFromVolunteer}" Grid.Column="3" VerticalAlignment="Center"/>
                             <Button Content="Assign"
+                                    Grid.Column="4"
+                                    Background="#6FA8DC"
+                                    Width="70"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource RoundedButtonStyle}"
                                     Command="{Binding DataContext.AssignCallCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     CommandParameter="{Binding .}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
-        <!-- Details and Map -->
-        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0 10 0 0">
-            <TextBlock Text="Call Description:" FontWeight="Bold" Margin="0 5 0 0"/>
-            <TextBlock Text="{Binding SelectedCall.Description}" TextWrapping="Wrap" Height="60"/>
+        <!-- Description + Map -->
+        <StackPanel Grid.Row="3" Margin="0 20 0 0">
+            <TextBlock Text="Call Description:" FontWeight="Bold" Foreground="#0F425F" Margin="0 5"/>
+            <TextBlock Text="{Binding SelectedCall.Description}" TextWrapping="Wrap" Height="60" Margin="0 0 0 10"/>
 
-            <TextBlock Text="Map Preview:" FontWeight="Bold" Margin="0 10 0 5"/>
-            <TextBlock HorizontalAlignment="Left">
+            <TextBlock Text="Map Preview:" FontWeight="Bold" Foreground="#0F425F"/>
+            <TextBlock HorizontalAlignment="Left" Margin="0 0 0 10">
                 <Hyperlink NavigateUri="{Binding MapLink}" RequestNavigate="Hyperlink_RequestNavigate">
                     Open in Google Maps
                 </Hyperlink>
             </TextBlock>
-
-            <Button Content="Close"
-                    Width="100"
-                    HorizontalAlignment="Right"
-                    Margin="0 10 0 0"
-                    Click="Close_Click"/>
         </StackPanel>
+
+        <!-- Close Button -->
+        <Button Grid.Row="4"
+                Content="Close"
+                Width="100"
+                Height="35"
+                HorizontalAlignment="Center"
+                Background="#F9B350"
+                Click="Close_Click"
+                Style="{StaticResource RoundedButtonStyle}"
+                Margin="0 10 0 0"/>
     </Grid>
 </Window>

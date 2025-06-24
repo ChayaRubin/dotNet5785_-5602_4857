@@ -45,10 +45,8 @@ namespace PL
         {
             InitializeComponent();
             DataContext = this;
-
             this.volunteerId = volunteerId;
             AssignCallCommand = new RelayCommand(AssignCall);
-
             LoadData();
         }
 

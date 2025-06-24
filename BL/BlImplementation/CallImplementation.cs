@@ -86,21 +86,52 @@ internal class CallImplementation : ICall
     {
         try
         {
+            // שליפת הקריאה לפי מזהה (RadioCallId או Id - לפי מה שהמערכת דורשת)
             DO.Call? callData = _dal.Call.Read(c => c.RadioCallId == callId);
             if (callData == null)
                 throw new BO.BlDoesNotExistException("Call not found");
 
+            // שליפת כל השיבוצים לקריאה הזו
             var assignmentData = _dal.Assignment.ReadAll()
                 .Where(a => a.CallId == callId)
                 .ToList();
 
+            // שליפת מזהי המתנדבים הייחודיים
+            var volunteerIds = assignmentData
+                .Where(a => a.VolunteerId != 0)
+                .Select(a => a.VolunteerId)
+                .Distinct()
+                .ToList();
+
+            // טעינת המתנדבים הרלוונטיים למילון <Id, Name>
+            var volunteers = _dal.Volunteer.ReadAll(v => volunteerIds.Contains(v.Id))
+                .ToDictionary(v => v.Id, v => v.Name);
+
+            // בניית רשימת השיבוצים ל-BO
             List<BO.CallAssignInList> assignmentList = assignmentData.Select(a => new BO.CallAssignInList
             {
+                VolunteerId = a.VolunteerId != 0 ? a.VolunteerId : null,
+                VolunteerName = volunteers.GetValueOrDefault(a.VolunteerId),
                 AssignTime = a.EntryTime,
-                VolunteerId = a.VolunteerId
+                CompletionTime = a.FinishCompletionTime,
+                EndType = a.CallResolutionStatus.HasValue? (BO.CallStatus?)a.CallResolutionStatus: null
             }).ToList();
 
-            BO.Call callBO = CallManager.ConvertToBO(callData, assignmentList);
+            // יצירת אובייקט Call מלא
+            BO.Call callBO = new BO.Call
+            {
+                Id = callData.RadioCallId,
+                Type = (BO.CallTypeEnum)callData.CallType,
+                Description = callData.Description,
+                Address = callData.Address,
+                Latitude = callData.Latitude,
+                Longitude = callData.Longitude,
+                OpenTime = callData.StartTime,
+                MaxEndTime = callData.ExpiredTime,
+                Assignments = assignmentList,
+                Status = CallManager.GetCallStatus(callData, assignmentList)
+            };
+
             return callBO;
         }
         catch (DalDoesNotExistException ex)
@@ -281,7 +312,7 @@ internal class CallImplementation : ICall
     /// <exception cref="BlUnauthorizedAccessException"></exception>
     /// <exception cref="BlNoPermitionException"></exception>
     /// <exception cref="BlGeneralDatabaseException"></exception>
-    /*public void CancelCall(int requestorId, int assignmentId)
+    public void CancelCall(int requestorId, int assignmentId)
     {
         try
         {
@@ -319,7 +350,7 @@ internal class CallImplementation : ICall
             AssignmentManager.Observers.NotifyListUpdated();  //stage 5
 
 
-            if (isAdmin)  
+            if (isAdmin)
             {
                 BO.Call call = GetCallDetails(assignment.CallId);
                 DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId) ?? throw new DalDoesNotExistException("The requested volunteer does not exist");
@@ -344,50 +375,8 @@ internal class CallImplementation : ICall
         {
             throw new BlGeneralDatabaseException($"An unexpected error occurred during canceling the call: {ex.Message}");
         }
-    }*/
-    public void CancelCall(int requestorId, int assignmentId)
-    {
-        try
-        {
-            DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
-                ?? throw new DalDoesNotExistException("The requested assignment does not exist");
-
-            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)
-                ?? throw new DalDoesNotExistException("The volunteer was not found");
-
-            DO.Volunteer requestor = _dal.Volunteer.Read(v => v.Id == requestorId)
-                ?? throw new DalDoesNotExistException("The requestor was not found");
-
-            bool isAdmin = requestor.Position == DO.PositionEnum.Manager;
-            bool isSameVolunteer = assignment.VolunteerId == requestorId;
-
-            if (!isAdmin && !isSameVolunteer)
-                throw new DalNoPermitionException("You do not have permission to cancel this call");
-
-            if (assignment.FinishCompletionTime.HasValue)
-                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been closed");
-
-            assignment.CallResolutionStatus =
-                isSameVolunteer ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
-
-            _dal.Assignment.Update(assignment);
-            AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);
-            AssignmentManager.Observers.NotifyListUpdated();
-
-            if (isAdmin)
-            {
-                BO.Call call = GetCallDetails(assignment.CallId);
-                BO.Volunteer boVolunteer = VolunteerManager.ConvertToBO(volunteer);
-                SendCancellationEmailAsync(call, boVolunteer).Wait();
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new BlGeneralDatabaseException($"Error cancelling the call: {ex.Message}");
-        }
     }
-
-
+   
     public void CloseCall(int volunteerId, int assignmentId)
     {
         try
@@ -572,21 +561,26 @@ internal class CallImplementation : ICall
             CurrentAddress = volunteerDO.Address
         };
 
+        var allAssignments = _dal.Assignment.ReadAll();
+
         var openCalls = _dal.Call.ReadAll()
-            .Where(c => !_dal.Assignment.ReadAll().Any(a => a.CallId == c.RadioCallId))
-            .Where(c => c.ExpiredTime > DateTime.Now) 
-            .Select(c => new BO.Call
+            .Where(call =>
+                call.ExpiredTime > AdminManager.Now && // Not expired
+                !allAssignments.Any(a =>
+                    a.CallId == call.RadioCallId &&
+                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated)) // No treated assignment
+            .Select(call => new BO.Call
             {
-                Id = c.RadioCallId,
-                Description = c.Description,
-                Type = (BO.CallTypeEnum)c.CallType,
-                Address = c.Address,
-                Latitude = c.Latitude,
-                Longitude = c.Longitude,
-                OpenTime = c.StartTime,
-                MaxEndTime = c.ExpiredTime
+                Id = call.RadioCallId,
+                Description = call.Description,
+                Type = (BO.CallTypeEnum)call.CallType,
+                Address = call.Address,
+                Latitude = call.Latitude,
+                Longitude = call.Longitude,
+                OpenTime = call.StartTime,
+                MaxEndTime = call.ExpiredTime
             })
-            .Where(call => CallManager.IsWithinMaxDistance(volunteer, call)) 
+            .Where(call => CallManager.IsWithinMaxDistance(volunteer, call))
             .Select(call => new BO.OpenCallInList
             {
                 Id = call.Id,
@@ -595,11 +589,15 @@ internal class CallImplementation : ICall
                 FullAddress = call.Address,
                 OpenTime = call.OpenTime,
                 MaxCloseTime = call.MaxEndTime,
-                DistanceFromVolunteer = CallManager.CalculateDistance(volunteer.Latitude, volunteer.Longitude, call.Latitude, call.Longitude)
+                DistanceFromVolunteer = CallManager.CalculateDistance(
+                    volunteer.Latitude, volunteer.Longitude,
+                    call.Latitude, call.Longitude)
             });
 
         return openCalls;
     }
+
+
 
 
     public void AddObserver(Action listObserver) =>
