@@ -4,11 +4,11 @@
     <RadioCallId>1002</RadioCallId>
     <Description>Vehicle Recovery</Description>
     <CallType>Non_Urgent</CallType>
-    <Address>Agrippas Street 36, Jerusalem</Address>
+    <Address>Agrippas Street 22, Jerusalem</Address>
     <Latitude>31.69916</Latitude>
     <Longitude>35.196286</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2024-06-10T14:45:36.0239968+03:00</ExpiredTime>
+    <ExpiredTime>2035-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1005</RadioCallId>
@@ -38,7 +38,7 @@
     <Latitude>31.7472349</Latitude>
     <Longitude>35.2326395</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-10T14:45:36.0239968+03:00</ExpiredTime>
+    <ExpiredTime>2035-06-10T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1010</RadioCallId>
@@ -71,16 +71,6 @@
     <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1013</RadioCallId>
-    <Description>Vehicle Breakdown</Description>
-    <CallType>Medium_Urgency</CallType>
-    <Address>Achad Ha'am St 2, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1014</RadioCallId>
     <Description>Flat Battery</Description>
     <CallType>Medium_Urgency</CallType>
@@ -88,7 +78,7 @@
     <Latitude>31.7957696</Latitude>
     <Longitude>35.2198077</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1015</RadioCallId>
@@ -118,7 +108,7 @@
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
+    <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1018</RadioCallId>
@@ -449,15 +439,5 @@
     <Longitude>35.2157309</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2036-06-25T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1000</RadioCallId>
-    <Description>xcvbnm,.</Description>
-    <CallType>Urgent</CallType>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <StartTime>2025-06-24T00:43:39.8902851+03:00</StartTime>
-    <ExpiredTime>2025-06-24T01:43:39.8903723+03:00</ExpiredTime>
   </Call>
 </ArrayOfCall>
