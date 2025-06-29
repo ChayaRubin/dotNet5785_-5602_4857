@@ -42,10 +42,8 @@ namespace PL.Call
 
         public CallInList? SelectedCall { get; set; }
 
-        // ✅ תוספת נדרשת לסינון לפי סטטוס
         private readonly CallStatus? filterStatus;
 
-        // ✅ קונסטרקטור עם פרמטר סינון (ברירת מחדל = null)
         public CallListWindow(CallStatus? filterStatus = null)
         {
             InitializeComponent();

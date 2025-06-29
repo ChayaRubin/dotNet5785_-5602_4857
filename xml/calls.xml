@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfCall xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Call>
-    <RadioCallId>1002</RadioCallId>
-    <Description>Vehicle Recovery</Description>
-    <CallType>Non_Urgent</CallType>
-    <Address>Agrippas Street 22, Jerusalem</Address>
-    <Latitude>31.69916</Latitude>
-    <Longitude>35.196286</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1005</RadioCallId>
-    <Description>Engine Overheating</Description>
-    <CallType>Urgent</CallType>
-    <Address>Keren Hayesod St 30, Jerusalem</Address>
-    <Latitude>31.7723879</Latitude>
-    <Longitude>35.2215257</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2031-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1006</RadioCallId>
-    <Description>Heavy Accident</Description>
-    <CallType>Urgent</CallType>
-    <Address>Neve Yaakov St 17, Jerusalem</Address>
-    <Latitude>31.842212</Latitude>
-    <Longitude>35.24206</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1008</RadioCallId>
-    <Description>Battery Issues</Description>
-    <CallType>Urgent</CallType>
-    <Address>Yechiel St 3, Jerusalem</Address>
-    <Latitude>31.7472349</Latitude>
-    <Longitude>35.2326395</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-10T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1010</RadioCallId>
     <Description>Fuel Assistance</Description>
     <CallType>Medium_Urgency</CallType>
@@ -49,16 +9,6 @@
     <Longitude>35.185758</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
     <ExpiredTime>2025-06-25T14:45:36.0239968+03:00</ExpiredTime>
-  </Call>
-  <Call>
-    <RadioCallId>1011</RadioCallId>
-    <Description>Flat Tire</Description>
-    <CallType>Urgent</CallType>
-    <Address>Sanhedria St 18, Jerusalem</Address>
-    <Latitude>31.8051921</Latitude>
-    <Longitude>35.2157309</Longitude>
-    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1012</RadioCallId>
@@ -421,23 +371,33 @@
     <ExpiredTime>2025-06-09T12:47:36.6410152+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1055</RadioCallId>
-    <Description>sdfghj</Description>
-    <CallType>Urgent</CallType>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <StartTime>2025-06-09T22:27:42.4500332+03:00</StartTime>
-    <ExpiredTime>2036-06-09T23:27:42.450073+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1011</RadioCallId>
     <Description>Flat Tire</Description>
     <CallType>Urgent</CallType>
     <Address>Sanhedria St 18, Jerusalem</Address>
-    <Latitude>31.8051921</Latitude>
-    <Longitude>35.2157309</Longitude>
+    <Latitude>31.802587</Latitude>
+    <Longitude>35.2175385</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2036-06-25T14:45:36.0239968+03:00</ExpiredTime>
+    <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1002</RadioCallId>
+    <Description>tyh</Description>
+    <CallType>Urgent</CallType>
+    <Address>Druck 10, Ramat shlomo, jerusalim</Address>
+    <Latitude>32.051394</Latitude>
+    <Longitude>34.818784</Longitude>
+    <StartTime>2025-06-29T21:34:58.0191351+03:00</StartTime>
+    <ExpiredTime>2025-06-29T22:34:58.0191358+03:00</ExpiredTime>
+  </Call>
+  <Call>
+    <RadioCallId>1005</RadioCallId>
+    <Description>Engine Overheatingg</Description>
+    <CallType>Non_Urgent</CallType>
+    <Address>Keren Hayesod St 30, Jerusalem</Address>
+    <Latitude>31.7723879</Latitude>
+    <Longitude>35.2215257</Longitude>
+    <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
+    <ExpiredTime>2026-07-24T01:10:00</ExpiredTime>
   </Call>
 </ArrayOfCall>

@@ -18,6 +18,7 @@ namespace PL.Volunteer
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private IEnumerable<VolunteerInList> volunteersListView = new List<VolunteerInList>();
+        public bool HasActiveCall { get; set; }
 
         /// <summary>
         /// get and set functions
@@ -167,7 +168,8 @@ namespace PL.Volunteer
         {
             if (SelectedVolunteer != null)
             {
-                var window = new VolunteerWindow(SelectedVolunteer.Id.ToString(), isSelfEdit: false, isAdmin: true).ShowDialog();
+                var window = new VolunteerWindow(SelectedVolunteer.Id.ToString(), isSelfEdit: false, isAdmin: true);
+                window.Show();
             }
         }
 
@@ -178,7 +180,7 @@ namespace PL.Volunteer
         /// <param name="e"></param>
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var window =new VolunteerWindow(SelectedVolunteer.Id.ToString(), isSelfEdit: false, isAdmin: true).ShowDialog();
+            new VolunteerWindow("", isSelfEdit: false, isAdmin: true).Show();
 
         }
 

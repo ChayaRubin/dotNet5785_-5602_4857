@@ -1,35 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Assignments>
   <Assignment>
-    <Id>1052</Id>
-    <CallId>1005</CallId>
-    <VolunteerId>327725602</VolunteerId>
+    <Id>1064</Id>
+    <CallId>1011</CallId>
+    <VolunteerId>327006516</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1065</Id>
+    <CallId>1008</CallId>
+    <VolunteerId>327006516</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1067</Id>
+    <CallId>1011</CallId>
+    <VolunteerId>218796761</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime />
     <callResolutionStatus>SelfCanceled</callResolutionStatus>
   </Assignment>
   <Assignment>
-    <Id>1053</Id>
-    <CallId>1011</CallId>
-    <VolunteerId>327725602</VolunteerId>
+    <Id>1070</Id>
+    <CallId>1012</CallId>
+    <VolunteerId>218431161</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime />
     <callResolutionStatus>SelfCanceled</callResolutionStatus>
   </Assignment>
   <Assignment>
-    <Id>1054</Id>
-    <CallId>1011</CallId>
-    <VolunteerId>327725602</VolunteerId>
-    <EntryTime>2026-07-24T01:01:00</EntryTime>
-    <FinishCompletionTime />
-    <callResolutionStatus>SelfCanceled</callResolutionStatus>
-  </Assignment>
-  <Assignment>
-    <Id>1055</Id>
-    <CallId>1011</CallId>
-    <VolunteerId>327725602</VolunteerId>
+    <Id>1071</Id>
+    <CallId>1048</CallId>
+    <VolunteerId>218431161</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime />
     <callResolutionStatus />
+  </Assignment>
+  <Assignment>
+    <Id>1069</Id>
+    <CallId>1048</CallId>
+    <VolunteerId>327006516</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
   </Assignment>
 </Assignments>

@@ -79,6 +79,8 @@
                                 <GridViewColumn Header="Handled" DisplayMemberBinding="{Binding TotalHandledCalls}" Width="100"/>
                                 <GridViewColumn Header="Canceled" DisplayMemberBinding="{Binding TotalCanceledCalls}" Width="100"/>
                                 <GridViewColumn Header="Expired" DisplayMemberBinding="{Binding TotalExpiredCalls}" Width="100"/>
+                                <GridViewColumn Header="Current Call ID" DisplayMemberBinding="{Binding CurrentCallId}" Width="100"/>
+                                <GridViewColumn Header="Call Type" DisplayMemberBinding="{Binding CurrentCallType}" Width="100"/>
                                 <GridViewColumn Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

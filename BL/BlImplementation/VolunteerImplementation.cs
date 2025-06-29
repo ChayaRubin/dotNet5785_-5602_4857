@@ -29,12 +29,10 @@ internal class VolunteerImplementation : IVolunteer
             if (volunteer == null)
                 throw new DalUnauthorizedAccessException("Invalid username or password");
 
-            // Debug logging
             Console.WriteLine($"Input username: '{id}'");
             Console.WriteLine($"Input password: '{password}'");
             Console.WriteLine($"Stored password: '{volunteer.Password}'");
 
-            // Compare passwords
             if (!VolunteerManager.VerifyPassword(password, volunteer.Password))
                 throw new DalUnauthorizedAccessException("Invalid username or password");
 
@@ -59,36 +57,31 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            // Step 1: Filter volunteers by isActive if specified
             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll(v =>
                 !isActive.HasValue || v.Active == isActive.Value);
 
-            // Convert DO.Volunteer to BO.VolunteerInList (assuming you have such a method)
             var boVolunteers = volunteers.Select(VolunteerManager.ConvertToBO);
 
             var volunteerList = VolunteerManager.GetVolunteerList(boVolunteers);
 
             foreach (var volunteer in volunteerList)
             {
-                // Get all assignments for this volunteer
                 var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
 
-                // Calculate handled, canceled, expired calls counts
                 volunteer.TotalHandledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
                 volunteer.TotalCanceledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Canceled
                                                                    || a.CallResolutionStatus == CallResolutionStatus.SelfCanceled);
                 volunteer.TotalExpiredCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Expired);
 
-                // Optional: find current active assignment (e.g. InProgress)
                 var currentAssignment = assignments.FirstOrDefault(a => a.CallResolutionStatus == null);
                 if (currentAssignment != null)
                 {
                     volunteer.CurrentCallId = currentAssignment.CallId;
 
-                    // Get the call to check its type
                     var call = _dal.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
-                    if (call != null)
+                    if (call != null && call.ExpiredTime > DateTime.Now) 
                     {
+                        volunteer.CurrentCallId = call.RadioCallId;
                         volunteer.CurrentCallType = (BO.CallTypeEnum)(int)call.CallType;
                     }
                     else
@@ -103,16 +96,13 @@ internal class VolunteerImplementation : IVolunteer
                 }
             }
 
-            // Step 2: Filter by CallTypeEnum if specified (check all calls for each volunteer)
             if (callTypeFilter.HasValue)
             {
                 volunteerList = volunteerList
                     .Where(v =>
                     {
-                        // Get all assignments for this volunteer
                         var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == v.Id);
 
-                        // Check if any of the calls in assignments match the filter type
                         foreach (var assignment in assignments)
                         {
                             var call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId);
@@ -124,7 +114,6 @@ internal class VolunteerImplementation : IVolunteer
                     .ToList();
             }
 
-            // Step 3: Sort the list based on sortBy parameter or default by Id
             volunteerList = sortBy.HasValue ? sortBy.Value switch
             {
                 VolunteerSortBy.FullName => volunteerList.OrderBy(v => v.FullName).ToList(),
@@ -155,7 +144,6 @@ internal class VolunteerImplementation : IVolunteer
     public BO.Volunteer GetVolunteerDetails(string idNumber) =>
         GetVolunteer(v => v.Id == int.Parse(idNumber), idNumber);
 
-    //private BO.Volunteer GetVolunteer(Func<DO.Volunteer, bool> predicate, string identifier)
     private BO.Volunteer GetVolunteer(Func<DO.Volunteer, bool> predicate, string identifier)
     {
         try
@@ -165,10 +153,9 @@ internal class VolunteerImplementation : IVolunteer
 
             var boVolunteer = VolunteerManager.ConvertToBO(volunteer);
 
-            // בדיקה האם קיימת הקצאה פתוחה
             var ongoingAssignment = _dal.Assignment.Read(a =>
                 a.VolunteerId == volunteer.Id &&
-                a.CallResolutionStatus.HasValue &&  // בדיקה אם יש ערך בכלל
+                a.CallResolutionStatus.HasValue &&  
                 (BO.CallStatus)a.CallResolutionStatus.Value == BO.CallStatus.Open);
 
             if (ongoingAssignment != null)
@@ -194,8 +181,8 @@ internal class VolunteerImplementation : IVolunteer
                     CallId = ongoingAssignment.CallId,
                     OpeningTime = ongoingAssignment.EntryTime,
                     MaxCompletionTime = ongoingAssignment.FinishCompletionTime,
-                    AssignmentStartTime = ongoingAssignment.EntryTime, // אל תשכחי לעדכן
-                    Status = (BO.CallStatus?)ongoingAssignment.CallResolutionStatus, // עם ? לשמור Nullable
+                    AssignmentStartTime = ongoingAssignment.EntryTime, 
+                    Status = (BO.CallStatus?)ongoingAssignment.CallResolutionStatus, 
                     DistanceFromVolunteer = distance,
                 };
             }
@@ -242,29 +229,23 @@ internal class VolunteerImplementation : IVolunteer
             if (existingVolunteer == null)
                 throw new BlDoesNotExistException($"The volunteer with ID={idNumber} was not found.");
 
-            // בדיקת הרשאה
             if (!VolunteerManager.IsRequesterAuthorized(idNumber, volunteerBO))
                 throw new BlUnauthorizedAccessException("Unauthorized to update this volunteer.");
 
-            // שמירה על סיסמה קיימת אם לא הוזנה חדשה
             bool isPasswordUpdateRequested = !string.IsNullOrWhiteSpace(volunteerBO.Password);
             if (!isPasswordUpdateRequested)
             {
                 volunteerBO.Password = existingVolunteer.Password; // שימור ההאש הקיים
             }
 
-            // מיקום
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
             volunteerBO.Latitude = latitude;
             volunteerBO.Longitude = longitude;
 
-            // אימות פורמט (כולל סיסמה רק אם הוזנה)
             VolunteerManager.ValidateInputFormat(volunteerBO);
 
-            // אימות לוגי
             VolunteerManager.ValidateLogicalFields(volunteerBO);
 
-            // עדכון סיסמה אם הוזנה חדשה
             if (isPasswordUpdateRequested && volunteerBO.Password != existingVolunteer.Password)
             {
                 if (idNumber != volunteerBO.Id.ToString() && volunteerBO.Role != BO.PositionEnum.Manager)
@@ -273,20 +254,9 @@ internal class VolunteerImplementation : IVolunteer
                 volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password);
             }
 
-            // מגבלת מנהלים
-            if (volunteerBO.Role.ToString() != existingVolunteer.Position.ToString() &&
-                volunteerBO.Role.ToString() == "Manager")
-            {
-                int currentManagers = _dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
-                if (currentManagers >= 2)
-                    throw new BlUnauthorizedAccessException("Too many managers");
-            }
-
-            // בדיקת הרשאות לפי שדות
             if (!VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
                 throw new BlFormatException("You do not have permission to update certain fields.");
 
-            // המרה ל-DO ועדכון בפועל
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
             _dal.Volunteer.Update(volunteerDO);
 
@@ -328,31 +298,34 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(v => v.Id == id) ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
+            var volunteer = _dal.Volunteer.Read(v => v.Id == id)
+                ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
 
-            var currentAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id && a.CallResolutionStatus == null).FirstOrDefault();
+            // האם יש לו הקצאה כלשהי?
+            var anyAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id).Any();
 
-            if (currentAssignment != null)
+            if (anyAssignment)
             {
-                throw new InvalidOperationException("Cannot delete volunteer while they are handling a call.");
+                throw new BO.BlUnauthorizedAccessException("The volunteer cannot be deleted because they are or were assigned to a call.");
             }
-            _dal.Volunteer.Delete(id);
-            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
 
+            _dal.Volunteer.Delete(id);
+            VolunteerManager.Observers.NotifyListUpdated(); // stage 5
         }
-        catch (DO.DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException)
         {
             throw new BO.BlDoesNotExistException($"Volunteer with ID={id} was not found in the database.");
         }
-        catch (InvalidOperationException ex)
+        catch (BO.BlUnauthorizedAccessException)
         {
-            throw new BO.BlUnauthorizedAccessException("The volunteer cannot be deleted as they are handling a call.");
+            throw;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new BO.BlGeneralDatabaseException("An unexpected error occurred while trying to delete the volunteer.");
         }
     }
+
 
     /// <summary>
     /// Adds a new volunteer to the system.
@@ -372,25 +345,18 @@ internal class VolunteerImplementation : IVolunteer
                 throw new DalArgumentException("Please put in a different ID number.");
             }
 
-            // Validate input format
             var coordinates =  VolunteerManager.ValidateInputFormat(volunteer);
-            //var coordinates = await CallManager.ValidateCall(newCall);
 
-            // Set the coordinates to the newCall object
             volunteer.Latitude = coordinates.latitude;
             volunteer.Longitude = coordinates.longitude;
 
-            // Validate logical fields
             VolunteerManager.ValidateLogicalFields(volunteer);
 
-            //Hash the initial password before storing it
             String HashedPassword = VolunteerManager.HashPassword(volunteer.Password);
             volunteer.Password = HashedPassword;
 
-            // Convert BO to DO
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteer);
 
-            // Attempt to add volunteer to database
             _dal.Volunteer.Create(volunteerDO);
             VolunteerManager.Observers.NotifyListUpdated();  //stage 5
 

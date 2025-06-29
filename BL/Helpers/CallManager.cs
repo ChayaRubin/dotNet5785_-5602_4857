@@ -30,17 +30,47 @@ internal static class CallManager
         return uniqueCalls;
     }
 
-
     public static CallInList ConvertToBO(DO.Call call)
     {
+        var allAssignments = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId);
+
+        var assignmentData = allAssignments.Select(a =>
+        {
+            string? name = null;
+            try
+            {
+                name = s_dal.Volunteer.Read(v => v.Id == a.VolunteerId).Name;
+            }
+            catch
+            {
+                name = "[Unknown]";
+            }
+
+            return new CallAssignInList
+            {
+                Id = a.Id,
+                VolunteerId = a.VolunteerId,
+                VolunteerName = name,
+                AssignTime = a.EntryTime,
+                CompletionTime = a.FinishCompletionTime,
+                EndType = a.CallResolutionStatus.HasValue
+                    ? Enum.TryParse<CallStatus>(a.CallResolutionStatus.ToString(), out var status) ? status : null
+                    : null
+            };
+        }).ToList();
+
         return new CallInList
         {
             Id = call.RadioCallId,
             Description = call.Description,
             Type = (CallTypeEnum)call.CallType,
             Address = call.Address,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
             OpenTime = call.StartTime,
-            MaxEndTime = call.ExpiredTime
+            MaxEndTime = call.ExpiredTime,
+            Status = GetCallStatus(call, assignmentData),
+            Assignments = assignmentData
         };
     }
 
@@ -199,9 +229,14 @@ internal static class CallManager
                     EndTreatmentTime = x.assign.FinishCompletionTime.HasValue
                         ? x.assign.FinishCompletionTime.Value
                         : (DateTime?)null,
-                    CompletionType = Enum.TryParse<CallStatus>(x.assign.CallResolutionStatus.ToString(), out CallStatus status)
-                        ? (CallStatus?)status
-                        : null
+                    CompletionType = x.assign.CallResolutionStatus switch
+                    {
+                        DO.CallResolutionStatus.Treated => CallStatus.Treated,
+                        DO.CallResolutionStatus.SelfCanceled => CallStatus.Canceled,
+                        DO.CallResolutionStatus.Expired => CallStatus.Expired,
+                        _ => null
+                    }
+
                 } as T);
 
             // מיון לפי שדה נבחר
@@ -373,21 +408,18 @@ internal static class CallManager
         if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
             return CallStatus.Treated;
 
-        /*if (assignmentData.Any() &&
-            callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-            callData.ExpiredTime > s_dal.Config.Clock)
-            {
-                return CallStatus.InProgressAtRisk;
-            }*/
-        if (
-            callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-            callData.ExpiredTime > s_dal.Config.Clock)
+        if (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+           callData.ExpiredTime > s_dal.Config.Clock)
         {
-            return CallStatus.OpenAtRisk;
+            return CallStatus.InProgressAtRisk;
+        }
+        if (assignmentData.Any())
+        {
+            return CallStatus.Open;
         }
         else
         {
-            return CallStatus.InProgressAtRisk;
+            return CallStatus.None;
         }
 
     }

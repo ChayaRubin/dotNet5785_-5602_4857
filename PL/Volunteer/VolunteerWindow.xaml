@@ -1,4 +1,4 @@
-﻿<Window x:Class="PL.VolunteerWindow"
+﻿<!--<Window x:Class="PL.VolunteerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PL"
@@ -115,29 +115,177 @@
                                           Style="{StaticResource ColoredComboBox}"/>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
-                                <TextBlock Text="Total Handled:" Width="120"/>
-                                <TextBlock Text="{Binding CurrentVolunteer.TotalCallsHandled}" VerticalAlignment="Center"/>
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBlock Text="Total Canceled:" Width="120"/>
-                                <TextBlock Text="{Binding CurrentVolunteer.TotalCallsCanceled}" VerticalAlignment="Center"/>
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBlock Text="Total Expired:" Width="120"/>
-                                <TextBlock Text="{Binding CurrentVolunteer.TotalExpiredCalls}" VerticalAlignment="Center"/>
-                            </StackPanel>
-
                         </StackPanel>
                     </ScrollViewer>
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
                         <Button Content="{Binding ButtonText}" Click="ButtonAddUpdate_Click" Background="#6FA8DC" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="{Binding ButtonCallText}" Click="ButtonSeeCallinProgress_Click" Background="#B9D15F" Width="140" Style="{StaticResource RoundedButtonStyle}"/>
                         <Button Content="Close" Click="ButtonClose_Click" Background="#F9B350" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Viewbox>
+</Window>-->
+<Window x:Class="PL.VolunteerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PL"
+        xmlns:helpers="clr-namespace:PL"
+        Title="Volunteer Details" Height="700" Width="550"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Background="#E6F0FA"
+        WindowStartupLocation="CenterScreen"
+        Closing="VolunteerPage_Closing">
+
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style x:Key="ColoredComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#C25C9E"/>
+            <Setter Property="BorderBrush" Value="#C25C9E"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Viewbox Stretch="Uniform">
+        <Grid>
+            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#0F425F" BorderThickness="2" Margin="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Volunteer Details"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"
+                               Foreground="#0F425F"
+                               HorizontalAlignment="Center"/>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+
+                            <!-- Volunteer Info -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Id:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.Id}" Width="250" IsEnabled="{Binding CanEditId}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Full Name:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.FullName}" Width="250"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Phone Number:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.PhoneNumber}" Width="250"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Email:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.Email}" Width="250"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Password:" Width="120" VerticalAlignment="Center"/>
+                                <PasswordBox Width="250"
+                                             helpers:PasswordBoxHelper.BindPassword="True"
+                                             helpers:PasswordBoxHelper.BoundPassword="{Binding VolunteerPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Current Address:" Width="120" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentVolunteer.CurrentAddress}" Width="250"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Role:" Width="120"/>
+                                <ComboBox Width="250"
+                                          ItemsSource="{Binding Roles}"
+                                          SelectedValue="{Binding CurrentVolunteer.Role}"
+                                          IsEnabled="{Binding CanEditRole}"
+                                          Style="{StaticResource ColoredComboBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Is Active:" Width="120"/>
+                                <CheckBox IsChecked="{Binding CurrentVolunteer.IsActive}"
+                                          IsEnabled="{Binding CanEditActiveStatus}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Max Distance:" Width="120"/>
+                                <TextBox Text="{Binding CurrentVolunteer.MaxDistance}" Width="250"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Distance Type:" Width="120"/>
+                                <ComboBox Width="250"
+                                          ItemsSource="{Binding DistanceTypes}"
+                                          SelectedValue="{Binding CurrentVolunteer.TypeOfDistance}"
+                                          Style="{StaticResource ColoredComboBox}"/>
+                            </StackPanel>
+
+                            <!-- Current Call In Progress -->
+                            <GroupBox Header="Current Call In Progress"
+                                      Visibility="{Binding HasCallInProgress, Converter={StaticResource BoolToVis}}"
+                                      Margin="0,15,0,0">
+                                <StackPanel Margin="10">
+                                    <TextBlock Text="{Binding CurrentCallInProgress.CallId, StringFormat=Call ID: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.CallType, StringFormat=Type: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.Description, StringFormat=Description: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.Address, StringFormat=Address: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.OpeningTime, StringFormat=Opened At: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.AssignmentStartTime, StringFormat=Started At: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.MaxCompletionTime, StringFormat=Max Completion: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.Status, StringFormat=Status: {0}}"/>
+                                    <TextBlock Text="{Binding CurrentCallInProgress.DistanceFromVolunteer, StringFormat=Distance: {0:F1} km}"/>
+
+                                    <!-- Map Link -->
+                                    <TextBlock Text="View on Map:" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                                    <TextBlock HorizontalAlignment="Left">
+                                        <Hyperlink NavigateUri="{Binding MapLink}" RequestNavigate="Hyperlink_RequestNavigate">
+                                            Open in Google Maps
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </GroupBox>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Buttons -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="{Binding ButtonText}" Click="ButtonAddUpdate_Click" Background="#6FA8DC" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Close" Click="ButtonClose_Click" Background="#F9B350" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
+                    </StackPanel>
+
                 </Grid>
             </Border>
         </Grid>

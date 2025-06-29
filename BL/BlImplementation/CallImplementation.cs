@@ -86,38 +86,39 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // שליפת הקריאה לפי מזהה (RadioCallId או Id - לפי מה שהמערכת דורשת)
             DO.Call? callData = _dal.Call.Read(c => c.RadioCallId == callId);
             if (callData == null)
                 throw new BO.BlDoesNotExistException("Call not found");
 
-            // שליפת כל השיבוצים לקריאה הזו
             var assignmentData = _dal.Assignment.ReadAll()
                 .Where(a => a.CallId == callId)
                 .ToList();
 
-            // שליפת מזהי המתנדבים הייחודיים
             var volunteerIds = assignmentData
                 .Where(a => a.VolunteerId != 0)
                 .Select(a => a.VolunteerId)
                 .Distinct()
                 .ToList();
 
-            // טעינת המתנדבים הרלוונטיים למילון <Id, Name>
             var volunteers = _dal.Volunteer.ReadAll(v => volunteerIds.Contains(v.Id))
                 .ToDictionary(v => v.Id, v => v.Name);
 
-            // בניית רשימת השיבוצים ל-BO
             List<BO.CallAssignInList> assignmentList = assignmentData.Select(a => new BO.CallAssignInList
             {
+                Id = a.Id,
                 VolunteerId = a.VolunteerId != 0 ? a.VolunteerId : null,
                 VolunteerName = volunteers.GetValueOrDefault(a.VolunteerId),
                 AssignTime = a.EntryTime,
                 CompletionTime = a.FinishCompletionTime,
-                EndType = a.CallResolutionStatus.HasValue? (BO.CallStatus?)a.CallResolutionStatus: null
+                EndType = a.CallResolutionStatus switch
+                {
+                    DO.CallResolutionStatus.Treated => BO.CallStatus.Treated,
+                    DO.CallResolutionStatus.SelfCanceled => BO.CallStatus.Canceled,
+                    DO.CallResolutionStatus.Expired => BO.CallStatus.Expired,
+                    _ => null
+                }
             }).ToList();
 
-            // יצירת אובייקט Call מלא
             BO.Call callBO = new BO.Call
             {
                 Id = callData.RadioCallId,
@@ -229,38 +230,48 @@ internal class CallImplementation : ICall
         }
     }
 
-    /// <summary>
-    /// Deletes a call
-    /// </summary>
-    /// <param name="callId">the deleted call id</param>
-    /// <exception cref="BlDoesNotExistException"></exception>
-    /// <exception cref="BO.BlInvalidTimeUnitException"></exception>
     public void DeleteCall(int callId)
     {
         try
         {
-            var call = _dal.Call.Read(c => c.RadioCallId == callId);
-            if (call == null)
-                throw new DalDoesNotExistException("Call not found.");
+            var call = _dal.Call.Read(c => c.RadioCallId == callId)
+                ?? throw new DalDoesNotExistException("Call not found.");
 
-            var assignmentsForCall = _dal.Assignment.ReadAll(a => a.CallId == callId);
+            var assignments = _dal.Assignment.ReadAll(a => a.CallId == callId).ToList();
 
-            var openAssignments = assignmentsForCall.Where(a => a.CallResolutionStatus == null);
-            if (openAssignments.Any())
-                throw new DO.DalInvalidTimeUnitException("Cannot delete a call that has open assignments.");
+            var boAssignments = assignments.Select(a => new BO.CallAssignInList
+            {
+                Id = a.Id,
+                VolunteerId = a.VolunteerId,
+                AssignTime = a.EntryTime,
+                CompletionTime = a.FinishCompletionTime,
+                EndType = a.CallResolutionStatus.HasValue
+                    ? (BO.CallStatus?)Enum.Parse(typeof(BO.CallStatus), a.CallResolutionStatus.ToString())
+                    : null
+            }).ToList();
+
+            var status = CallManager.GetCallStatus(call, boAssignments);
+
+            if (status != BO.CallStatus.None && assignments.Any())
+                throw new BO.BlUnauthorizedAccessException("Can only delete calls that were never assigned and are still in 'None' status.");
 
             _dal.Call.Delete(callId);
-            CallManager.Observers.NotifyListUpdated();  //stage 5  	
-        }
-        catch (DalInvalidTimeUnitException ex)
-        {
-            throw new BO.BlInvalidTimeUnitException($"BL Exception: {ex.Message}");
+            CallManager.Observers.NotifyListUpdated();  //stage 5
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new BO.BlDoesNotExistException($"BL Exception: {ex.Message}");
+            throw new BO.BlDoesNotExistException($"Call with ID={callId} not found. {ex.Message}");
+        }
+        catch (BO.BlUnauthorizedAccessException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            throw new BO.BlGeneralDatabaseException("An unexpected error occurred while trying to delete the call.");
         }
     }
+
 
     /// <summary>
     /// add a call
@@ -270,16 +281,13 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // Validate the call and get coordinates
             var coordinates = await CallManager.ValidateCall(newCall);
 
-            // Set the coordinates to the newCall object
             newCall.Latitude = coordinates.latitude;
             newCall.Longitude = coordinates.longitude;
 
             CallManager.ValidateLogicalFields(newCall);
 
-            // Convert the call to Data Object and add it to the database
             DO.Call newCallDO = CallManager.ConvertToDO(newCall);
             _dal.Call.Create(newCallDO);
             SendEmailToVolunteers(newCall);
@@ -401,11 +409,9 @@ internal class CallImplementation : ICall
             var call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId)
                 ?? throw new DalDoesNotExistException($"Call with ID {assignment.CallId} not found.");
 
-            // Ensure the call is still active
             if (call.ExpiredTime < AdminManager.Now)
                 throw new DalGeneralDatabaseException("Cannot close a call that has expired.");
 
-            // Update the assignment to mark it as completed
             assignment.FinishCompletionTime = AdminManager.Now;
             assignment.CallResolutionStatus = DO.CallResolutionStatus.Treated;
 
@@ -565,10 +571,10 @@ internal class CallImplementation : ICall
 
         var openCalls = _dal.Call.ReadAll()
             .Where(call =>
-                call.ExpiredTime > AdminManager.Now && // Not expired
+                call.ExpiredTime > AdminManager.Now && 
                 !allAssignments.Any(a =>
                     a.CallId == call.RadioCallId &&
-                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated)) // No treated assignment
+                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated)) 
             .Select(call => new BO.Call
             {
                 Id = call.RadioCallId,
@@ -596,10 +602,6 @@ internal class CallImplementation : ICall
 
         return openCalls;
     }
-
-
-
-
     public void AddObserver(Action listObserver) =>
     CallManager.Observers.AddListObserver(listObserver); //stage 5
     public void AddObserver(int id, Action observer) =>

@@ -24,8 +24,6 @@ public class CallInList
 
     public CallStatus Status { get; set; } // סטטוס הקריאה (ENUM)
     public string StatusText => Status.ToString();
-
-
     public List<CallAssignInList>? Assignments { get; set; } // רשימת הקצאות עבור הקריאה
 
 }

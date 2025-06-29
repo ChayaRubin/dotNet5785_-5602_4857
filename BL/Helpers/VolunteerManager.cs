@@ -144,6 +144,23 @@ internal static class VolunteerManager
         {
             return false;
         }
+
+        // מגבלת מנהלים
+        int currentManagers = s_dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
+
+        if (existingVolunteer.Position == DO.PositionEnum.Manager && volunteerToUpdate.Role != BO.PositionEnum.Manager)
+        {
+            // המנהל מנסה להסיר את עצמו
+            if (currentManagers <= 1)
+                throw new BO.BlNoPermitionException("Cannot remove the only active manager");
+        }
+
+        if (volunteerToUpdate.Role == BO.PositionEnum.Manager && currentManagers >= 2 &&
+            existingVolunteer.Position != DO.PositionEnum.Manager)
+        {
+            // מנסים להוסיף עוד מנהל, ויש כבר 2
+            throw new BO.BlNoPermitionException("Too many managers");
+        }
         return true;
     }
 
@@ -200,6 +217,22 @@ internal static class VolunteerManager
             }
         }
 
+        // מגבלת מנהלים
+        int currentManagers = s_dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
+
+        if (volunteer.Role.ToString() == DO.PositionEnum.Manager.ToString() && volunteer.Role != BO.PositionEnum.Manager)
+        {
+            // המנהל מנסה להסיר את עצמו
+            if (currentManagers <= 1)
+                throw new BO.BlNoPermitionException("Cannot remove the only active manager");
+        }
+
+        if (volunteer.Role == BO.PositionEnum.Manager && currentManagers >= 2 &&
+            volunteer.Role.ToString() != DO.PositionEnum.Manager.ToString())
+        {
+            // מנסים להוסיף עוד מנהל, ויש כבר 2
+            throw new BO.BlNoPermitionException("Too many managers");
+        }
         var coordinates = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress);
         volunteer.Latitude = coordinates.latitude;
         volunteer.Longitude = coordinates.longitude;

@@ -1,89 +1,4 @@
-﻿<!--<Window x:Class="PL.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL"
-        mc:Ignorable="d"
-        Title="Main Window" Height="450" Width="800"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        Background="#E6F0FA"
-        WindowStartupLocation="CenterScreen">
-
-    <Window.Resources>
-        <Style x:Key="RoundedButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="10 5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="BorderThickness" Value="0"/>
-        </Style>
-    </Window.Resources>
-
-    <Viewbox Stretch="Uniform">
-        <Grid>
-            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#0F425F" BorderThickness="2" Margin="40">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                    --><!-- Time and Date Display --><!--
-                    <TextBlock Text="{Binding CurrentTime, StringFormat=MM/dd/yyyy HH:mm:ss}"
-                               FontSize="36"
-                               FontWeight="Bold"
-                               Foreground="#2798D5"
-                               Margin="0 0 0 30"
-                               HorizontalAlignment="Center"/>
-
-                    --><!-- Time advance buttons --><!--
-                    <UniformGrid Columns="5" Margin="0 0 0 30" HorizontalAlignment="Center">
-                        <Button Content="Add One Minute" Click="BtnAddOneMinute_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Hour" Click="BtnAddOneHour_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Day" Click="BtnAddOneDay_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Month" Click="BtnAddOneMonth_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Year" Click="BtnAddOneYear_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                    </UniformGrid>
-
-                    --><!-- Configuration variables area --><!--
-                    <StackPanel Orientation="Horizontal" Margin="0 0 0 30" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        --><!-- TextBox עבור MaxYearRange (TimeSpan) --><!--
-                        <TextBox Width="100"
-                                 Text="{Binding MaxYearRange, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=c}"
-                                 Margin="0 0 10 0"
-                                 Padding="5"
-                                 BorderThickness="1"
-                                 TextAlignment="Center"
-                                 VerticalContentAlignment="Center"
-                                 BorderBrush="#F9B350"/>
-                        <Button Content="Update Config Variable" Click="BtnUpdateMaxYearRange_Click" Background="#F9B350" Style="{StaticResource RoundedButtonStyle}"/>
-                    </StackPanel>
-
-                    --><!-- Extra Buttons --><!--
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Content="Volunteer List" Click="BtnVolunteers_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Call List" Click="BtnCalls_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Initialize DB" Click="BtnInitializeDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Reset DB" Click="BtnResetDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                    </StackPanel>
-
-                </StackPanel>
-            </Border>
-        </Grid>
-    </Viewbox>
-</Window>-->
-
-<Window x:Class="PL.MainWindow"
+﻿<Window x:Class="PL.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -127,7 +42,7 @@
                     <TextBlock Text="{Binding CurrentTime, StringFormat=MM/dd/yyyy HH:mm:ss}"
                                FontSize="36"
                                FontWeight="Bold"
-                               Foreground="#2798D5"
+                               Foreground="#0F425F"
                                Margin="0 0 0 30"
                                HorizontalAlignment="Center"/>
 
@@ -155,9 +70,9 @@
 
                     <!-- Status Summary Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 30">
-                        <Button Content="Open Calls: {Binding OpenCallsCount}" Click="BtnOpenCalls_Click" Background="#5BC0EB" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="In Progress: {Binding InProgressCallsCount}" Click="BtnInProgressCalls_Click" Background="#FDE74C" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Closed: {Binding ClosedCallsCount}" Click="BtnClosedCalls_Click" Background="#9BC53D" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Open Calls: {Binding OpenCallsCount}" Click="BtnOpenCalls_Click" Background="#2798D5" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="In Progress: {Binding InProgressCallsCount}" Click="BtnInProgressCalls_Click" Background="#2798D5" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Closed: {Binding ClosedCallsCount}" Click="BtnClosedCalls_Click" Background="#2798D5" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
 
                     <!-- Extra Buttons -->
@@ -166,6 +81,7 @@
                         <Button Content="Call List" Click="BtnCalls_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
                         <Button Content="Initialize DB" Click="BtnInitializeDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
                         <Button Content="Reset DB" Click="BtnResetDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Logout" Click="BtnLogout_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
 
                 </StackPanel>

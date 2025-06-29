@@ -43,8 +43,22 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
+    <Id>218431161</Id>
+    <Name>Zevi Rubin</Name>
+    <Phone>0548428809</Phone>
+    <Email>shanirubin26@gmail.com</Email>
+    <Password>8b69b3186291b9955fb5d53a498c5e8c50b966142d72e6de9fc027c1c30dba8d</Password>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
     <Id>336717954</Id>
-    <Name>shuly</Name>
+    <Name>shuly Rubin</Name>
     <Phone>0589874569</Phone>
     <Email>dfgh@dfghjk.com</Email>
     <Password>0369ba5e866b78bf0c80611cb4227d6f552c2ee6acb1d339900a2ef5353c41b3</Password>
@@ -57,59 +71,31 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>331781468</Id>
-    <Name>hadasah</Name>
-    <Phone>5897659848</Phone>
-    <Email>h@gmail.com</Email>
-    <Password>ef6db3c005ed5f40820a9cc0c0cef3a70b1e7d3935138aeb6905c95baf0c28c5</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Volunteer</Position>
+    <Id>327006516</Id>
+    <Name>Ma</Name>
+    <Phone>0548428809</Phone>
+    <Email>shanirubin2@gmail.com</Email>
+    <Password>104c7c5a62f8fcd0500d222756cacbf94e7da92cc117c0ef756de08aa33192ac</Password>
+    <Address>Neve Yaakov St 17, Jerusalem</Address>
+    <Latitude>31.842212</Latitude>
+    <Longitude>35.24206</Longitude>
+    <Position>Manager</Position>
     <Active>true</Active>
-    <MaxResponseDistance xsi:nil="true" />
+    <MaxResponseDistance>1000</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
     <Id>218796761</Id>
-    <Name>malka</Name>
+    <Name>malka hhh</Name>
     <Phone>0549580014</Phone>
     <Email>m0549580014@gmail.com</Email>
     <Password>24f4ddebc0722250803ef4a6b9b3b9d5ced130b6482cda4a2643b38d22b3f6cb</Password>
-    <Address>hagana 9</Address>
-    <Latitude>30.1746471</Latitude>
-    <Longitude>31.2376043</Longitude>
+    <Address>etsel 13</Address>
+    <Latitude>32.05314</Latitude>
+    <Longitude>34.791486</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>60</MaxResponseDistance>
     <TypeOfDistance>DrivingDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <Id>218431161</Id>
-    <Name>Zevi Rubin</Name>
-    <Phone>0548428809</Phone>
-    <Email>shanirubin26@gmail.com</Email>
-    <Password>5f71c4312ec641f032d05e693dc3f301de54724a26cf3b319ac11fd29a39a122</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Manager</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>60</MaxResponseDistance>
-    <TypeOfDistance>WalkingDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
-    <Id>327725602</Id>
-    <Name>Chaya Tzivi Rubin</Name>
-    <Phone>0583227200</Phone>
-    <Email>ct3227200@gmail.com</Email>
-    <Password>8474504f97be37e72ccca3a8d24512eacf319f76b23eb2edb3cfca4eae871b61</Password>
-    <Address>Agrippas Street 36, Jerusalem</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>38.71739820340145</MaxResponseDistance>
-    <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

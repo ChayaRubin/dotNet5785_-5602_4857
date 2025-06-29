@@ -6,6 +6,15 @@
         Loaded="Window_Loaded" Closing="Window_Closing">
 
     <Window.Resources>
+        <!-- 🔄 קונברטרים להצגת נתונים -->
+        <local:AssignmentCountConverter x:Key="AssignmentCountConverter" />
+        <local:LastVolunteerNameConverter x:Key="LastVolunteerNameConverter" />
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <local:AddressToGoogleMapsLinkConverter x:Key="AddressToGoogleMapsLinkConverter" />
+        <local:CallTimeLeftConverter x:Key="CallTimeLeftConverter" />
+        <local:CallTreatmentDurationConverter x:Key="CallTreatmentDurationConverter" />
+
+        <!-- 🟩 עיצוב כפתורים -->
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -30,11 +39,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- סינון -->
         <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
             <TextBlock Text="Filter by Call Type:" VerticalAlignment="Center" Margin="0 10 5 0"/>
             <ComboBox ItemsSource="{Binding CallTypes}" SelectedItem="{Binding SelectedCallType}" Width="150"/>
         </StackPanel>
 
+        <!-- טבלה -->
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding CallsListView}"
                   SelectedItem="{Binding SelectedCall}"
@@ -47,8 +58,11 @@
                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
-                <DataGridTextColumn Header="Volunteer" Binding="{Binding Assignments[0].VolunteerName}" Width="150"/>
-                <DataGridTextColumn Header="Total Assignments" Binding="{Binding Assignments.Count}" Width="120"/>
+                <DataGridTextColumn Header="Volunteer" Binding="{Binding Assignments, Converter={StaticResource LastVolunteerNameConverter}}" Width="100"/>
+                <DataGridTextColumn Header="Total Assignments" Binding="{Binding Assignments, Converter={StaticResource AssignmentCountConverter}}" Width="60"/>
+                <DataGridTextColumn Header="Time Left" Binding="{Binding MaxEndTime, Converter={StaticResource CallTimeLeftConverter}}" Width="100"/>
+                <DataGridTextColumn Header="Treatment Duration" Binding="{Binding ., Converter={StaticResource CallTreatmentDurationConverter}}" Width="120"/>
+
                 <DataGridTemplateColumn Header="Actions" Width="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -62,6 +76,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- כפתורים -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
             <Button Content="Add Call" Click="BtnAdd_Click" Background="#6FA8DC" Width="150" Style="{StaticResource RoundedButtonStyle}"/>
             <Button Content="Refresh" Click="BtnRefresh_Click" Background="#B9D15F" Width="80" Style="{StaticResource RoundedButtonStyle}"/>
