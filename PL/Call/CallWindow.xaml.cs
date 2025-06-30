@@ -25,14 +25,24 @@ namespace PL.Call
         public CallWindow()
         {
             InitializeComponent();
+
             CurrentCall = new BO.Call
             {
-                OpenTime = DateTime.Now,
-                MaxEndTime = DateTime.Now.AddHours(1)
+                Type = BO.CallTypeEnum.General_Assistance,
+                Description = string.Empty,
+                Address = string.Empty,
+                Latitude = 0,
+                Longitude = 0,
+                OpenTime = bl.Admin.GetSystemClock(),
+                MaxEndTime = null,
+                Status = BO.CallStatus.Open,
+                Assignments = new List<BO.CallAssignInList>()
             };
+
             isEditMode = false;
             DataContext = this;
         }
+
 
         public CallWindow(CallInList selectedCall)
         {

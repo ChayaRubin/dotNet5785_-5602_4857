@@ -4,6 +4,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// A new VolunteerImplementation class that inherits from IVolunteer.
@@ -13,6 +14,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Adds a new Volunteer to the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Volunteer item)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -23,6 +25,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Deletes a Volunteer by ID from the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -34,6 +37,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Deletes all Volunteers from the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XMLTools.SaveListToXMLSerializer(new List<Volunteer>(), Config.s_volunteers_xml);
@@ -42,6 +46,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Reads the first Volunteer matching a filter.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(Func<Volunteer, bool> filter)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -51,6 +56,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Reads all Volunteers, optionally filtered by a predicate.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -60,6 +66,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Updates an existing Volunteer in the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Volunteer item)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);

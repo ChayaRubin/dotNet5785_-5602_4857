@@ -49,10 +49,10 @@
             <TextBox Text="{Binding CurrentCall.Address}" />
 
             <Label Content="Open Time:"/>
-            <DatePicker SelectedDate="{Binding CurrentCall.OpenTime}" />
+            <TextBox Text="{Binding CurrentCall.OpenTime, StringFormat='yyyy-MM-dd HH:mm'}" />
 
             <Label Content="Max End Time:"/>
-            <DatePicker SelectedDate="{Binding CurrentCall.MaxEndTime}" />
+            <TextBox Text="{Binding CurrentCall.MaxEndTime, StringFormat='yyyy-MM-dd HH:mm'}" />
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">

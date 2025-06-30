@@ -2,12 +2,14 @@
 using DO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 namespace Dal;
 
 //I explained them each by the program page
 
 internal class VolunteerImplementation :IVolunteer
 {
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Volunteer item)
     {
         
@@ -16,6 +18,8 @@ internal class VolunteerImplementation :IVolunteer
        
         DataSource.Volunteers.Add(item);
     }
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         Volunteer? VolunteerToRemove = DataSource.Volunteers.FirstOrDefault(c => c?.Id == id);
@@ -23,21 +27,20 @@ internal class VolunteerImplementation :IVolunteer
         else throw new DalDoesNotExistException($"Volunteer with id {id} does not exists.");
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         if (!DataSource.Volunteers.Any()) return; 
         DataSource.Volunteers.Clear(); 
     }
 
-    //public Volunteer? Read(int id)
-    //{
-    //    return DataSource.Volunteers.FirstOrDefault(item => item.Id == id); //stage 2
-    //}
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(Func<Volunteer, bool> filter)
     {
         return DataSource.Volunteers.FirstOrDefault(filter);
     }
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
     {
         return filter == null
@@ -45,6 +48,7 @@ internal class VolunteerImplementation :IVolunteer
                 : DataSource.Volunteers.Where(filter);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Volunteer item)
     {
         Volunteer? VolunteerToRemove = DataSource.Volunteers.FirstOrDefault(c => c?.Id == item.Id);

@@ -25,6 +25,7 @@ internal class AdminImplementation : IAdmin
     /// <exception cref="ArgumentOutOfRangeException">Thrown if an invalid time unit is provided.</exception>
     public void AdvanceSystemClock(TimeUnit timeUnit)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         DateTime newClock = timeUnit switch
         {
             TimeUnit.MINUTE => AdminManager.Now.AddMinutes(1),
@@ -53,6 +54,7 @@ internal class AdminImplementation : IAdmin
     /// <param name="riskTimeRange">The new risk time range value.</param>
     public void SetRiskTimeRange(TimeSpan riskTimeRange)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.RiskRange = riskTimeRange;
     }
 
@@ -61,7 +63,8 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void ResetDatabase()
     {
-        AdminManager.ResetDB();
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.ResetDB(); //stage 7
     }
 
     /// <summary>
@@ -69,12 +72,23 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDatabase()
     {
+         
         //AdminManager.Reset();
         //DalTest.Initialization.Do();
         //ClockManager.UpdateClock(ClockManager.Now);
-        AdminManager.InitializeDB();
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.InitializeDB(); //stage 7
 
     }
+    public void StopSimulator()
+        => AdminManager.Stop(); //stage 7
+
+    public void StartSimulator(int interval)  //stage 7
+    {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.Start(interval); //stage 7
+    }
+
 
     public void AddClockObserver(Action clockObserver) =>
     AdminManager.ClockUpdatedObservers += clockObserver;

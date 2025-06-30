@@ -32,5 +32,7 @@ public interface IAdmin
 
     // מסירה מאזין שכבר לא צריך להאזין לעדכוני השעון
     void RemoveClockObserver(Action clockObserver);
+    void StartSimulator(int interval); //stage 7
+    void StopSimulator(); //stage 7
 
 }

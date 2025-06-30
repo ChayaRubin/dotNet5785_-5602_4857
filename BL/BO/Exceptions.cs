@@ -186,4 +186,22 @@ namespace BO
     {
         public BlProgramException(string? message) : base(message) { }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    public class BLTemporaryNotAvailableException : Exception
+    {
+        public BLTemporaryNotAvailableException(string? message) : base(message) { }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    public class BlInvalidInputException : Exception
+    {
+        public BlInvalidInputException(string? message) : base(message) { }
+    }
 }

@@ -17,7 +17,14 @@ namespace PL
 
         private readonly bool isSelfEdit;
         private readonly bool isAdmin;
+        public bool CanEditId => ButtonText == "Add";
+        public bool CanEditRole => isAdmin;
+        public bool CanEditActiveStatus => ButtonText == "Add" || !s_bl.Call.GetOpenCallsForVolunteer(CurrentVolunteer.Id).Any();
+        
+        private volatile bool _observerWorking = false;
+        public bool HasCallInProgress => CurrentCallInProgress != null;
 
+        private string mapLink = string.Empty;
         public BO.Volunteer CurrentVolunteer
         {
             get { return (BO.Volunteer)GetValue(CurrentVolunteerProperty); }
@@ -57,10 +64,6 @@ namespace PL
             }
         }
 
-        public bool CanEditId => ButtonText == "Add";
-        public bool CanEditRole => isAdmin;
-        public bool CanEditActiveStatus => ButtonText == "Add" || !s_bl.Call.GetOpenCallsForVolunteer(CurrentVolunteer.Id).Any();
-
         private CallInProgress? currentCallInProgress;
         public CallInProgress? CurrentCallInProgress
         {
@@ -72,10 +75,6 @@ namespace PL
                 OnPropertyChanged(nameof(HasCallInProgress));
             }
         }
-
-        public bool HasCallInProgress => CurrentCallInProgress != null;
-
-        private string mapLink = string.Empty;
         public string MapLink
         {
             get => mapLink;
@@ -248,21 +247,31 @@ namespace PL
 
         private void OnVolunteerChanged()
         {
-            Dispatcher.Invoke(() =>
+            if (!_observerWorking) 
             {
-                try
+                _observerWorking = true; 
+
+                _ = Dispatcher.BeginInvoke(() =>
                 {
-                    var updated = s_bl.Volunteer.GetVolunteerDetails(CurrentVolunteer.Id.ToString());
-                    CurrentVolunteer = updated;
-                    RefreshCall(CurrentVolunteer.Id);
-                    OnPropertyChanged(nameof(CurrentVolunteer));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to reload volunteer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            });
+                    try
+                    {
+                        var updated = s_bl.Volunteer.GetVolunteerDetails(CurrentVolunteer.Id.ToString());
+                        CurrentVolunteer = updated;
+                        RefreshCall(CurrentVolunteer.Id);
+                        OnPropertyChanged(nameof(CurrentVolunteer));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to reload volunteer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        _observerWorking = false; 
+                    }
+                });
+            }
         }
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null) =>

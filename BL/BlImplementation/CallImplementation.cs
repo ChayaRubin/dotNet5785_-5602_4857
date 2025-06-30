@@ -1,4 +1,5 @@
-﻿using BlApi;
+﻿
+using BlApi;
 using BO;
 using Dal;
 using DO;
@@ -25,6 +26,7 @@ internal class CallImplementation : ICall
     {
         try
         {
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
@@ -171,6 +173,7 @@ internal class CallImplementation : ICall
 
         try
         {
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             CallManager.ValidateCall(call);
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(call.Address);
 
@@ -235,6 +238,7 @@ internal class CallImplementation : ICall
     {
         try
         {
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             var call = _dal.Call.Read(c => c.RadioCallId == callId)
                 ?? throw new DalDoesNotExistException("Call not found.");
 
@@ -282,6 +286,7 @@ internal class CallImplementation : ICall
     {
         try
         {
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             var coordinates = await CallManager.ValidateCall(newCall);
 
             newCall.Latitude = coordinates.latitude;
@@ -325,6 +330,7 @@ internal class CallImplementation : ICall
     {
         try
         {
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             Console.WriteLine($"Checking Assignment ID: {assignmentId}");
             DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
                 ?? throw new DalDoesNotExistException("The requested assignment does not exist");
@@ -357,7 +363,7 @@ internal class CallImplementation : ICall
             _dal.Assignment.Update(assignment);
             AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);  //stage 5
             AssignmentManager.Observers.NotifyListUpdated();  //stage 5
-            CallManager.Observers.NotifyListUpdated(); 
+            CallManager.Observers.NotifyListUpdated();
 
 
             if (isAdmin)
@@ -386,16 +392,12 @@ internal class CallImplementation : ICall
             throw new BlGeneralDatabaseException($"An unexpected error occurred during canceling the call: {ex.Message}");
         }
     }
-   
+
     public void CloseCall(int volunteerId, int assignmentId)
     {
         try
         {
-            string logPath = "log.txt";
-            File.AppendAllText(logPath,
-                $"[CloseCall CALLED at {DateTime.Now:HH:mm:ss}] VolunteerId={volunteerId}, AssignmentId={assignmentId}\n");
-            File.AppendAllText("log.txt", Environment.StackTrace + "\n\n");
-
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             var assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
                 ?? throw new DalDoesNotExistException($"Assignment with ID {assignmentId} not found.");
 
@@ -538,7 +540,7 @@ internal class CallImplementation : ICall
                           $"Thank you for your cooperation,\nThe System Team";
 
 
-            emailTasks.Add(CallManager.SendEmailAsync(volunteer.Email, subject, body));  
+            emailTasks.Add(CallManager.SendEmailAsync(volunteer.Email, subject, body));
 
             if (emailTasks.Count > 0)
             {
@@ -579,10 +581,10 @@ internal class CallImplementation : ICall
 
         var openCalls = _dal.Call.ReadAll()
             .Where(call =>
-                call.ExpiredTime > AdminManager.Now && 
+                call.ExpiredTime > AdminManager.Now &&
                 !allAssignments.Any(a =>
                     a.CallId == call.RadioCallId &&
-                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated)) 
+                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated))
             .Select(call => new BO.Call
             {
                 Id = call.RadioCallId,
@@ -619,4 +621,3 @@ internal class CallImplementation : ICall
     public void RemoveObserver(int id, Action observer) =>
     CallManager.Observers.RemoveObserver(id, observer); //stage 5
 }
-

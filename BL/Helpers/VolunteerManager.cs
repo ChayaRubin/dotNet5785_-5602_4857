@@ -7,7 +7,7 @@ using System.Text;
 namespace Helpers;
 using System.Security.Cryptography;
 using System;
-
+using BlImplementation;
 
 internal static class VolunteerManager
 {
@@ -130,39 +130,40 @@ internal static class VolunteerManager
     /// <exception cref="DalUnauthorizedAccessException">Thrown when update permission is denied</exception>
     public static bool CanUpdateFields(string requesterId, DO.Volunteer existingVolunteer, BO.Volunteer volunteerToUpdate)
     {
-        // שליפת פרטי המשתמש שמבצע את הבקשה
         if (!int.TryParse(requesterId, out int requesterIdInt))
-        {
             throw new ArgumentException($"Invalid requester ID format: {requesterId}");
+
+        DO.Volunteer requester;
+        int currentManagers;
+
+        lock (AdminManager.BlMutex)
+        {
+            requester = s_dal.Volunteer.Read(v => v.Id == requesterIdInt)
+                ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={requesterId} does not exist.");
+
+            currentManagers = s_dal.Volunteer
+                .ReadAll(v => v.Position.ToString() == "Manager" && v.Active)
+                .Count();
         }
 
-        var requester = s_dal.Volunteer.Read(v => v.Id == requesterIdInt)
-            ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={requesterId} does not exist.");
-
         // רק המתנדב עצמו או מנהל יכולים לעדכן פרטים
-        if (requesterId != existingVolunteer.Id.ToString() && requester.Position.ToString() != BO.PositionEnum.Manager.ToString())
+        if (requesterId != existingVolunteer.Id.ToString() &&
+            requester.Position.ToString() != BO.PositionEnum.Manager.ToString())
         {
             return false;
         }
 
-        // מגבלת מנהלים
-        int currentManagers = s_dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
-
-        if (existingVolunteer.Position == DO.PositionEnum.Manager && volunteerToUpdate.Role != BO.PositionEnum.Manager)
+        // מניעת הסרת המנהל האחרון
+        if (existingVolunteer.Position == DO.PositionEnum.Manager &&
+            volunteerToUpdate.Role != BO.PositionEnum.Manager &&
+            currentManagers <= 1)
         {
-            // המנהל מנסה להסיר את עצמו
-            if (currentManagers <= 1)
-                throw new BO.BlNoPermitionException("Cannot remove the only active manager");
+            throw new BO.BlNoPermitionException("Cannot remove the only active manager");
         }
 
-        if (volunteerToUpdate.Role == BO.PositionEnum.Manager && currentManagers >= 2 &&
-            existingVolunteer.Position != DO.PositionEnum.Manager)
-        {
-            // מנסים להוסיף עוד מנהל, ויש כבר 2
-            throw new BO.BlNoPermitionException("Too many managers");
-        }
         return true;
     }
+
 
 
     /// <summary>
@@ -207,38 +208,37 @@ internal static class VolunteerManager
         if (!IsValidEmail(volunteer.Email))
             throw new DalFormatException("Invalid email.");
 
-        // ✅ בדוק חוזק סיסמה רק אם היא לא מוצפנת (בהנחה שההאש תמיד בפורמט קבוע לדוגמה 64 תווים ל-SHA256)
         if (!string.IsNullOrWhiteSpace(volunteer.Password))
         {
-            if (volunteer.Password.Length < 30) // אם זו סיסמה גולמית (לא מוצפנת)
+            if (volunteer.Password.Length < 30)
             {
                 if (!IsValidPassword(volunteer.Password))
                     throw new DalFormatException("Password is not strong enough.");
             }
         }
 
-        // מגבלת מנהלים
-        int currentManagers = s_dal.Volunteer.ReadAll(v => v.Position.ToString() == "Manager" && v.Active).Count();
-
-        if (volunteer.Role.ToString() == DO.PositionEnum.Manager.ToString() && volunteer.Role != BO.PositionEnum.Manager)
+        int currentManagers;
+        lock (AdminManager.BlMutex)
         {
-            // המנהל מנסה להסיר את עצמו
-            if (currentManagers <= 1)
-                throw new BO.BlNoPermitionException("Cannot remove the only active manager");
+            currentManagers = s_dal.Volunteer
+                .ReadAll(v => v.Position.ToString() == "Manager" && v.Active)
+                .Count();
         }
 
-        if (volunteer.Role == BO.PositionEnum.Manager && currentManagers >= 2 &&
-            volunteer.Role.ToString() != DO.PositionEnum.Manager.ToString())
+        if (volunteer.Role.ToString() == DO.PositionEnum.Manager.ToString() &&
+            volunteer.Role != BO.PositionEnum.Manager &&
+            currentManagers <= 1)
         {
-            // מנסים להוסיף עוד מנהל, ויש כבר 2
-            throw new BO.BlNoPermitionException("Too many managers");
+            throw new BO.BlNoPermitionException("Cannot remove the only active manager");
         }
+
         var coordinates = Tools.GetCoordinatesFromAddress(volunteer.CurrentAddress);
         volunteer.Latitude = coordinates.latitude;
         volunteer.Longitude = coordinates.longitude;
 
         return coordinates;
     }
+
 
 
 
@@ -361,24 +361,23 @@ internal static class VolunteerManager
     {
         try
         {
-            // Get the call from database
-            var call = s_dal.Call.Read(c => c.RadioCallId == callId);
-            if (call == null)
-                throw new ArgumentException($"Call with ID={callId} does not exist.");
+            DO.Call? call;
+            List<DO.Assignment> assignments;
 
-            // Get all assignments for this call
-            var assignments = s_dal.Assignment.ReadAll(a => a.CallId == callId);
-            if (assignments == null)
-                throw new ArgumentException($"Call with ID={callId} does not has assignment.");
+            lock (AdminManager.BlMutex)
+            {
+                call = s_dal.Call.Read(c => c.RadioCallId == callId);
+                if (call == null)
+                    throw new ArgumentException($"Call with ID={callId} does not exist.");
 
-            // If there are no assignments at all
+                assignments = s_dal.Assignment.ReadAll(a => a.CallId == callId).ToList();
+            }
+
             if (!assignments.Any())
             {
-                // Check if call has expired
                 if (AdminManager.Now > call.ExpiredTime)
                     return BO.CallStatus.Expired;
 
-                // Check if call is at risk (less than 30 minutes to expiration)
                 TimeSpan timeToExpiration = (DateTime)call.ExpiredTime - AdminManager.Now;
                 if (timeToExpiration <= AdminManager.RiskRange)
                     return BO.CallStatus.OpenAtRisk;
@@ -386,16 +385,13 @@ internal static class VolunteerManager
                 return BO.CallStatus.Open;
             }
 
-            // Get the latest active assignment (no EndTime)
             var activeAssignment = assignments.FirstOrDefault(a => a.FinishCompletionTime == null);
-            // If there's no active assignment but there are completed assignments
             if (activeAssignment == null)
             {
-                // Check if any assignment was completed successfully
                 var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
                 return successfulAssignment ? BO.CallStatus.Closed : BO.CallStatus.Open;
             }
-            // There is an active assignment - check if it's at risk
+
             var remainingTime = (DateTime)call.ExpiredTime - AdminManager.Now;
             if (remainingTime <= AdminManager.RiskRange)
                 return BO.CallStatus.InProgressAtRisk;
@@ -407,4 +403,92 @@ internal static class VolunteerManager
             throw new BlSendingEmailException($"Error calculating call status: {ex.Message}");
         }
     }
+    internal static void SimulateVolunteerAssignmentsAndCallHandling()
+    {
+        Thread.CurrentThread.Name = $"Simulator{Thread.CurrentThread.ManagedThreadId}";
+
+        List<int> updatedVolunteerIds = new();
+        List<int> updatedCallIds = new();
+
+        List<DO.Volunteer> activeVolunteers;
+        lock (AdminManager.BlMutex)
+        {
+            activeVolunteers = DalApi.Factory.Get.Volunteer.ReadAll(v => v.Active).ToList(); // ToList מיד
+        }
+
+        foreach (var volunteer in activeVolunteers)
+        {
+            DO.Assignment? currentAssignment;
+            lock (AdminManager.BlMutex)
+            {
+                currentAssignment = DalApi.Factory.Get.Assignment
+                    .ReadAll(a => a.VolunteerId == volunteer.Id && a.FinishCompletionTime == null)
+                    .FirstOrDefault();
+            }
+
+            if (currentAssignment == null)
+            {
+                List<BO.OpenCallInList> openCalls =
+    new CallImplementation().GetAvailableOpenCalls(volunteer.Id).ToList();
+
+
+
+                if (!openCalls.Any() || Random.Shared.NextDouble() > 0.2) continue;
+
+                var selectedCall = openCalls[Random.Shared.Next(openCalls.Count)];
+                try
+                {
+                    new CallImplementation().AssignCall(volunteer.Id, selectedCall.Id);
+                    updatedVolunteerIds.Add(volunteer.Id);
+                    updatedCallIds.Add(selectedCall.Id);
+                }
+                catch { continue; }
+            }
+            else
+            {
+                DO.Call? call;
+                lock (AdminManager.BlMutex)
+                {
+                    call = DalApi.Factory.Get.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
+                }
+
+                if (call is null) continue;
+
+                double distance = Tools.CalculateDistance(volunteer.Latitude!, volunteer.Longitude!, call.Latitude, call.Longitude);
+                TimeSpan baseTime = TimeSpan.FromMinutes(distance * 2);
+                TimeSpan extra = TimeSpan.FromMinutes(Random.Shared.Next(1, 5));
+                TimeSpan totalNeeded = baseTime + extra;
+                TimeSpan actual = AdminManager.Now - currentAssignment.EntryTime;
+
+                if (actual >= totalNeeded)
+                {
+                    try
+                    {
+                        new CallImplementation().CloseCall(volunteer.Id, currentAssignment.Id);
+                        updatedVolunteerIds.Add(volunteer.Id);
+                        updatedCallIds.Add(call.RadioCallId);
+                    }
+                    catch { continue; }
+                }
+                else if (Random.Shared.NextDouble() < 0.1)
+                {
+                    try
+                    {
+                        new CallImplementation().CancelCall(volunteer.Id, currentAssignment.Id);
+                        updatedVolunteerIds.Add(volunteer.Id);
+                        updatedCallIds.Add(call.RadioCallId);
+                    }
+                    catch { continue; }
+                }
+            }
+        }
+
+        foreach (var id in updatedVolunteerIds.Distinct())
+            VolunteerManager.Observers.NotifyItemUpdated(id);
+
+        foreach (var id in updatedCallIds.Distinct())
+            CallManager.Observers.NotifyItemUpdated(id);
+    }
+
+
 }

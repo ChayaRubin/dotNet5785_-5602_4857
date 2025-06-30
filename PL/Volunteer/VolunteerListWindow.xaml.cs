@@ -20,6 +20,8 @@ namespace PL.Volunteer
         private IEnumerable<VolunteerInList> volunteersListView = new List<VolunteerInList>();
         public bool HasActiveCall { get; set; }
 
+        private volatile bool _observerWorking = false;
+
         /// <summary>
         /// get and set functions
         /// </summary>
@@ -93,12 +95,23 @@ namespace PL.Volunteer
         /// </summary>
         private void OnVolunteerListChanged()
         {
-            // Use Dispatcher to ensure UI updates happen on the UI thread
-            Dispatcher.Invoke(() =>
+            if (!_observerWorking)
             {
-                LoadVolunteers();
-            });
+                _observerWorking = true;
+                _ = Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        LoadVolunteers();
+                    }
+                    finally
+                    {
+                        _observerWorking = false;
+                    }
+                });
+            }
         }
+
 
         /// <summary>
         /// func that loads the volunteers info.

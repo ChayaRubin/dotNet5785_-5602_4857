@@ -6,9 +6,9 @@
     <Phone>052973850</Phone>
     <Email>chaim.adler@email.com</Email>
     <Password>d0ed4ab70a2c53e40346cfd6ac942bf09e7a9b28c174595ad0030fc733eda088</Password>
-    <Address>Agrippas Street 22, Jerusalem</Address>
-    <Latitude>31.69916</Latitude>
-    <Longitude>35.196286</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>38.71739820340145</MaxResponseDistance>
@@ -20,9 +20,9 @@
     <Phone>053405750</Phone>
     <Email>tova.levi@email.com</Email>
     <Password>c8134082039561bbe343f2b35b40bf4ad2f1139327393b83674c4c2ba96ac6d0</Password>
-    <Address>Strauss Street 12, Jerusalem</Address>
-    <Latitude>31.906037</Latitude>
-    <Longitude>35.203005</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>15.851875064045318</MaxResponseDistance>
@@ -34,9 +34,9 @@
     <Phone>051906960</Phone>
     <Email>chava.shapiro@email.com</Email>
     <Password>28fa57879a86f96acd7d955e8a9d416e449392ad83b5c322254e4232ee78afbe</Password>
-    <Address>25 Shlomzion Hamalka Street, Jerusalem:</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>22.05345948702923</MaxResponseDistance>
@@ -48,12 +48,12 @@
     <Phone>0589874569</Phone>
     <Email>dfgh@dfghjk.com</Email>
     <Password>0369ba5e866b78bf0c80611cb4227d6f552c2ee6acb1d339900a2ef5353c41b3</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
-    <MaxResponseDistance xsi:nil="true" />
+	  <MaxResponseDistance>1000</MaxResponseDistance>
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
@@ -62,9 +62,9 @@
     <Phone>0548428809</Phone>
     <Email>shanirubin2@gmail.com</Email>
     <Password>104c7c5a62f8fcd0500d222756cacbf94e7da92cc117c0ef756de08aa33192ac</Password>
-    <Address>Neve Yaakov St 17, Jerusalem</Address>
-    <Latitude>31.842212</Latitude>
-    <Longitude>35.24206</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Manager</Position>
     <Active>true</Active>
     <MaxResponseDistance>1000</MaxResponseDistance>
@@ -75,10 +75,9 @@
     <Name>malka hhh</Name>
     <Phone>0549580014</Phone>
     <Email>m0549580014@gmail.com</Email>
-    <Password>24f4ddebc0722250803ef4a6b9b3b9d5ced130b6482cda4a2643b38d22b3f6cb</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
     <MaxResponseDistance>60</MaxResponseDistance>
@@ -90,12 +89,12 @@
     <Phone>0548428809</Phone>
     <Email>shanirubin26@gmail.com</Email>
     <Password>8b69b3186291b9955fb5d53a498c5e8c50b966142d72e6de9fc027c1c30dba8d</Password>
-    <Address>Etsel 13, Jerusalim</Address>
-    <Latitude>31.7511651</Latitude>
-    <Longitude>34.9819467</Longitude>
+	  <Address>Etsel 13, jerusalim</Address>
+	  <Latitude>31.7511651</Latitude>
+	  <Longitude>34.9819467</Longitude>
     <Position>Volunteer</Position>
     <Active>true</Active>
-    <MaxResponseDistance>60</MaxResponseDistance>
+    <MaxResponseDistance>30</MaxResponseDistance>
     <TypeOfDistance>WalkingDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

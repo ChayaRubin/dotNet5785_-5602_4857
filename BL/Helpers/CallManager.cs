@@ -10,7 +10,6 @@ using System.Net.Mail;
 using BlImplementation;
 using System.Globalization;
 
-
 namespace Helpers;
 
 internal static class CallManager
@@ -32,32 +31,48 @@ internal static class CallManager
 
     public static CallInList ConvertToBO(DO.Call call)
     {
-        var allAssignments = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId);
+        List<DO.Assignment> allAssignments;
+        Dictionary<int, string> volunteerNames;
+
+        lock (AdminManager.BlMutex)
+        {
+            allAssignments = s_dal.Assignment
+                .ReadAll(a => a.CallId == call.RadioCallId)
+                .ToList();
+
+            // שליפת שמות כל המתנדבים בבת אחת
+            var volunteerIds = allAssignments.Select(a => a.VolunteerId).Distinct().ToList();
+            volunteerNames = volunteerIds.ToDictionary(
+                id => id,
+                id =>
+                {
+                    try
+                    {
+                        var vol = s_dal.Volunteer.Read(v => v.Id == id);
+                        return vol?.Name ?? "[Unknown]";
+
+                    }
+                    catch
+                    {
+                        return "[Unknown]";
+                    }
+                });
+        }
 
         var assignmentData = allAssignments.Select(a =>
-        {
-            string? name = null;
-            try
-            {
-                name = s_dal.Volunteer.Read(v => v.Id == a.VolunteerId).Name;
-            }
-            catch
-            {
-                name = "[Unknown]";
-            }
-
-            return new CallAssignInList
+            new CallAssignInList
             {
                 Id = a.Id,
                 VolunteerId = a.VolunteerId,
-                VolunteerName = name,
+                VolunteerName = volunteerNames.ContainsKey(a.VolunteerId)
+                    ? volunteerNames[a.VolunteerId]
+                    : "[Unknown]",
                 AssignTime = a.EntryTime,
                 CompletionTime = a.FinishCompletionTime,
                 EndType = a.CallResolutionStatus.HasValue
                     ? Enum.TryParse<CallStatus>(a.CallResolutionStatus.ToString(), out var status) ? status : null
                     : null
-            };
-        }).ToList();
+            }).ToList();
 
         return new CallInList
         {
@@ -73,6 +88,7 @@ internal static class CallManager
             Assignments = assignmentData
         };
     }
+
 
     public static bool FilterCall(DO.Call call, CallField filterByField, object? filterValue)
     {
@@ -176,21 +192,30 @@ internal static class CallManager
     {
         try
         {
-            var volunteer = s_dal.Volunteer.Read(v => v.Id == volunteerId);
-            if (volunteer == null)
-                throw new BO.BlNullPropertyException($"Volunteer with ID {volunteerId} not found.");
+            DO.Volunteer volunteer;
+            List<DO.Assignment> assignments;
+            List<DO.Call> allCalls;
 
-            var now = DateTime.Now;
+            // נעילה רק סביב קריאות DAL
+            lock (AdminManager.BlMutex)
+            {
+                volunteer = s_dal.Volunteer.Read(v => v.Id == volunteerId)
+                    ?? throw new BO.BlNullPropertyException($"Volunteer with ID {volunteerId} not found.");
 
-            var assignments = s_dal.Assignment.ReadAll()
-                .Where(a => a.VolunteerId == volunteerId)
-                .ToList();
+                assignments = s_dal.Assignment.ReadAll()
+                    .Where(a => a.VolunteerId == volunteerId)
+                    .ToList();
 
-            if (assignments.Count == 0)
+                allCalls = s_dal.Call.ReadAll().ToList();
+            }
+
+            if (!assignments.Any())
                 throw new BO.BlDoesNotExistException("No assignments found for the volunteer.");
 
+            var now = AdminManager.Now;
+
             var calls = from assign in assignments
-                        join call in s_dal.Call.ReadAll() on assign.CallId equals call.RadioCallId
+                        join call in allCalls on assign.CallId equals call.RadioCallId
                         where isOpen
                             ? assign.CallResolutionStatus == null && call.ExpiredTime > now
                             : assign.CallResolutionStatus != null || call.ExpiredTime <= now
@@ -219,9 +244,7 @@ internal static class CallManager
                     Address = x.call.Address,
                     OpenTime = x.call.StartTime,
                     StartTreatmentTime = x.assign.EntryTime,
-                    EndTreatmentTime = x.assign.FinishCompletionTime.HasValue
-                        ? x.assign.FinishCompletionTime.Value
-                        : (DateTime?)null,
+                    EndTreatmentTime = x.assign.FinishCompletionTime,
                     CompletionType = x.assign.CallResolutionStatus switch
                     {
                         DO.CallResolutionStatus.Treated => CallStatus.Treated,
@@ -229,7 +252,6 @@ internal static class CallManager
                         DO.CallResolutionStatus.Expired => CallStatus.Expired,
                         _ => null
                     }
-
                 } as T);
 
             if (sortByField != null)
@@ -256,7 +278,6 @@ internal static class CallManager
             throw new BO.BlGeneralDatabaseException($"An unexpected error occurred while fetching calls. Details: {ex.Message}");
         }
     }
-
 
 
     /// <summary>
@@ -299,7 +320,6 @@ internal static class CallManager
                 throw new BlGeneralDatabaseException($"An unexpected error occurred: {ex.Message}");
         }
     }
-
     public static bool IsWithinMaxDistance(BO.Volunteer volunteer, BO.Call call)
     {
         const double R = 6371; 
@@ -388,35 +408,198 @@ internal static class CallManager
 
     public static CallStatus GetCallStatus(DO.Call callData, List<BO.CallAssignInList> assignmentData)
     {
-        if (callData.ExpiredTime < s_dal.Config.Clock)
-            return CallStatus.Expired;
-
-        if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
-            return CallStatus.Treated;
-
-        if (assignmentData.Any(a => a.EndType == null) &&
-            (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-            callData.ExpiredTime > s_dal.Config.Clock))
+        lock (AdminManager.BlMutex)
         {
-            return CallStatus.InProgressAtRisk;
-        }
+            if (callData.ExpiredTime < s_dal.Config.Clock)
+                return CallStatus.Expired;
 
-        if (assignmentData.Any(a => a.EndType == null))
-        {
-            return CallStatus.InProgress;
-        }
-        if ((callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-            callData.ExpiredTime > s_dal.Config.Clock))
-        {
-            return CallStatus.OpenAtRisk;
-        }
-        else
-        {
-            return CallStatus.Open;
-        }
+            if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
+                return CallStatus.Treated;
 
+            if (assignmentData.Any(a => a.EndType == null) &&
+                (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+                callData.ExpiredTime > s_dal.Config.Clock))
+            {
+                return CallStatus.InProgressAtRisk;
+            }
+
+            if (assignmentData.Any(a => a.EndType == null))
+            {
+                return CallStatus.InProgress;
+            }
+            if ((callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+                callData.ExpiredTime > s_dal.Config.Clock))
+            {
+                return CallStatus.OpenAtRisk;
+            }
+            else
+            {
+                return CallStatus.Open;
+            }
+        }
     }
 
+    /*public static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
+    {
+        try
+        {
+            List<int> updatedCallIds = new();
+
+            List<DO.Call> callsToUpdate;
+            lock (AdminManager.BlMutex)
+            {
+                // שליפת קריאות לרשימה קונקרטית
+                callsToUpdate = s_dal.Call.ReadAll(c => c.ExpiredTime > AdminManager.Now).ToList();
+            }
+
+            foreach (var call in callsToUpdate)
+            {
+                List<DO.Assignment> allAssignmentsCall;
+                lock (AdminManager.BlMutex)
+                {
+                    allAssignmentsCall = s_dal.Assignment
+                        .ReadAll(a => a.CallId == call.RadioCallId && a.FinishCompletionTime == null)
+                        .ToList();
+                }
+
+                if (!allAssignmentsCall.Any())
+                {
+                    var newAssignment = new DO.Assignment(
+                        0, call.RadioCallId, 0, AdminManager.Now, null, DO.CallResolutionStatus.Expired);
+
+                    lock (AdminManager.BlMutex)
+                    {
+                        s_dal.Assignment.Create(newAssignment);
+                    }
+                }
+                else
+                {
+                    var assignmentToUpdate = allAssignmentsCall.First();
+                    lock (AdminManager.BlMutex)
+                    {
+                        s_dal.Assignment.Update(assignmentToUpdate with
+                        {
+                            FinishCompletionTime = AdminManager.Now,
+                            CallResolutionStatus = DO.CallResolutionStatus.Expired
+                        });
+                    }
+                }
+
+                updatedCallIds.Add(call.RadioCallId);
+            }
+
+            // מחוץ ל-lock – לשלוח Notify
+            foreach (int callId in updatedCallIds.Distinct())
+            {
+                CallManager.Observers.NotifyItemUpdated(callId);
+            }
+        }
+        catch (BO.BlInvalidInputException e)
+        {
+            Console.WriteLine($"Error updating periodic calls: {e.Message}"); // Logging error
+        }
+    }
+*/
+
+    /*internal static void PeriodicCallUpdates(DateTime oldClock, DateTime newClock)
+    {
+        bool callUpdated = false; //stage 5
+        List<DO.Call> expiredCalls;
+        lock (AdminManager.BlMutex)
+            expiredCalls = s_dal.Call.ReadAll(c => c.ExpiredTime < newClock).ToList();
+        if (expiredCalls.Count > 0)
+            callUpdated = true;
+        expiredCalls.ForEach(call =>
+        {
+            List<DO.Assignment> assignments;
+            lock (AdminManager.BlMutex)
+                assignments = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId).ToList();
+
+            if (!assignments.Any())
+            {
+                lock (AdminManager.BlMutex)
+                    s_dal.Assignment.Create(new DO.Assignment(
+                        id: 0,
+                        callId: call.RadioCallId,
+                        volunteerId: 0,
+                        entryTime: AdminManager.Now,
+                        finishCompletionTime: AdminManager.Now,
+                        callResolutionStatus: DO.CallResolutionStatus.Expired
+                    ));
+            }
+
+            List<DO.Assignment> assignmentsWithNull;
+            lock (AdminManager.BlMutex)
+                assignmentsWithNull = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId && a.CallResolutionStatus is null).ToList();
+            if (assignmentsWithNull.Any())
+            {
+                assignments.ForEach(assignment =>
+                {
+                    lock (AdminManager.BlMutex)
+                        s_dal.Assignment.Update(assignment with
+                        {
+                            FinishCompletionTime = AdminManager.Now,
+                            CallResolutionStatus = (DO.CallResolutionStatus)BO.CallStatus.Expired
+                        });
+                    Observers.NotifyItemUpdated(assignment.Id);
+                }
+                    );
+            }
+        });
+        bool yearChanged = oldClock.Year != newClock.Year; //stage 5
+        if (yearChanged || callUpdated) //stage 5
+            Observers.NotifyListUpdated(); //stage 5
+
+    }*/
+
+    internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
+    {
+        //Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}"; //stage 7 (optional)
+        List<DO.Call> expiredCalls;
+        List<DO.Assignment> assignments;
+        List<DO.Assignment> assignmentsWithNull;
+        lock (AdminManager.BlMutex) //stage 7
+            expiredCalls = s_dal.Call.ReadAll(c => c.ExpiredTime < newClock).ToList();
+        expiredCalls.ForEach(call =>
+        {
+            lock (AdminManager.BlMutex)
+            {//stage 7
+                assignments = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId).ToList();
+                if (!assignments.Any())
+                {
+                    s_dal.Assignment.Create(new DO.Assignment(
+                        id: 0,
+                        callId: call.RadioCallId,
+                        volunteerId: 0,
+                        entryTime: AdminManager.Now,
+                        finishCompletionTime: AdminManager.Now,
+                        callResolutionStatus: DO.CallResolutionStatus.SelfCanceled
+                    ));
+                }
+            }
+            Observers.NotifyItemUpdated(call.RadioCallId);
+
+
+            lock (AdminManager.BlMutex) //stage 7
+                assignmentsWithNull = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId && a.CallResolutionStatus is null).ToList();
+            if (assignmentsWithNull.Any())
+            {
+                lock (AdminManager.BlMutex) //stage 7
+                    foreach (var assignment in assignmentsWithNull)
+                    {
+                        s_dal.Assignment.Update(assignment with
+                        {
+                            FinishCompletionTime = AdminManager.Now,
+                            CallResolutionStatus = (DO.CallResolutionStatus)BO.CallStatus.SelfCanceled
+                        });
+                    }
+
+                Observers.NotifyItemUpdated(call.RadioCallId);
+            }
+
+        });
+
+    }
 }
 
 

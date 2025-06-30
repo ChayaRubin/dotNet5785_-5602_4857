@@ -24,19 +24,22 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(v => v.Id == id);
+            lock (AdminManager.BlMutex)
+            {
+                var volunteer = _dal.Volunteer.Read(v => v.Id == id);
 
-            if (volunteer == null)
-                throw new DalUnauthorizedAccessException("Invalid username or password");
+                if (volunteer == null)
+                    throw new DalUnauthorizedAccessException("Invalid username or password");
 
-            Console.WriteLine($"Input username: '{id}'");
-            Console.WriteLine($"Input password: '{password}'");
-            Console.WriteLine($"Stored password: '{volunteer.Password}'");
+                Console.WriteLine($"Input username: '{id}'");
+                Console.WriteLine($"Input password: '{password}'");
+                Console.WriteLine($"Stored password: '{volunteer.Password}'");
 
-            if (!VolunteerManager.VerifyPassword(password, volunteer.Password))
-                throw new DalUnauthorizedAccessException("Invalid username or password");
+                if (!VolunteerManager.VerifyPassword(password, volunteer.Password))
+                    throw new DalUnauthorizedAccessException("Invalid username or password");
 
-            return volunteer.Position.ToString();
+                return volunteer.Position.ToString();
+            }
         }
         catch (DalUnauthorizedAccessException ex)
         {
@@ -57,16 +60,18 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll(v =>
-                !isActive.HasValue || v.Active == isActive.Value);
+            IEnumerable<DO.Volunteer> volunteers;
+            lock (AdminManager.BlMutex)
+                volunteers = _dal.Volunteer.ReadAll(v => !isActive.HasValue || v.Active == isActive.Value);
 
             var boVolunteers = volunteers.Select(VolunteerManager.ConvertToBO);
-
             var volunteerList = VolunteerManager.GetVolunteerList(boVolunteers);
 
             foreach (var volunteer in volunteerList)
             {
-                var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
+                IEnumerable<DO.Assignment> assignments;
+                lock (AdminManager.BlMutex)
+                    assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.Id);
 
                 volunteer.TotalHandledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Treated);
                 volunteer.TotalCanceledCalls = assignments.Count(a => a.CallResolutionStatus == CallResolutionStatus.Canceled
@@ -78,8 +83,11 @@ internal class VolunteerImplementation : IVolunteer
                 {
                     volunteer.CurrentCallId = currentAssignment.CallId;
 
-                    var call = _dal.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
-                    if (call != null && call.ExpiredTime > DateTime.Now) 
+                    DO.Call? call;
+                    lock (AdminManager.BlMutex)
+                        call = _dal.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
+
+                    if (call != null && call.ExpiredTime > DateTime.Now)
                     {
                         volunteer.CurrentCallId = call.RadioCallId;
                         volunteer.CurrentCallType = (BO.CallTypeEnum)(int)call.CallType;
@@ -101,11 +109,16 @@ internal class VolunteerImplementation : IVolunteer
                 volunteerList = volunteerList
                     .Where(v =>
                     {
-                        var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == v.Id);
+                        IEnumerable<DO.Assignment> assignments;
+                        lock (AdminManager.BlMutex)
+                            assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == v.Id);
 
                         foreach (var assignment in assignments)
                         {
-                            var call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId);
+                            DO.Call? call;
+                            lock (AdminManager.BlMutex)
+                                call = _dal.Call.Read(c => c.RadioCallId == assignment.CallId);
+
                             if (call != null && (BO.CallTypeEnum)(int)call.CallType == callTypeFilter.Value)
                                 return true;
                         }
@@ -148,19 +161,25 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(predicate)
-                             ?? throw new BlDoesNotExistException("Volunteer not found");
+            DO.Volunteer volunteer;
+            lock (AdminManager.BlMutex)
+                volunteer = _dal.Volunteer.Read(predicate)
+                    ?? throw new BlDoesNotExistException("Volunteer not found");
 
             var boVolunteer = VolunteerManager.ConvertToBO(volunteer);
 
-            var ongoingAssignment = _dal.Assignment.Read(a =>
-                a.VolunteerId == volunteer.Id &&
-                a.CallResolutionStatus.HasValue &&  
-                (BO.CallStatus)a.CallResolutionStatus.Value == BO.CallStatus.Open);
+            DO.Assignment? ongoingAssignment;
+            lock (AdminManager.BlMutex)
+                ongoingAssignment = _dal.Assignment.Read(a =>
+                    a.VolunteerId == volunteer.Id &&
+                    a.CallResolutionStatus.HasValue &&
+                    (BO.CallStatus)a.CallResolutionStatus.Value == BO.CallStatus.Open);
 
             if (ongoingAssignment != null)
             {
-                var relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
+                DO.Call relatedCall;
+                lock (AdminManager.BlMutex)
+                    relatedCall = _dal.Call.Read(c => c.RadioCallId == ongoingAssignment.CallId);
 
                 double distance = Tools.CalculateDistance(volunteer.Latitude, volunteer.Longitude, relatedCall.Latitude, relatedCall.Longitude);
                 if (boVolunteer.Latitude.HasValue && boVolunteer.Longitude.HasValue)
@@ -181,8 +200,8 @@ internal class VolunteerImplementation : IVolunteer
                     CallId = ongoingAssignment.CallId,
                     OpeningTime = ongoingAssignment.EntryTime,
                     MaxCompletionTime = ongoingAssignment.FinishCompletionTime,
-                    AssignmentStartTime = ongoingAssignment.EntryTime, 
-                    Status = (BO.CallStatus?)ongoingAssignment.CallResolutionStatus, 
+                    AssignmentStartTime = ongoingAssignment.EntryTime,
+                    Status = (BO.CallStatus?)ongoingAssignment.CallResolutionStatus,
                     DistanceFromVolunteer = distance,
                 };
             }
@@ -220,12 +239,15 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            DO.Volunteer? existingVolunteer;
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
 
             if (!int.TryParse(idNumber, out int id))
                 throw new DalFormatException("Invalid ID format");
 
-            existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
+            DO.Volunteer? existingVolunteer;
+            lock (AdminManager.BlMutex) // stage 7
+                existingVolunteer = _dal.Volunteer.Read(v => v.Id == id);
+
             if (existingVolunteer == null)
                 throw new BlDoesNotExistException($"The volunteer with ID={idNumber} was not found.");
 
@@ -235,7 +257,7 @@ internal class VolunteerImplementation : IVolunteer
             bool isPasswordUpdateRequested = !string.IsNullOrWhiteSpace(volunteerBO.Password);
             if (!isPasswordUpdateRequested)
             {
-                volunteerBO.Password = existingVolunteer.Password; // שימור ההאש הקיים
+                volunteerBO.Password = existingVolunteer.Password;
             }
 
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(volunteerBO.CurrentAddress!);
@@ -243,7 +265,6 @@ internal class VolunteerImplementation : IVolunteer
             volunteerBO.Longitude = longitude;
 
             VolunteerManager.ValidateInputFormat(volunteerBO);
-
             VolunteerManager.ValidateLogicalFields(volunteerBO);
 
             if (isPasswordUpdateRequested && volunteerBO.Password != existingVolunteer.Password)
@@ -251,18 +272,23 @@ internal class VolunteerImplementation : IVolunteer
                 if (idNumber != volunteerBO.Id.ToString() && volunteerBO.Role != BO.PositionEnum.Manager)
                     throw new BlUnauthorizedAccessException("Only the volunteer or a manager can update the password.");
 
-                volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password);
+                volunteerBO.Password = VolunteerManager.HashPassword(volunteerBO.Password); // הנחה: זו לא נוגעת ל-DAL
             }
 
             if (!VolunteerManager.CanUpdateFields(idNumber, existingVolunteer, volunteerBO))
                 throw new BlFormatException("You do not have permission to update certain fields.");
 
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteerBO);
-            _dal.Volunteer.Update(volunteerDO);
+
+            lock (AdminManager.BlMutex) // stage 7
+            {
+                _dal.Volunteer.Update(volunteerDO);
+            }
 
             VolunteerManager.Observers.NotifyItemUpdated(volunteerDO.Id);
             VolunteerManager.Observers.NotifyListUpdated();
         }
+
         catch (DO.DalFormatException ex)
         {
             throw new BlFormatException($"Invalid data for volunteer update: {ex.Message}");
@@ -298,18 +324,25 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var volunteer = _dal.Volunteer.Read(v => v.Id == id)
-                ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
 
-            // האם יש לו הקצאה כלשהי?
-            var anyAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id).Any();
+            DO.Volunteer volunteer;
+            lock (AdminManager.BlMutex) // stage 7
+                volunteer = _dal.Volunteer.Read(v => v.Id == id)
+                    ?? throw new DO.DalDoesNotExistException($"Volunteer with ID={id} does not exist.");
+
+            bool anyAssignment;
+            lock (AdminManager.BlMutex) // stage 7
+                anyAssignment = _dal.Assignment.ReadAll(a => a.VolunteerId == id).Any();
 
             if (anyAssignment)
             {
                 throw new BO.BlUnauthorizedAccessException("The volunteer cannot be deleted because they are or were assigned to a call.");
             }
 
-            _dal.Volunteer.Delete(id);
+            lock (AdminManager.BlMutex) // stage 7
+                _dal.Volunteer.Delete(id);
+
             VolunteerManager.Observers.NotifyListUpdated(); // stage 5
         }
         catch (DO.DalDoesNotExistException)
@@ -339,27 +372,33 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var existingVolunteer = _dal.Volunteer.Read(v => v.Id == volunteer.Id);
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+
+            DO.Volunteer? existingVolunteer;
+            lock (AdminManager.BlMutex) // stage 7
+                existingVolunteer = _dal.Volunteer.Read(v => v.Id == volunteer.Id);
+
             if (existingVolunteer != null)
             {
                 throw new DalArgumentException("Please put in a different ID number.");
             }
 
-            var coordinates =  VolunteerManager.ValidateInputFormat(volunteer);
+            var coordinates = VolunteerManager.ValidateInputFormat(volunteer);
 
             volunteer.Latitude = coordinates.latitude;
             volunteer.Longitude = coordinates.longitude;
 
             VolunteerManager.ValidateLogicalFields(volunteer);
 
-            String HashedPassword = VolunteerManager.HashPassword(volunteer.Password);
+            string HashedPassword = VolunteerManager.HashPassword(volunteer.Password);
             volunteer.Password = HashedPassword;
 
             DO.Volunteer volunteerDO = VolunteerManager.ConvertToDO(volunteer);
 
-            _dal.Volunteer.Create(volunteerDO);
-            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
+            lock (AdminManager.BlMutex) // stage 7
+                _dal.Volunteer.Create(volunteerDO);
 
+            VolunteerManager.Observers.NotifyListUpdated();  //stage 5
         }
         catch (DO.DalAlreadyExistsException ex)
         {

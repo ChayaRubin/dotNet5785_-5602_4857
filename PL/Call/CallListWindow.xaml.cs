@@ -14,6 +14,8 @@ namespace PL.Call
         private readonly IBl s_bl = Factory.Get();
 
         public event PropertyChangedEventHandler? PropertyChanged;
+        
+        private volatile bool _observerWorking = false;
 
         private IEnumerable<CallInList> callsListView = new List<CallInList>();
         public IEnumerable<CallInList> CallsListView
@@ -141,7 +143,17 @@ namespace PL.Call
             addWindow.Show();
         }
 
-        private void OnCallListChanged() => Dispatcher.Invoke(LoadCalls);
+        private void OnCallListChanged()
+        {
+            if (_observerWorking) return; 
+            _observerWorking = true;
+
+            _ = Dispatcher.BeginInvoke(() =>
+            {
+                LoadCalls();           
+                _observerWorking = false; 
+            });
+        }
 
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

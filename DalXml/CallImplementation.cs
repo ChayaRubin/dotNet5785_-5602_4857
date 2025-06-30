@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 /// <summary>
@@ -15,6 +16,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Adds a new Call to the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Call item)
     {
         item.RadioCallId = Config.NextCallId;
@@ -26,6 +28,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Deletes a Call by ID from the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -37,6 +40,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Deletes all Calls from the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XMLTools.SaveListToXMLSerializer(new List<Call>(), Config.s_calls_xml);
@@ -45,6 +49,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Reads the first Call matching a filter.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Call? Read(Func<Call, bool> filter)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -54,11 +59,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Reads all Calls, optionally filtered by a predicate.
     /// </summary>
-    /* public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
-     {
-         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
-         return filter == null ? calls : calls.Where(filter);
-     }*/
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -68,6 +69,7 @@ internal class CallImplementation :ICall
     /// <summary>
     /// Updates an existing Call in the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Call item)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);

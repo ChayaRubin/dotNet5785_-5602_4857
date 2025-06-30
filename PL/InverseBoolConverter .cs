@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace PL.Call
+namespace PL
 {
     public class InverseBoolConverter : IValueConverter
     {

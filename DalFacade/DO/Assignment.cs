@@ -30,9 +30,6 @@ public record Assignment
         CallResolutionStatus = null;  
     }
     public Assignment(int id, int callId, int volunteerId, DateTime entryTime, DateTime? finishCompletionTime, CallResolutionStatus 
-        
-        
-        
         callResolutionStatus)
     {
         Id = id;

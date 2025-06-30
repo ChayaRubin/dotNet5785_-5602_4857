@@ -49,6 +49,9 @@ namespace PL.Call
             CurrentCall.Status is CallStatus.Closed or CallStatus.Expired;
 
         public bool HasAssignments => CurrentCall.Assignments != null && CurrentCall.Assignments.Count > 0;
+
+        private volatile bool _observerWorking = false;
+
         public string TreatmentDuration
         {
             get
@@ -90,7 +93,7 @@ namespace PL.Call
             CurrentCall = bl.Call.GetCallDetails(selectedCall.Id);
             DataContext = this;
 
-            bl.Call.AddObserver(selectedCall.Id, OnCallUpdated); // נכון!
+            bl.Call.AddObserver(selectedCall.Id, OnCallUpdated); 
         }
 
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
@@ -124,11 +127,14 @@ namespace PL.Call
 
         private void OnCallUpdated()
         {
+            if (_observerWorking) return;
+            _observerWorking = true;
+
             try
             {
                 var updatedCall = bl.Call.GetCallDetails(CurrentCall.Id);
 
-                Dispatcher.Invoke(() =>
+                _ = Dispatcher.BeginInvoke(() =>
                 {
                     CurrentCall = updatedCall;
                     OnPropertyChanged(nameof(CurrentCall));
@@ -140,16 +146,19 @@ namespace PL.Call
                     OnPropertyChanged(nameof(CanEditMaxEndTime));
                     OnPropertyChanged(nameof(IsReadOnly));
                     OnPropertyChanged(nameof(HasAssignments));
-                    OnPropertyChanged(nameof(TreatmentDuration)); // ← תוסיפי את זה
+                    OnPropertyChanged(nameof(TreatmentDuration));
+                    _observerWorking = false;
                 });
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() =>
+                _ = Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show("שגיאה בעדכון פרטי הקריאה: " + ex.Message);
+                    _observerWorking = false;
                 });
             }
         }
+
     }
- }
+}
