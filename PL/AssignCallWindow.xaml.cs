@@ -116,7 +116,7 @@ namespace PL
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load calls: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Loading Error", "Failed to load calls: " + ex.Message);
             }
         }
 
@@ -147,14 +147,14 @@ namespace PL
         {
             if (parameter is not OpenCallInList call)
             {
-                MessageBox.Show("Invalid selection. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ErrorHandler.ShowWarning("Invalid Selection", "Invalid selection. Please try again.");
                 return;
             }
 
             try
             {
                 _bl.Call.AssignCall(volunteerId, call.Id);
-                MessageBox.Show($"Call {call.Id} assigned successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ErrorHandler.ShowInfo("Success", $"Call {call.Id} assigned successfully.");
                 DialogResult = true;
                 AssignedCallDistance = call.DistanceFromVolunteer;
                 DialogResult = true;
@@ -162,7 +162,7 @@ namespace PL
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to assign call: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Assignment Error", "Failed to assign call: " + ex.Message);
             }
         }
 
@@ -170,7 +170,7 @@ namespace PL
         {
             if (string.IsNullOrWhiteSpace(VolunteerAddress))
             {
-                MessageBox.Show("Address cannot be empty.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ErrorHandler.ShowWarning("Validation Error", "Address cannot be empty.");
                 return;
             }
 
@@ -183,11 +183,11 @@ namespace PL
 
                 FilterAndSortCalls();
 
-                MessageBox.Show("Address updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ErrorHandler.ShowInfo("Success", "Address updated successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to update address: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Update Error", "Failed to update address: " + ex.Message);
             }
         }
 

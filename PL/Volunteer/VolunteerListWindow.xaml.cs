@@ -126,7 +126,7 @@ namespace PL.Volunteer
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading volunteers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Load Error", $"Error loading volunteers: {ex.Message}");
             }
         }
 
@@ -206,13 +206,12 @@ namespace PL.Volunteer
         {
             if (e.Source is FrameworkElement element && element.DataContext is VolunteerInList volunteer)
             {
-                var result = MessageBox.Show(
-                    $"Are you sure you want to delete volunteer {volunteer.FullName} (ID {volunteer.Id})?",
+                bool confirmed = ErrorHandler.ShowYesNo(
                     "Confirm Deletion",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    $"Are you sure you want to delete volunteer {volunteer.FullName} (ID {volunteer.Id})?"
+                );
 
-                if (result == MessageBoxResult.Yes)
+                if (confirmed)
                 {
                     try
                     {

@@ -76,7 +76,7 @@ namespace PL
             if (!int.TryParse(Id, out int userId))
             {
                 ErrorMessage = "ID must contain digits only.";
-                MessageBox.Show(ErrorMessage, "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ErrorHandler.ShowWarning("Invalid ID", ErrorMessage);
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace PL
             catch
             {
                 ErrorMessage = "ID or password is incorrect. Please try again.";
-                MessageBox.Show(ErrorMessage, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ErrorHandler.ShowWarning("Login Failed", ErrorMessage);
                 return;
             }
 
@@ -105,19 +105,16 @@ namespace PL
                     if (_isManagerLoggedIn)
                     {
                         ErrorMessage = "A manager is already logged in. Please try again later.";
-                        MessageBox.Show(ErrorMessage, "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        ErrorHandler.ShowWarning("Login Error", ErrorMessage);
                         return;
                     }
 
                     _isManagerLoggedIn = true;
 
-                    var result = MessageBox.Show(
-                        "Do you want to open the Manager Dashboard?",
-                        "Choose Screen",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
+                    bool openManager = ErrorHandler.ShowYesNo("Choose Screen", "Do you want to open the Manager Dashboard?");
 
-                    if (result == MessageBoxResult.Yes)
+
+                    if (openManager)
                     {
                         var managerWindow = new MainWindow();
                         managerWindow.Closed += (s, e) => _isManagerLoggedIn = false;
@@ -136,13 +133,13 @@ namespace PL
                 else
                 {
                     ErrorMessage = "Unknown user role.";
-                    MessageBox.Show(ErrorMessage, "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ErrorHandler.ShowWarning("Login Error", ErrorMessage);
                 }
             }
             catch
             {
                 ErrorMessage = "An error occurred while loading user data. Please try again later.";
-                MessageBox.Show(ErrorMessage, "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("System Error", ErrorMessage);
             }
         }
 
