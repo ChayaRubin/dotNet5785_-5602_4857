@@ -48,6 +48,7 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Create(newAssignment);
+            CallManager.Observers.NotifyListUpdated();  // כמו בשאר המקומות
         }
         catch (Exception ex)
         {
@@ -356,6 +357,7 @@ internal class CallImplementation : ICall
             _dal.Assignment.Update(assignment);
             AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);  //stage 5
             AssignmentManager.Observers.NotifyListUpdated();  //stage 5
+            CallManager.Observers.NotifyListUpdated(); 
 
 
             if (isAdmin)
@@ -418,6 +420,8 @@ internal class CallImplementation : ICall
             _dal.Assignment.Update(assignment);
             AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);
             AssignmentManager.Observers.NotifyListUpdated();
+            CallManager.Observers.NotifyListUpdated(); // ← חשוב!
+
         }
         catch (DalDoesNotExistException ex)
         {
@@ -553,6 +557,10 @@ internal class CallImplementation : ICall
         return assignment?.Id;
     }
 
+    public double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2)
+    {
+        return CallManager.CalculateDistance(lat1, lon1, lat2, lon2);
+    }
     public IEnumerable<BO.OpenCallInList> GetAvailableOpenCalls(int volunteerId)
     {
         var volunteerDO = _dal.Volunteer.Read(v => v.Id == volunteerId)

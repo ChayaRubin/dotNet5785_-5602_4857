@@ -43,20 +43,6 @@
     <TypeOfDistance>AirDistance</TypeOfDistance>
   </Volunteer>
   <Volunteer>
-    <Id>218431161</Id>
-    <Name>Zevi Rubin</Name>
-    <Phone>0548428809</Phone>
-    <Email>shanirubin26@gmail.com</Email>
-    <Password>8b69b3186291b9955fb5d53a498c5e8c50b966142d72e6de9fc027c1c30dba8d</Password>
-    <Address>etsel 13</Address>
-    <Latitude>32.05314</Latitude>
-    <Longitude>34.791486</Longitude>
-    <Position>Volunteer</Position>
-    <Active>true</Active>
-    <MaxResponseDistance>60</MaxResponseDistance>
-    <TypeOfDistance>WalkingDistance</TypeOfDistance>
-  </Volunteer>
-  <Volunteer>
     <Id>336717954</Id>
     <Name>shuly Rubin</Name>
     <Phone>0589874569</Phone>
@@ -97,5 +83,19 @@
     <Active>true</Active>
     <MaxResponseDistance>60</MaxResponseDistance>
     <TypeOfDistance>DrivingDistance</TypeOfDistance>
+  </Volunteer>
+  <Volunteer>
+    <Id>218431161</Id>
+    <Name>Zevi Rubin</Name>
+    <Phone>0548428809</Phone>
+    <Email>shanirubin26@gmail.com</Email>
+    <Password>8b69b3186291b9955fb5d53a498c5e8c50b966142d72e6de9fc027c1c30dba8d</Password>
+    <Address>etsel 13333</Address>
+    <Latitude>32.7604212</Latitude>
+    <Longitude>34.9673772</Longitude>
+    <Position>Volunteer</Position>
+    <Active>true</Active>
+    <MaxResponseDistance>60</MaxResponseDistance>
+    <TypeOfDistance>WalkingDistance</TypeOfDistance>
   </Volunteer>
 </ArrayOfVolunteer>

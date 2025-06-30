@@ -224,7 +224,7 @@ namespace PL
 
         private void BtnClosedCalls_Click(object sender, RoutedEventArgs e)
         {
-            new PL.Call.CallListWindow(CallStatus.Closed).Show();
+            new PL.Call.CallListWindow(CallStatus.Treated).Show();
 
         }
 

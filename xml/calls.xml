@@ -348,7 +348,7 @@
     <Latitude>32.05314</Latitude>
     <Longitude>34.791486</Longitude>
     <StartTime>2025-06-09T11:39:32.2951442+03:00</StartTime>
-    <ExpiredTime>2025-06-09T12:39:32.2951937+03:00</ExpiredTime>
+    <ExpiredTime>2035-06-09T12:39:32.2951937+03:00</ExpiredTime>
   </Call>
   <Call>
     <RadioCallId>1053</RadioCallId>
@@ -372,7 +372,7 @@
   </Call>
   <Call>
     <RadioCallId>1011</RadioCallId>
-    <Description>Flat Tire</Description>
+    <Description>Flat Tirehgjhb</Description>
     <CallType>Urgent</CallType>
     <Address>Sanhedria St 18, Jerusalem</Address>
     <Latitude>31.802587</Latitude>
@@ -381,23 +381,13 @@
     <ExpiredTime>2035-06-25T14:45:36.0239968+03:00</ExpiredTime>
   </Call>
   <Call>
-    <RadioCallId>1002</RadioCallId>
-    <Description>tyh</Description>
-    <CallType>Urgent</CallType>
-    <Address>Druck 10, Ramat shlomo, jerusalim</Address>
-    <Latitude>32.051394</Latitude>
-    <Longitude>34.818784</Longitude>
-    <StartTime>2025-06-29T21:34:58.0191351+03:00</StartTime>
-    <ExpiredTime>2025-06-29T22:34:58.0191358+03:00</ExpiredTime>
-  </Call>
-  <Call>
     <RadioCallId>1005</RadioCallId>
-    <Description>Engine Overheatingg</Description>
+    <Description>Engine Overheating</Description>
     <CallType>Non_Urgent</CallType>
     <Address>Keren Hayesod St 30, Jerusalem</Address>
     <Latitude>31.7723879</Latitude>
     <Longitude>35.2215257</Longitude>
     <StartTime>2025-05-26T14:45:36.0239968+03:00</StartTime>
-    <ExpiredTime>2026-07-24T01:10:00</ExpiredTime>
+    <ExpiredTime>2026-07-24T01:10:04</ExpiredTime>
   </Call>
 </ArrayOfCall>

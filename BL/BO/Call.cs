@@ -22,7 +22,6 @@ namespace BO
 
         public CallStatus Status { get; set; }
 
-
         public List<CallAssignInList>? Assignments { get; set; }
 
         // Overriding ToString for debugging purposes

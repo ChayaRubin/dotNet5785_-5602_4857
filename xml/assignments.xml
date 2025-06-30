@@ -5,8 +5,8 @@
     <CallId>1011</CallId>
     <VolunteerId>327006516</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
-    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
-    <callResolutionStatus>Treated</callResolutionStatus>
+    <FinishCompletionTime></FinishCompletionTime>
+    <callResolutionStatus></callResolutionStatus>
   </Assignment>
   <Assignment>
     <Id>1065</Id>
@@ -22,23 +22,7 @@
     <VolunteerId>218796761</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime />
-    <callResolutionStatus>SelfCanceled</callResolutionStatus>
-  </Assignment>
-  <Assignment>
-    <Id>1070</Id>
-    <CallId>1012</CallId>
-    <VolunteerId>218431161</VolunteerId>
-    <EntryTime>2026-07-24T01:01:00</EntryTime>
-    <FinishCompletionTime />
-    <callResolutionStatus>SelfCanceled</callResolutionStatus>
-  </Assignment>
-  <Assignment>
-    <Id>1071</Id>
-    <CallId>1048</CallId>
-    <VolunteerId>218431161</VolunteerId>
-    <EntryTime>2026-07-24T01:01:00</EntryTime>
-    <FinishCompletionTime />
-    <callResolutionStatus />
+    <callResolutionStatus></callResolutionStatus>
   </Assignment>
   <Assignment>
     <Id>1069</Id>
@@ -47,5 +31,61 @@
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
     <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1070</Id>
+    <CallId>1012</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1072</Id>
+    <CallId>1012</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1073</Id>
+    <CallId>1030</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime>2026-07-24T01:01:00</FinishCompletionTime>
+    <callResolutionStatus>Treated</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1074</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime />
+    <callResolutionStatus>SelfCanceled</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1077</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime />
+    <callResolutionStatus>SelfCanceled</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1078</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime />
+    <callResolutionStatus>SelfCanceled</callResolutionStatus>
+  </Assignment>
+  <Assignment>
+    <Id>1079</Id>
+    <CallId>1005</CallId>
+    <VolunteerId>218431161</VolunteerId>
+    <EntryTime>2026-07-24T01:01:00</EntryTime>
+    <FinishCompletionTime />
+    <callResolutionStatus />
   </Assignment>
 </Assignments>

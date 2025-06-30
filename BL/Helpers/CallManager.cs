@@ -23,8 +23,8 @@ internal static class CallManager
         var callList = calls.Select(ConvertToBO).ToList();
 
         var uniqueCalls = callList
-            .GroupBy(call => call.Id)  // קבוצת קריאות לפי ID
-            .Select(group => group.OrderByDescending(call => call.OpenTime).First()) // מקבל את הקריאה האחרונה על פי זמן פתיחה
+            .GroupBy(call => call.Id) 
+            .Select(group => group.OrderByDescending(call => call.OpenTime).First()) 
             .ToList();
 
         return uniqueCalls;
@@ -89,7 +89,6 @@ internal static class CallManager
         };
     }
 
-    // בדיקות תקינות על ערכי הקריאה
     public static async Task<(double latitude, double longitude)> ValidateCall(BO.Call newCall)
     {
         if (newCall == null)
@@ -104,20 +103,18 @@ internal static class CallManager
         if (newCall.MaxEndTime <= newCall.OpenTime)
             throw new Exception("Expiration time must be later than start time");
 
-        // Call the asynchronous function and get the coordinates
         var coordinates = Tools.GetCoordinatesFromAddress(newCall.Address);
         return coordinates;
     }
 
 
-    // המרה מ-BO.Call ל-DO.Call בצורה מבוקשת
     public static DO.Call ConvertToDO(BO.Call boCall)
     {
         return new DO.Call
         {
             RadioCallId = boCall.Id,
             Description = boCall.Description,
-            CallType = (DO.CallType)boCall.Type,  // המרה בין הטיפוסים
+            CallType = (DO.CallType)boCall.Type,  
             Address = boCall.Address,
             Latitude = boCall.Latitude,
             Longitude = boCall.Longitude,
@@ -185,7 +182,6 @@ internal static class CallManager
 
             var now = DateTime.Now;
 
-            // כל ההקצאות של המתנדב
             var assignments = s_dal.Assignment.ReadAll()
                 .Where(a => a.VolunteerId == volunteerId)
                 .ToList();
@@ -193,7 +189,6 @@ internal static class CallManager
             if (assignments.Count == 0)
                 throw new BO.BlDoesNotExistException("No assignments found for the volunteer.");
 
-            // חיבור בין הקריאות להקצאות
             var calls = from assign in assignments
                         join call in s_dal.Call.ReadAll() on assign.CallId equals call.RadioCallId
                         where isOpen
@@ -201,11 +196,9 @@ internal static class CallManager
                             : assign.CallResolutionStatus != null || call.ExpiredTime <= now
                         select new { call, assign };
 
-            // סינון לפי סוג קריאה (אם נבחר)
             if (callType != null)
                 calls = calls.Where(x => x.call.CallType.Equals(callType));
 
-            // המרה ל-BL לפי האם פתוחה או סגורה
             var result = calls.Select(x => isOpen
                 ? new BO.OpenCallInList
                 {
@@ -239,7 +232,6 @@ internal static class CallManager
 
                 } as T);
 
-            // מיון לפי שדה נבחר
             if (sortByField != null)
             {
                 var property = typeof(T).GetProperty(sortByField.ToString());
@@ -270,22 +262,26 @@ internal static class CallManager
     /// <summary>
     /// מחשבת את המרחק בין שתי נקודות גיאוגרפיות.
     /// </summary>
-    public static double CalculateDistance(double? lat1, double? lon1, double lat2, double lon2)
+    public static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2)
     {
-        if (lat1 == null || lon1 == null)
+        if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
             throw new ArgumentException("Latitude or Longitude values are null.");
 
         const double R = 6371; // רדיוס כדור הארץ בקילומטרים
         double lat1Value = lat1.Value;
         double lon1Value = lon1.Value;
-        double dLat = (lat2 - lat1Value) * Math.PI / 180;
-        double dLon = (lon2 - lon1Value) * Math.PI / 180;
+        double lat2Value = lat2.Value;
+        double lon2Value = lon2.Value;
+
+        double dLat = (lat2Value - lat1Value) * Math.PI / 180;
+        double dLon = (lon2Value - lon1Value) * Math.PI / 180;
         double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                   Math.Cos(lat1Value * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) *
+                   Math.Cos(lat1Value * Math.PI / 180) * Math.Cos(lat2Value * Math.PI / 180) *
                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         return R * c;
     }
+
 
     public static void HandleDalException(Exception ex)
     {
@@ -306,18 +302,13 @@ internal static class CallManager
 
     public static bool IsWithinMaxDistance(BO.Volunteer volunteer, BO.Call call)
     {
-        const double R = 6371; // Earth's radius in km
+        const double R = 6371; 
 
-        // Extract coordinates, ensuring they are not null
         double lat1 = volunteer.Latitude ?? 0;
         double lon1 = volunteer.Longitude ?? 0;
         double lat2 = call.Latitude;
         double lon2 = call.Longitude;
-
-        // Ensure MaxDistance exists and is not null
         double maxDistance = volunteer.MaxDistance ?? 0;
-
-        // Convert degrees to radians
         double dLat = DegreesToRadians(lat2 - lat1);
         double dLon = DegreesToRadians(lon2 - lon1);
 
@@ -326,9 +317,8 @@ internal static class CallManager
                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        double distance = R * c; // Distance in km
+        double distance = R * c;
 
-        // Return whether the call is within the volunteer's max response distance
         return distance <= maxDistance;
     }
 
@@ -342,27 +332,23 @@ internal static class CallManager
     {
         try
         {
-            // הגדרת פרטי השרת
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
-                Port = 587, // Port for Gmail
+                Port = 587, 
                 Credentials = new NetworkCredential("yedidim26@gmail.com", "xtnd teca qkxt hjpl"),
                 EnableSsl = true,
             };
 
-            // הגדרת הודעת המייל
             var mailMessage = new MailMessage
             {
                 From = new MailAddress("yedidim26@gmail.com"),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = false, // אם אתה רוצה להוסיף HTML במייל, שים true
+                IsBodyHtml = false, 
             };
 
-            // הוספת נמען
             mailMessage.To.Add(toEmail);
 
-            // שליחת המייל
             smtpClient.Send(mailMessage);
         }
         catch (BlSendingEmailException ex)
@@ -408,18 +394,25 @@ internal static class CallManager
         if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
             return CallStatus.Treated;
 
-        if (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-           callData.ExpiredTime > s_dal.Config.Clock)
+        if (assignmentData.Any(a => a.EndType == null) &&
+            (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+            callData.ExpiredTime > s_dal.Config.Clock))
         {
             return CallStatus.InProgressAtRisk;
         }
-        if (assignmentData.Any())
+
+        if (assignmentData.Any(a => a.EndType == null))
         {
-            return CallStatus.Open;
+            return CallStatus.InProgress;
+        }
+        if ((callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
+            callData.ExpiredTime > s_dal.Config.Clock))
+        {
+            return CallStatus.OpenAtRisk;
         }
         else
         {
-            return CallStatus.None;
+            return CallStatus.Open;
         }
 
     }

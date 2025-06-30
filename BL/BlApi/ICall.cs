@@ -39,10 +39,9 @@ public interface ICall : IObservable //stage 5
     //מתודת עדכון "ביטול טיפול" בקריאה
     void CancelCall(int requestorId, int assignmentId);
 
-    //מתודת בחירת קריאה לטיפול
     void AssignCall(int volunteerId, int callId);
     Task SendEmailToVolunteers(Call call);
     int? GetAssignmentId(int callId, int volunteerId);
     IEnumerable<OpenCallInList> GetAvailableOpenCalls(int volunteerId);
-
+    double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2);
 }

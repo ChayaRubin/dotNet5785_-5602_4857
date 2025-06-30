@@ -2,85 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:bo="clr-namespace:BO;assembly=BL"
-        Title="Single Call Management" Height="600" Width="600"
-        WindowStartupLocation="CenterScreen">
-
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <Style x:Key="RoundedButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="10 5"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-    </Window.Resources>
-
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Margin="0 0 0 10">
-            <TextBlock Text="Call Details" FontSize="18" FontWeight="Bold" Margin="0 0 0 10"/>
-
-            <Label Content="Type:"/>
-            <ComboBox ItemsSource="{Binding CallTypes}" SelectedItem="{Binding CurrentCall.Type}" 
-                      IsEnabled="{Binding CanEditAllFields}"/>
-
-            <Label Content="Description:"/>
-            <TextBox Text="{Binding CurrentCall.Description}" IsReadOnly="{Binding IsReadOnly}"/>
-
-            <Label Content="Address:"/>
-            <TextBox Text="{Binding CurrentCall.Address}" IsReadOnly="{Binding IsReadOnly}"/>
-
-            <Label Content="Open Time:"/>
-            <TextBox Text="{Binding CurrentCall.OpenTime}" IsReadOnly="True"/>
-
-            <Label Content="Max End Time:"/>
-            <DatePicker SelectedDate="{Binding CurrentCall.MaxEndTime}" 
-                        IsEnabled="{Binding CanEditMaxTime}"/>
-
-            <Label Content="Status:"/>
-            <TextBox Text="{Binding CurrentCall.Status}" IsReadOnly="True"/>
-        </StackPanel>
-
-        --><!-- Assignments table --><!--
-        <GroupBox Grid.Row="1" Header="Assignment History" Margin="0 10 0 10" Visibility="{Binding HasAssignments, Converter={StaticResource BoolToVisibilityConverter}}">
-            <DataGrid ItemsSource="{Binding CurrentCall.Assignments}" AutoGenerateColumns="False" IsReadOnly="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Volunteer ID" Binding="{Binding VolunteerId}" Width="*"/>
-                    <DataGridTextColumn Header="Volunteer Name" Binding="{Binding VolunteerName}" Width="*"/>
-                    <DataGridTextColumn Header="Start Time" Binding="{Binding AssignTime}" />
-                    <DataGridTextColumn Header="End Time" Binding="{Binding CompletionTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
-                    <DataGridTextColumn Header="Completion Type" Binding="{Binding EndType}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </GroupBox>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Update" Click="BtnUpdate_Click"
-                    Background="#4CAF50" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
-            <Button Content="Close" Click="BtnClose_Click"
-                    Background="#F44336" Width="100" Style="{StaticResource RoundedButtonStyle}"/>
-        </StackPanel>
-    </Grid>
-</Window>-->
-<Window x:Class="PL.Call.SingleCallWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:bo="clr-namespace:BO;assembly=BL"
         xmlns:local="clr-namespace:PL.Call"
         Title="Single Call Management" Height="600" Width="600"
         WindowStartupLocation="CenterScreen">
@@ -138,7 +59,7 @@
             <TextBox Text="{Binding CurrentCall.Status}" IsReadOnly="True"/>
         </StackPanel>
 
-        <!-- Assignments table -->
+        --><!-- Assignments table --><!--
         <GroupBox Grid.Row="1" Header="Assignment History" Margin="0 10 0 10"
                   Visibility="{Binding HasAssignments, Converter={StaticResource BoolToVisibilityConverter}}">
             <DataGrid ItemsSource="{Binding CurrentCall.Assignments}" AutoGenerateColumns="False" IsReadOnly="True">
@@ -148,6 +69,92 @@
                     <DataGridTextColumn Header="Start Time" Binding="{Binding AssignTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                     <DataGridTextColumn Header="End Time" Binding="{Binding CompletionTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                     <DataGridTextColumn Header="Completion Type" Binding="{Binding EndType}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Update" Click="BtnUpdate_Click"
+                    Background="#4CAF50" Width="100" Style="{StaticResource RoundedButtonStyle}" />
+            <Button Content="Close" Click="BtnClose_Click"
+                    Background="#F44336" Width="100" Style="{StaticResource RoundedButtonStyle}" />
+        </StackPanel>
+    </Grid>
+</Window>-->
+<Window x:Class="PL.Call.SingleCallWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:bo="clr-namespace:BO;assembly=BL"
+        xmlns:local="clr-namespace:PL.Call"
+        Title="Single Call Management" Height="600" Width="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Style x:Key="ReadOnlyTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#FFF0F0F0"/>
+            <Setter Property="BorderBrush" Value="#FFAAAAAA"/>
+            <Setter Property="Foreground" Value="Gray"/>
+        </Style>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0 0 0 10">
+            <TextBlock Text="Call Details" FontSize="18" FontWeight="Bold" Margin="0 0 0 10"/>
+
+            <Label Content="Type:"/>
+            <ComboBox ItemsSource="{Binding CallTypes}" SelectedItem="{Binding CurrentCall.Type}" IsEnabled="{Binding CanEditAllFields}" />
+
+            <Label Content="Description:"/>
+            <TextBox Text="{Binding CurrentCall.Description}" IsReadOnly="{Binding IsReadOnly}" />
+
+            <Label Content="Address:"/>
+            <TextBox Text="{Binding CurrentCall.Address}" IsReadOnly="{Binding IsReadOnly}" />
+
+            <Label Content="Open Time:"/>
+            <TextBox Text="{Binding CurrentCall.OpenTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" IsReadOnly="True" Style="{StaticResource ReadOnlyTextBoxStyle}" />
+
+            <Label Content="Max End Time:"/>
+            <StackPanel Orientation="Horizontal">
+                <DatePicker SelectedDate="{Binding MaxEndDate, Mode=TwoWay}" IsEnabled="{Binding CanEditMaxTime}" Width="140"/>
+                <TextBox Text="{Binding MaxEndTimeOnly, Mode=TwoWay}" Width="80" Margin="10,0,0,0" IsEnabled="{Binding CanEditMaxTime}" />
+            </StackPanel>
+
+            <Label Content="Status:"/>
+            <TextBox Text="{Binding CurrentCall.Status}" IsReadOnly="True"/>
+        </StackPanel>
+
+
+        <GroupBox Grid.Row="1" Header="Assignment History" Margin="0 10 0 10"
+                  Visibility="{Binding HasAssignments, Converter={StaticResource BoolToVisibilityConverter}}">
+            <DataGrid ItemsSource="{Binding CurrentCall.Assignments}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Volunteer ID" Binding="{Binding VolunteerId}" Width="*"/>
+                    <DataGridTextColumn Header="Volunteer Name" Binding="{Binding VolunteerName}" Width="*"/>
+                    <DataGridTextColumn Header="Start Time" Binding="{Binding AssignTime, StringFormat='dd/MM/yyyy HH:mm:ss'}"/>
+                    <DataGridTextColumn Header="End Time" Binding="{Binding CompletionTime, StringFormat='dd/MM/yyyy HH:mm:ss'}"/>
+                    <DataGridTextColumn Header="Completion Type" Binding="{Binding EndType}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
