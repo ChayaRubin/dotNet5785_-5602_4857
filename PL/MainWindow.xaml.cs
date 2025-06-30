@@ -122,11 +122,11 @@ namespace PL
             try
             {
                 s_bl.Admin.SetRiskTimeRange(MaxYearRange);
-                MessageBox.Show("Max Year Range updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ErrorHandler.ShowInfo("Success", "Max Year Range updated successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error updating Max Year Range: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Error Updating Max Year Range", ex.Message);
             }
         }
 
@@ -137,8 +137,8 @@ namespace PL
 
         private async void BtnInitializeDB_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to initialize the database?", "Confirm Initialize", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+            var result = ErrorHandler.ShowYesNo("Confirm Initialize", "Are you sure you want to initialize the database?");
+            if (result)
             {
                 foreach (Window w in Application.Current.Windows)
                 {
@@ -151,12 +151,12 @@ namespace PL
                 {
                     await Task.Delay(100);
                     await Task.Run(() => s_bl.Admin.InitializeDatabase());
-                    MessageBox.Show("Database initialized successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ErrorHandler.ShowInfo("Success", "Database initialized successfully.");
                     UpdateStatusCounts();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error initializing database: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ErrorHandler.ShowError("Error Initializing Database", ex.Message);
                 }
                 finally
                 {
@@ -167,19 +167,19 @@ namespace PL
 
         private void BtnResetDB_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to reset the database? This will delete all data!", "Confirm Reset", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+            var result = ErrorHandler.ShowYesNo("Confirm Reset", "Are you sure you want to reset the database? This will delete all data!");
+            if (result)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 try
                 {
                     s_bl.Admin.ResetDatabase();
-                    MessageBox.Show("Database reset successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ErrorHandler.ShowInfo("Success", "Database reset successfully.");
                     UpdateStatusCounts();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error resetting database: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ErrorHandler.ShowError("Error Resetting Database", ex.Message);
                 }
                 finally
                 {
@@ -242,7 +242,7 @@ namespace PL
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Logout failed: " + ex.Message);
+                ErrorHandler.ShowError("Logout Failed", ex.Message);
             }
         }
     }

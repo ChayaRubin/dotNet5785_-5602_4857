@@ -84,7 +84,7 @@ namespace PL.Call
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading calls: {ex.Message}");
+                ErrorHandler.ShowError("Load Error", $"Error loading calls: {ex.Message}");
             }
         }
 
@@ -99,7 +99,7 @@ namespace PL.Call
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Cannot delete call: " + ex.Message);
+                    ErrorHandler.ShowError("Delete Error", "Cannot delete call: " + ex.Message);
                 }
             }
         }
@@ -115,13 +115,13 @@ namespace PL.Call
                     if (latest != null && latest.VolunteerId.HasValue)
                     {
                         s_bl.Call.CancelCall(latest.VolunteerId.Value, latest.Id);
-                        MessageBox.Show("Assignment cancelled.");
+                        ErrorHandler.ShowInfo("Success", "Assignment cancelled.");
                         LoadCalls();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error cancelling assignment: " + ex.Message);
+                    ErrorHandler.ShowError("Cancel Error", "Error cancelling assignment: " + ex.Message);
                 }
             }
         }

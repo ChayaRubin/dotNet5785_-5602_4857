@@ -55,7 +55,7 @@ namespace PL.Call
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to save call: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorHandler.ShowError("Save Error", $"Failed to save call: {ex.Message}");
             }
         }
 
