@@ -141,6 +141,17 @@ namespace PL
                     CurrentCall = null;
                 }
 
+                if (Volunteer != null && CurrentCall != null)
+                {
+                    DistanceToCall = _bl.Call.CalculateDistance(
+                        Volunteer.Latitude, Volunteer.Longitude,
+                        CurrentCall.Latitude, CurrentCall.Longitude);
+                }
+                else
+                {
+                    DistanceToCall = null;
+                }
+
                 if (CurrentCall != null && CurrentCall.Status != CallStatus.Expired)
                 {
                     string origin = Uri.EscapeDataString(Volunteer.CurrentAddress);
@@ -224,18 +235,21 @@ namespace PL
             try
             {
                 var assignWindow = new AssignCallWindow(Volunteer.Id);
-                bool? result = assignWindow.ShowDialog();
-                if (result == true)
+
+                assignWindow.Closed += (_, __) =>
                 {
                     RefreshCall(Volunteer.Id);
                     DistanceToCall = assignWindow.AssignedCallDistance;
-                }
+                };
+
+                assignWindow.Show(); 
             }
             catch (Exception)
             {
                 ErrorHandler.ShowError("Assign Call Error", "Failed to open the call assignment window.");
             }
         }
+
 
         /// <summary>
         /// Logs out the current volunteer (closes the window).

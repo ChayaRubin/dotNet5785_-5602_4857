@@ -149,7 +149,7 @@ namespace PL
                             OpeningTime = call.OpenTime,
                             MaxCompletionTime = call.MaxEndTime,
                             AssignmentStartTime = assignment.AssignTime,
-                            DistanceFromVolunteer = s_bl.Call.CalculateDistance(call.Latitude, call.Longitude, CurrentVolunteer.Latitude, CurrentVolunteer.Latitude),
+                            DistanceFromVolunteer = s_bl.Call.CalculateDistance(CurrentVolunteer.Latitude, CurrentVolunteer.Longitude, call.Latitude, call.Longitude),
                             Status = call.Status
                         };
 
