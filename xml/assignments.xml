@@ -81,11 +81,11 @@
     <callResolutionStatus>SelfCanceled</callResolutionStatus>
   </Assignment>
   <Assignment>
-    <Id>1079</Id>
+    <Id>1080</Id>
     <CallId>1005</CallId>
     <VolunteerId>218431161</VolunteerId>
     <EntryTime>2026-07-24T01:01:00</EntryTime>
     <FinishCompletionTime />
-    <callResolutionStatus />
+    <callResolutionStatus>SelfCanceled</callResolutionStatus>
   </Assignment>
 </Assignments>
