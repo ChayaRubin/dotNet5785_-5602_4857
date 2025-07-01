@@ -31,7 +31,7 @@ namespace BO
         /// Gets or sets the time the assignment started.
         /// Non-nullable: This field cannot be null.
         /// </summary>
-        public DateTime AssignTime { get; set; } // Sourced from DO.Assignment
+        public DateTime? AssignTime { get; set; } // Sourced from DO.Assignment
 
         /// <summary>
         /// Gets or sets the actual time the assignment was completed.

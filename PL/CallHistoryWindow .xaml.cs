@@ -42,14 +42,32 @@ namespace PL
             get => statistics;
             set { statistics = value; OnPropertyChanged(); }
         }
+        private readonly int volunteerId;
 
         public CallHistoryWindow(int volunteerId)
         {
             InitializeComponent();
             DataContext = this;
 
+            this.volunteerId = volunteerId;
+
             allCalls = _bl.Call.GetClosedCallsByVolunteer(volunteerId).OrderByDescending(c => c.EndTreatmentTime).ToList();
             SelectedStatusFilter = "All";
+
+            // 👇 ADD THIS:
+            _bl.Call.AddObserver(volunteerId, RefreshHistory);
+            Closed += (_, __) => _bl.Call.RemoveObserver(volunteerId, RefreshHistory);
+        }
+
+        private void RefreshHistory()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                allCalls = _bl.Call.GetClosedCallsByVolunteer(volunteerId)
+                                   .OrderByDescending(c => c.EndTreatmentTime)
+                                   .ToList();
+                ApplyFilter();
+            });
         }
 
         private void ApplyFilter()

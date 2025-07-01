@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Mail;
 using BlImplementation;
 using System.Globalization;
+using Avalonia;
 
 namespace Helpers;
 
@@ -17,18 +18,87 @@ internal static class CallManager
     internal static ObserverManager Observers = new(); //stage 5 
     private static IDal s_dal = Factory.Get; // stage 4
 
-    public static List<CallInList> GetCallList(IEnumerable<DO.Call> calls)
+    //public static List<CallInList> GetCallList(IEnumerable<DO.Call> calls)
+    //{
+    //    var callList = calls.Select(ConvertToBO).ToList();
+
+    //    var uniqueCalls = callList
+    //        .GroupBy(call => call.Id) 
+    //        .Select(group => group.OrderByDescending(call => call.OpenTime).First()) 
+    //        .ToList();
+
+    //    return uniqueCalls;
+    //}
+    internal static BO.CallInList CreateCallInList(DO.Call call, IEnumerable<DO.Assignment> assignments, Dictionary<int, string> volunteers)
     {
-        var callList = calls.Select(ConvertToBO).ToList();
+        var callAssignments = assignments.Where(a => a.CallId == call.RadioCallId).OrderByDescending(a => a.EntryTime).ToList();
+        var latestAssignment = callAssignments.FirstOrDefault();
 
-        var uniqueCalls = callList
-            .GroupBy(call => call.Id) 
-            .Select(group => group.OrderByDescending(call => call.OpenTime).First()) 
-            .ToList();
+        return new BO.CallInList
+        {
+            Description=call.Description,
+            Id = call.RadioCallId,
+            Type = (BO.CallTypeEnum)call.CallType,
+            OpenTime = call.StartTime,
+            Status = CallManager.CalculateCallStatus(call.RadioCallId),
+            AssignmentId = latestAssignment?.Id ?? 0,
+            LastVolunteerName = latestAssignment?.VolunteerId != null && volunteers.TryGetValue(latestAssignment!.VolunteerId, out var name) ? name : null,
+            TotalAssignments = callAssignments.Count,
+            MaxEndTime = call.ExpiredTime.HasValue
+            ? call.ExpiredTime - AdminManager.Now
+            : null,
+            completeTime = latestAssignment?.FinishCompletionTime.HasValue == true
+            ? latestAssignment.FinishCompletionTime.Value - latestAssignment.EntryTime
+            : null,
 
-        return uniqueCalls;
+        };
     }
+    internal static BO.CallStatus CalculateCallStatus(int callId)
 
+    {
+        try
+        {
+
+            // Get the call from database
+            DO.Call call;
+            IEnumerable<DO.Assignment> assignments;
+            lock (AdminManager.BlMutex)
+            {
+                call = s_dal.Call.Read(c => c.RadioCallId == callId)!;
+                if (call == null)
+                    throw new ArgumentException($"Call with ID={callId} does not exist.");
+                if (AdminManager.Now > call.ExpiredTime)
+                    return BO.CallStatus.Expired;
+                assignments = s_dal.Assignment.ReadAll(a => a.CallId == callId);
+            }
+            if (assignments == null)
+            {
+                TimeSpan timeToExpiration = (DateTime)call.ExpiredTime! - AdminManager.Now;
+                if (timeToExpiration <= AdminManager.RiskRange)
+                    return BO.CallStatus.OpenAtRisk;
+
+                return BO.CallStatus.Open;
+            }
+
+            var activeAssignment = assignments.FirstOrDefault(a => a.FinishCompletionTime == null && a.CallResolutionStatus == null);
+            if (activeAssignment == null)
+            {
+                var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
+                return successfulAssignment ? BO.CallStatus.Closed : BO.CallStatus.Open;
+            }
+
+
+            var remainingTime = (DateTime)call.ExpiredTime - AdminManager.Now;
+            if (remainingTime <= AdminManager.RiskRange)
+                return BO.CallStatus.InProgressAtRisk;
+
+            return BO.CallStatus.InProgress;
+        }
+        catch (Exception ex)
+        {
+            throw new BlArgumentException($"Error calculating call status: {ex.Message}");
+        }
+    }
     public static CallInList ConvertToBO(DO.Call call)
     {
         List<DO.Assignment> allAssignments;
@@ -40,7 +110,6 @@ internal static class CallManager
                 .ReadAll(a => a.CallId == call.RadioCallId)
                 .ToList();
 
-            // שליפת שמות כל המתנדבים בבת אחת
             var volunteerIds = allAssignments.Select(a => a.VolunteerId).Distinct().ToList();
             volunteerNames = volunteerIds.ToDictionary(
                 id => id,
@@ -83,7 +152,7 @@ internal static class CallManager
             Latitude = call.Latitude,
             Longitude = call.Longitude,
             OpenTime = call.StartTime,
-            MaxEndTime = call.ExpiredTime,
+            //MaxEndTime = call.ExpiredTime.Value,
             Status = GetCallStatus(call, assignmentData),
             Assignments = assignmentData
         };
@@ -410,15 +479,15 @@ internal static class CallManager
     {
         lock (AdminManager.BlMutex)
         {
-            if (callData.ExpiredTime < s_dal.Config.Clock)
+            if (callData.ExpiredTime < AdminManager.Now)
                 return CallStatus.Expired;
 
             if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
                 return CallStatus.Treated;
 
             if (assignmentData.Any(a => a.EndType == null) &&
-                (callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-                callData.ExpiredTime > s_dal.Config.Clock))
+                (callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
+                callData.ExpiredTime > AdminManager.Now))
             {
                 return CallStatus.InProgressAtRisk;
             }
@@ -427,8 +496,8 @@ internal static class CallManager
             {
                 return CallStatus.InProgress;
             }
-            if ((callData.ExpiredTime - s_dal.Config.Clock <= s_dal.Config.RiskRange &&
-                callData.ExpiredTime > s_dal.Config.Clock))
+            if ((callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
+                callData.ExpiredTime > AdminManager.Now))
             {
                 return CallStatus.OpenAtRisk;
             }
@@ -438,10 +507,10 @@ internal static class CallManager
             }
         }
     }
-
-    internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
+    private static int s_periodicCounter = 0;
+    /*internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
     {
-        //Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}"; //stage 7 (optional)
+        Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}"; //stage 7 (optional)
         List<DO.Call> expiredCalls;
         List<DO.Assignment> assignments;
         List<DO.Assignment> assignmentsWithNull;
@@ -486,7 +555,50 @@ internal static class CallManager
 
         });
 
+    }*/
+    internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
+    {
+        Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}";
+
+        List<DO.Call> expiredCalls;
+
+        // שלב 1: שלוף את כל הקריאות שפג תוקפן לפי AdminManager.Now
+        lock (AdminManager.BlMutex)
+        {
+            expiredCalls = s_dal.Call
+                .ReadAll(c => c.ExpiredTime < AdminManager.Now)
+                .ToList();
+        }
+
+        foreach (var call in expiredCalls)
+        {
+            DO.Assignment? openAssignment;
+
+            // שלב 2: בדוק אם יש שיבוץ פתוח לקריאה הזו
+            lock (AdminManager.BlMutex)
+            {
+                openAssignment = s_dal.Assignment
+                    .ReadAll(a => a.CallId == call.RadioCallId && a.CallResolutionStatus == null)
+                    .FirstOrDefault();
+            }
+
+            if (openAssignment is not null)
+            {
+                // שלב 3: עדכן את השיבוץ כ־Expired
+                lock (AdminManager.BlMutex)
+                {
+                    s_dal.Assignment.Update(openAssignment with
+                    {
+                        FinishCompletionTime = AdminManager.Now,
+                        CallResolutionStatus = DO.CallResolutionStatus.Expired
+                    });
+                }
+
+                CallManager.Observers.NotifyItemUpdated(call.RadioCallId);
+            }
+        }
     }
+
 }
 
 

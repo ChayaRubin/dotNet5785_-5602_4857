@@ -18,14 +18,19 @@ public class CallInList
 
     public double Longitude { get; set; } // קו אורך
 
-    public DateTime OpenTime { get; set; } // זמן פתיחה
+    public DateTime? OpenTime { get; set; } // זמן פתיחה
 
-    public DateTime? MaxEndTime { get; set; } // זמן מקסימלי לסיום הקריאה
+    public TimeSpan? MaxEndTime { get; set; } // זמן מקסימלי לסיום הקריאה
 
+    public TimeSpan? completeTime { get; set; }
     public CallStatus Status { get; set; } // סטטוס הקריאה (ENUM)
-    public string StatusText => Status.ToString();
     public List<CallAssignInList>? Assignments { get; set; } // רשימת הקצאות עבור הקריאה
 
+    public int AssignmentId { get; set; }
+
+    public String LastVolunteerName { get; set; }
+
+    public int TotalAssignments { get; set; }
 }
 
 

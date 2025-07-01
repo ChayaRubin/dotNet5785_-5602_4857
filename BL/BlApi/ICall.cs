@@ -2,8 +2,7 @@
 namespace BlApi;
 public interface ICall : IObservable //stage 5 
 {
-
-    IEnumerable<int> GetCallCountsByStatus();
+    Dictionary<CallStatus, int> GetCallCountsByStatus();
     IEnumerable<BO.CallInList> GetCallList(
         CallField? filterByField = null,
         object? filterValue = null,

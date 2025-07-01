@@ -6,7 +6,6 @@ using DO;
 using Helpers;
 using System.Net.Mail;
 using System.Net;
-/*using DalApi;*/
 
 namespace BlImplementation;
 
@@ -24,35 +23,30 @@ internal class CallImplementation : ICall
     /// <exception cref="DalArgumentException"></exception>
     public void AssignCall(int volunteerId, int callId)
     {
-        try
+        lock (AdminManager.BlMutex)
         {
-            AdminManager.ThrowOnSimulatorIsRunning();  // שלב הגנה מסימולטור
+            AdminManager.ThrowOnSimulatorIsRunning();
 
-            var call = _dal.Call.Read(c => c.RadioCallId == callId);
-            if (call == null)
-                throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
+            var call = _dal.Call.Read(c => c.RadioCallId == callId)
+                ?? throw new DalDoesNotExistException("t");
 
             var assignments = _dal.Assignment.ReadAll(a => a.CallId == callId).ToList();
 
-            // לא לאפשר אם הקריאה כבר טופלה
             if (assignments.Any(a => a.CallResolutionStatus == CallResolutionStatus.Treated))
-                throw new DalAlreadyExistsException($"Call {callId} has already been treated.");
+                throw new DalAlreadyExistsException("t");
 
-            // לא לאפשר אם יש הקצאה פתוחה שלא בוטלה או לא הסתיימה
             if (assignments.Any(a =>
                 a.FinishCompletionTime == null &&
-                a.CallResolutionStatus != CallResolutionStatus.SelfCanceled &&
-                a.CallResolutionStatus != CallResolutionStatus.Canceled))
+                a.CallResolutionStatus != CallResolutionStatus.Canceled &&
+                a.CallResolutionStatus != CallResolutionStatus.SelfCanceled))
             {
-                throw new DalAlreadyExistsException($"Call {callId} is currently being handled by another volunteer.");
+                throw new DalAlreadyExistsException("t");
             }
 
-            // לא ניתן להקצות קריאה שפג תוקפה
             if (call.ExpiredTime < AdminManager.Now)
-                throw new DalArgumentException($"Call {callId} has expired.");
+                throw new DalArgumentException("t");
 
-            // יצירת הקצאה חדשה
-            var newAssignment = new Assignment
+            _dal.Assignment.Create(new Assignment
             {
                 Id = Config.NextAssignmentId,
                 CallId = callId,
@@ -60,15 +54,10 @@ internal class CallImplementation : ICall
                 EntryTime = _dal.Config.Clock,
                 FinishCompletionTime = null,
                 CallResolutionStatus = null
-            };
+            });
+        }
 
-            _dal.Assignment.Create(newAssignment);
-            CallManager.Observers.NotifyListUpdated();
-        }
-        catch (Exception ex)
-        {
-            CallManager.HandleDalException(ex);
-        }
+        CallManager.Observers.NotifyListUpdated();
     }
 
 
@@ -77,15 +66,23 @@ internal class CallImplementation : ICall
     /// </summary>
     /// <returns></returns>
     /// <exception cref="BO.BlGeneralDatabaseException"></exception>
-    public IEnumerable<int> GetCallCountsByStatus()
+    public Dictionary<CallStatus, int> GetCallCountsByStatus()
     {
         try
         {
             var calls = _dal.Call.ReadAll();
-            return calls.GroupBy(call => (int)call.CallType)
-                        .OrderBy(group => group.Key)
-                        .Select(group => group.Count())
-                        .ToArray();
+            var assignments = _dal.Assignment.ReadAll().ToList();
+            var volunteerNames = _dal.Volunteer.ReadAll().ToDictionary(v => v.Id, v => v.Name);
+
+            var counts = calls.Select(c =>
+            {
+                var callBO = CallManager.CreateCallInList(c, assignments, volunteerNames);
+                return callBO.Status;
+            })
+            .GroupBy(status => status)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+            return counts;
         }
         catch (Exception ex)
         {
@@ -190,17 +187,13 @@ internal class CallImplementation : ICall
             AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             CallManager.ValidateCall(call);
             var (latitude, longitude) = Tools.GetCoordinatesFromAddress(call.Address);
-
             CallManager.ValidateLogicalFields(call);
-
             call.Latitude = latitude;
             call.Longitude = longitude;
-
             DO.Call doCall = CallManager.ConvertToDO(call);
             _dal.Call.Update(doCall);
             CallManager.Observers.NotifyItemUpdated(doCall.RadioCallId);  //stage 5
             CallManager.Observers.NotifyListUpdated();  //stage 5
-
         }
         catch (DalInvalidTimeUnitException ex)
         {
@@ -223,11 +216,14 @@ internal class CallImplementation : ICall
     {
         try
         {
-            IEnumerable<DO.Call> calls = _dal.Call.ReadAll(call =>
-                !filterByField.HasValue || CallManager.FilterCall(call, filterByField.Value, filterValue));
-
-            var callList = CallManager.GetCallList(calls);
-
+            IEnumerable<BO.CallInList> callList;
+            lock (AdminManager.BlMutex)
+            {
+                var calls = _dal.Call.ReadAll();
+                var assignments = _dal.Assignment.ReadAll();
+                var volunteers = _dal.Volunteer.ReadAll().ToDictionary(v => v.Id, v => v.Name);
+                callList = calls.Select(call => CallManager.CreateCallInList(call, assignments, volunteers));
+            }
             callList = sortByField.HasValue ? sortByField.Value switch
             {
                 CallField.Id => callList.OrderBy(c => c.Id).ToList(),
@@ -367,8 +363,8 @@ internal class CallImplementation : ICall
             if (!isAdmin && !isVolunteer)
                 throw new DalNoPermitionException("You do not have permission to cancel this call");
 
-            if (assignment.FinishCompletionTime < DateTime.Now)
-                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been closed");
+            if (assignment.FinishCompletionTime < AdminManager.Now)
+                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been Expired");
 
             assignment.EntryTime = AdminManager.Now;
 
@@ -378,6 +374,8 @@ internal class CallImplementation : ICall
             AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);  //stage 5
             AssignmentManager.Observers.NotifyListUpdated();  //stage 5
             CallManager.Observers.NotifyListUpdated();
+            CallManager.Observers.NotifyItemUpdated(requestorId);
+
 
 
             if (isAdmin)
@@ -437,6 +435,7 @@ internal class CallImplementation : ICall
             AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);
             AssignmentManager.Observers.NotifyListUpdated();
             CallManager.Observers.NotifyListUpdated(); // ← חשוב!
+            CallManager.Observers.NotifyItemUpdated(volunteerId);
 
         }
         catch (DalDoesNotExistException ex)
@@ -599,8 +598,8 @@ internal class CallImplementation : ICall
                 !allAssignments.Any(a =>
                     a.CallId == call.RadioCallId &&
                     (
-                        a.CallResolutionStatus == DO.CallResolutionStatus.Treated ||  // כבר טופלה
-                        (a.FinishCompletionTime == null &&                           // מוקצית עכשיו
+                        a.CallResolutionStatus == DO.CallResolutionStatus.Treated ||  
+                        (a.FinishCompletionTime == null &&                           
                          a.CallResolutionStatus != DO.CallResolutionStatus.SelfCanceled &&
                          a.CallResolutionStatus != DO.CallResolutionStatus.Canceled)
                     )))
@@ -631,7 +630,6 @@ internal class CallImplementation : ICall
 
         return openCalls;
     }
-
 
     public void AddObserver(Action listObserver) =>
     CallManager.Observers.AddListObserver(listObserver); //stage 5

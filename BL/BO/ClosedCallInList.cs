@@ -32,13 +32,13 @@ namespace BO
         /// The time the call was opened.
         /// Retrieved from DO.Call.
         /// </summary>
-        public DateTime OpenTime { get; set; }
+        public DateTime? OpenTime { get; set; }
 
         /// <summary>
         /// The time the call entered treatment.
         /// Retrieved from DO.Assignment.
         /// </summary>
-        public DateTime StartTreatmentTime { get; set; }
+        public DateTime? StartTreatmentTime { get; set; }
 
         /// <summary>
         /// The actual time the treatment ended.

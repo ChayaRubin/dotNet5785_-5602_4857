@@ -129,7 +129,6 @@ namespace PL
                 filtered = filtered.Where(c => c.CallType == SelectedCallTypeFilter.Value);
             }
 
-
             filtered = SelectedSortOption switch
             {
                 "Distance" => filtered.OrderBy(c => c.DistanceFromVolunteer),
@@ -155,9 +154,7 @@ namespace PL
             {
                 _bl.Call.AssignCall(volunteerId, call.Id);
                 ErrorHandler.ShowInfo("Success", $"Call {call.Id} assigned successfully.");
-                DialogResult = true;
                 AssignedCallDistance = call.DistanceFromVolunteer;
-                DialogResult = true;
                 Close();
             }
             catch (Exception ex)

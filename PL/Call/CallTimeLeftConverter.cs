@@ -8,14 +8,23 @@ namespace PL.Call
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTime endTime)
+            if (value is TimeSpan timeSpan)
             {
-                TimeSpan remaining = endTime - DateTime.Now;
-                return remaining.TotalSeconds < 0 ? "Expired" : $"{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+                if (timeSpan.TotalSeconds < 0)
+                    return "Expired";
+
+                return string.Format("{0:D2}:{1:D2}:{2:D2}:{3:D2}",
+                    timeSpan.Days,
+                    timeSpan.Hours,
+                    timeSpan.Minutes,
+                    timeSpan.Seconds);
             }
+
             return "N/A";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
     }
 }

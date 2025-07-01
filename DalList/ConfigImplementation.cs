@@ -38,8 +38,8 @@ namespace Dal
         /// </summary>
         public DateTime Clock
         {
-            get => Config.Clock;   // Gets the current system time
-            set => Config.Clock = value; // Sets the current system time
+            get => Config.Clock;  
+            set => Config.Clock = value; 
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace Dal
         /// </summary>
         public TimeSpan RiskRange
         {
-            get => Config.RiskRange;  // Gets the current risk range
-            set => Config.RiskRange = value;  // Sets the new risk range
+            get => Config.RiskRange; 
+            set => Config.RiskRange = value;  
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Dal
         /// 
         public TimeSpan MaxRange
         {
-            get => Config.MaxRange;  // Gets the current max range
-            set => Config.MaxRange = value;  // Sets the new max range
+            get => Config.MaxRange;  
+            set => Config.MaxRange = value; 
         }
         public void Reset() => Config.Reset();
     }

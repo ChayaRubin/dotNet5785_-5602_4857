@@ -9,7 +9,7 @@ namespace BO
         public CallTypeEnum CallType { get; set; }
         public string? Description { get; set; }
         public string FullAddress { get; set; }
-        public DateTime OpenTime { get; set; }
+        public DateTime? OpenTime { get; set; }
         public DateTime? MaxCloseTime { get; set; }
         public double DistanceFromVolunteer { get; set; }
 

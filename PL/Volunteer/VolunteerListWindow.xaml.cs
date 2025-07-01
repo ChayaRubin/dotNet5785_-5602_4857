@@ -22,6 +22,8 @@ namespace PL.Volunteer
 
         private volatile bool _observerWorking = false;
 
+        private CallTypeEnum selectedCallType = CallTypeEnum.None;
+
         /// <summary>
         /// get and set functions
         /// </summary>
@@ -37,8 +39,6 @@ namespace PL.Volunteer
                 }
             }
         }
-
-        private CallTypeEnum selectedCallType = CallTypeEnum.None;
 
         /// <summary>
         /// get and set functions
@@ -85,7 +85,6 @@ namespace PL.Volunteer
             InitializeComponent();
             DataContext = this;
 
-            // Subscribe to the observer for automatic list updates
             s_bl.Volunteer.AddObserver(OnVolunteerListChanged);
         }
 
@@ -136,6 +135,7 @@ namespace PL.Volunteer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadVolunteers();
+
         }
 
         /// <summary>
@@ -156,7 +156,6 @@ namespace PL.Volunteer
         /// <param name="e"></param>
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
-            // Unsubscribe from observer before closing
             s_bl.Volunteer.RemoveObserver(OnVolunteerListChanged);
             Close();
         }
@@ -168,7 +167,6 @@ namespace PL.Volunteer
         /// <param name="e"></param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Unsubscribe from observer when window is closing
             s_bl.Volunteer.RemoveObserver(OnVolunteerListChanged);
         }
 
@@ -216,7 +214,6 @@ namespace PL.Volunteer
                     try
                     {
                         s_bl.Volunteer.DeleteVolunteer(volunteer.Id);
-                        // No need to call LoadVolunteers() here - the observer will handle it
                     }
                     catch (Exception ex)
                     {

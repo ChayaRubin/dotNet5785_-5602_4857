@@ -176,8 +176,6 @@ namespace PL
             }
         }
 
-
-
         private void ButtonAddUpdate_Click(object sender, RoutedEventArgs e)
         {
             try

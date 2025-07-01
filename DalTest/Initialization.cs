@@ -22,8 +22,7 @@ public static class Initialization
         "Yaakov Cohen", "Miriam Levy", "Avraham Ben-David", "Sarah Shalom", "Chaim Adler", "Ruth Klein",
         "David Katz", "Esther Goldstein", "Moshe Fogel", "Tova Levi", "Yitzhak Mizrahi", "Naomi Rosen",
         "Yehuda Friedman", "Shoshana Cohen", "Eliezer Glick", "Chava Shapiro",
-    };
-        //Chava Shapiro password - Da@I%*k*UTn6
+        };
 
         public static string[] addresses = new string[] {
 
@@ -32,18 +31,18 @@ public static class Initialization
         "Yehuda Halevi Street 3, Jerusalem", "Hillel Street 19, Jerusalem", "Ramban Street 9, Jerusalem",
         "Strauss Street 12, Jerusalem", "Yafo Road 34, Jerusalem", "Kehilat Yaakov Street 8, Jerusalem",
         "Mordechai Ben Hillel Street 11, Jerusalem", "Keren Hayesod Street 16, Jerusalem", "Shazar Boulevard 21, Jerusalem", "25 Shlomzion Hamalka Street, Jerusalem:"
-    };
+        };
         public static double[] latitudes = new double[] {
         31.7511651, 31.70954, 31.759595, 31.78168, 31.69916,
         31.7959211, 31.7513601, 31.780094, 31.528593, 31.906037,
         31.759595, 31.759595, 31.759595, 31.759595, 31.759595, 31.759595
-    };
+        };
 
         public static double[] longitudes = new double[] {
         34.9819467, 35.205725, 35.215315, 35.220332, 35.196286,
         35.2197757, 34.9811379, 35.218297, 35.103687, 35.203005,
         35.215315, 35.215315, 35.215315, 35.215315, 35.215315, 35.215315
-    };
+        };
 
 
         public static void CreateVolunteerEntries()
@@ -115,15 +114,12 @@ public static class Initialization
             return password.ToString();
         }
 
-        // Encrypt the password using AES
         public static string Encrypt(string plainText)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                // המרת הסיסמה ל-בייטים
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(plainText));
 
-                // המרת הבייטים למחרוזת Hex
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in bytes)
                 {
@@ -139,74 +135,66 @@ public static class Initialization
     {
 
         public static string[] CallAddresses = new string[]
-  {
+        {
 
-    "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
-    "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
-    "Neve Yaakov St 17, Jerusalem", "Shmuel HaNavi St 12, Jerusalem", "Yechiel St 3, Jerusalem",
-    "Rav Kook St 4, Jerusalem", "Talmud Torah St 8, Jerusalem", "Sanhedria St 18, Jerusalem",
-    "Kiryat Moshe St 6, Jerusalem", "Achad Ha'am St 2, Jerusalem", "Bar Ilan St 7, Jerusalem",
-    "City Center St 14, Jerusalem", "Rechov Yechiel 3, Jerusalem", "Giv'at Shaul St 7, Jerusalem",
-    "Nachlaot St 7, Jerusalem", "Rav Kook St 5, Jerusalem", "Har Nof St 18, Jerusalem",
-    "Ramat Shlomo St 15, Jerusalem", "Sderot Yitzhak Rabin St 5, Jerusalem", "Har Hatzofim St 8, Jerusalem",
-    "Giv'at HaMivtar St 6, Jerusalem", "Tefilat Yisrael St 14, Jerusalem", "Malkhei Yisrael St 10, Jerusalem",
-    "Kiryat Tzahal St 6, Jerusalem", "Nachal Noach St 17, Jerusalem", "Maalot Dafna St 6, Jerusalem",
-    "Har HaMor St 3, Jerusalem", "Ramat HaSharon St 2, Jerusalem", "Yakar St 3, Jerusalem",
-    "Rav Haim Ozer St 9, Jerusalem", "Yehoshua Ben-Nun St 5, Jerusalem", "Meir Schauer St 12, Jerusalem",
-    "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem",
-    "Hadar St 3, Jerusalem", "Maharal St 8, Jerusalem", "Yosef Schwartz St 4, Jerusalem",
-    "Jabotinsky St 7, Jerusalem", "Shazar St 5, Jerusalem", "Gonenim St 12, Jerusalem",
-    "Talpiot St 14, Jerusalem", "Bilu St 9, Jerusalem", "Yovel St 2, Jerusalem",
-    "Herzl St 3, Jerusalem", "Hashmonai St 6, Jerusalem", "Ramot St 17, Jerusalem",
-    "Shalom Aleichem St 10, Jerusalem", "Eli Cohen St 4, Jerusalem", "Shlomo HaMelech St 7, Jerusalem"
-   };
+          "Meah Shearim St 10, Jerusalem", "Chazon Ish St 6, Jerusalem", "Ramat Eshkol St 11, Jerusalem",
+          "Har Safra St 1, Jerusalem", "Mount Scopus St 4, Jerusalem", "Keren Hayesod St 30, Jerusalem",
+          "Neve Yaakov St 17, Jerusalem", "Shmuel HaNavi St 12, Jerusalem", "Yechiel St 3, Jerusalem",
+          "Rav Kook St 4, Jerusalem", "Talmud Torah St 8, Jerusalem", "Sanhedria St 18, Jerusalem",
+          "Kiryat Moshe St 6, Jerusalem", "Achad Ha'am St 2, Jerusalem", "Bar Ilan St 7, Jerusalem",
+          "City Center St 14, Jerusalem", "Rechov Yechiel 3, Jerusalem", "Giv'at Shaul St 7, Jerusalem",
+          "Nachlaot St 7, Jerusalem", "Rav Kook St 5, Jerusalem", "Har Nof St 18, Jerusalem",
+          "Ramat Shlomo St 15, Jerusalem", "Sderot Yitzhak Rabin St 5, Jerusalem", "Har Hatzofim St 8, Jerusalem",
+          "Giv'at HaMivtar St 6, Jerusalem", "Tefilat Yisrael St 14, Jerusalem", "Malkhei Yisrael St 10, Jerusalem",
+          "Kiryat Tzahal St 6, Jerusalem", "Nachal Noach St 17, Jerusalem", "Maalot Dafna St 6, Jerusalem",
+          "Har HaMor St 3, Jerusalem", "Ramat HaSharon St 2, Jerusalem", "Yakar St 3, Jerusalem",
+          "Rav Haim Ozer St 9, Jerusalem", "Yehoshua Ben-Nun St 5, Jerusalem", "Meir Schauer St 12, Jerusalem",
+          "Menachem Begin St 11, Jerusalem", "Yisrael Yaakov St 13, Jerusalem", "Ben Yehuda St 6, Jerusalem",
+          "Hadar St 3, Jerusalem", "Maharal St 8, Jerusalem", "Yosef Schwartz St 4, Jerusalem",
+          "Jabotinsky St 7, Jerusalem", "Shazar St 5, Jerusalem", "Gonenim St 12, Jerusalem",
+          "Talpiot St 14, Jerusalem", "Bilu St 9, Jerusalem", "Yovel St 2, Jerusalem",
+          "Herzl St 3, Jerusalem", "Hashmonai St 6, Jerusalem", "Ramot St 17, Jerusalem",
+          "Shalom Aleichem St 10, Jerusalem", "Eli Cohen St 4, Jerusalem", "Shlomo HaMelech St 7, Jerusalem"
+        };
 
         public static double[] CallLatitudes = new double[] {
-    31.7865608, 31.759595, 31.8017893, 31.759595, 31.794767, 
-    31.7723879, 31.842212, 31.7875022, 31.7472349, 31.7831088, 
-    31.898714, 31.8051921, 31.7857651, 31.759595, 31.7957696, 
-    31.7259643, 31.7476677, 31.759595, 31.703275, 31.7831088, 
-    31.7858115, 31.8111253, 31.759595, 31.759595, 31.759595, 
-    31.779042, 31.7909196, 32.0416824, 31.759595, 31.7933736, 
-    31.7854673, 32.3260388, 31.8405465, 31.759595, 31.759595, 
-    31.759595, 31.7686856, 31.8383352, 31.7815767, 32.8089768, 
-    31.7215207, 31.759595, 31.7709719, 31.7135737, 31.906037, 
-    31.7515394, 31.762803, 31.780514, 31.74948, 31.77676, 
-    31.81561, 31.7723328, 31.7668532, 31.759595
-    };
+          31.7865608, 31.759595, 31.8017893, 31.759595, 31.794767, 
+          31.7723879, 31.842212, 31.7875022, 31.7472349, 31.7831088, 
+          31.898714, 31.8051921, 31.7857651, 31.759595, 31.7957696, 
+          31.7259643, 31.7476677, 31.759595, 31.703275, 31.7831088, 
+          31.7858115, 31.8111253, 31.759595, 31.759595, 31.759595, 
+          31.779042, 31.7909196, 32.0416824, 31.759595, 31.7933736, 
+          31.7854673, 32.3260388, 31.8405465, 31.759595, 31.759595, 
+          31.759595, 31.7686856, 31.8383352, 31.7815767, 32.8089768, 
+          31.7215207, 31.759595, 31.7709719, 31.7135737, 31.906037, 
+          31.7515394, 31.762803, 31.780514, 31.74948, 31.77676, 
+          31.81561, 31.7723328, 31.7668532, 31.759595
+        };
 
         public static double[] CallLongitudes = new double[] {
-    35.2208052, 35.215315, 35.2228759, 35.215315, 35.2425346, 
-    35.2215257, 35.24206, 35.2265973, 35.2326395, 35.2203032, 
-    35.185758, 35.2157309, 35.1968887, 35.215315, 35.2198077, 
-    34.7437502, 35.2323345, 35.215315, 35.194809, 35.2203032, 
-    35.1741509, 35.2174861, 35.215315, 35.215315, 35.215315, 
-    35.229702, 35.2089577, 34.7904787, 35.215315, 35.2246764, 
-    35.1001866, 34.8511049, 35.2454408, 35.215315, 35.215315, 
-    35.215315, 35.1950858, 35.2441809, 35.2180856, 34.997939, 
-    35.2284413, 35.215315, 35.2210202, 34.9838857, 35.203005, 
-    35.2160228, 35.2099602, 35.217981, 34.9880954, 35.230342, 
-    35.1954938, 35.2215927, 35.213483, 35.215315
-    };
+        35.2208052, 35.215315, 35.2228759, 35.215315, 35.2425346, 
+        35.2215257, 35.24206, 35.2265973, 35.2326395, 35.2203032, 
+        35.185758, 35.2157309, 35.1968887, 35.215315, 35.2198077, 
+        34.7437502, 35.2323345, 35.215315, 35.194809, 35.2203032, 
+        35.1741509, 35.2174861, 35.215315, 35.215315, 35.215315, 
+        35.229702, 35.2089577, 34.7904787, 35.215315, 35.2246764, 
+        35.1001866, 34.8511049, 35.2454408, 35.215315, 35.215315, 
+        35.215315, 35.1950858, 35.2441809, 35.2180856, 34.997939, 
+        35.2284413, 35.215315, 35.2210202, 34.9838857, 35.203005, 
+        35.2160228, 35.2099602, 35.217981, 34.9880954, 35.230342, 
+        35.1954938, 35.2215927, 35.213483, 35.215315
+        };
 
         public static string[] CallDescriptions = new string[]
-
         {
-            // High Urgency (Immediate and Critical):
             "Medical Emergency", "Accident Assistance", "Vehicle Recovery", "Emergency Towing", "Stuck in Mud",
             "Engine Overheating", "Heavy Accident", "Emergency Tow", "Battery Issues", "Fire in Vehicle",
-
-            // Medium Urgency (Urgent but less critical):
             "Fuel Assistance", "Flat Tire", "Lockout Assistance", "Vehicle Breakdown", "Flat Battery",
             "Vehicle Stuck in Traffic", "Accident Help", "Lost Keys", "Driving Assistance", "Tire Puncture",
-    
-            // General Assistance (Everyday issues or less urgent):
             "Driving Safety", "Parking Assistance", "Car Repair Advice", "Vehicle Inspection", "Insurance Assistance",
             "Vehicle Jumpstart", "Call for Help", "Car Service Appointment", "Windshield Repair", "Lost Wallet",
             "Fuel Running Low", "Battery Jumpstart", "Car Alarm Issues", "Motorcycle Breakdown", "Lost GPS Navigation",
             "Roadside Assistance", "Headlight Malfunction", "Engine Check", "Car Wash", "Flat Tire Change",
-
-            // General or Non-Urgent Assistance:
             "Road Advice", "Car Repair Consultation", "Driving Safety Tips", "Insurance Policy Questions", "Basic Vehicle Maintenance",
             "Navigation Assistance", "Towing Insurance", "Tire Pressure Check", "Late Night Assistance", "General Car Troubleshooting"
         };
@@ -217,7 +205,7 @@ public static class Initialization
 
 
             Random rand = new Random();
-            DateTime now = DateTime.Now;
+            DateTime now = Config.Clock;
             DateTime twoHoursAgo = now.AddHours(-2);
             int totalMinutesRange = (int)(now - twoHoursAgo).TotalMinutes;
             int randomMinutes = rand.Next(totalMinutesRange);
@@ -239,22 +227,24 @@ public static class Initialization
                 {
                     case int n when (n < 10):
                         MyCallType = CallType.Urgent;
-                        MyExpiredTime = MyStartTime.AddDays(15);
+                        MyExpiredTime = MyStartTime.AddMinutes(75);
                         break;
 
                     case int n when (n >= 10 && n < 20):
                         MyCallType = CallType.Medium_Urgency;
-                        MyExpiredTime = MyStartTime.AddDays(30);
+                        MyExpiredTime = MyStartTime.AddMinutes(120);
                         break;
 
                     case int n when (n >= 20 && n < 40):
                         MyCallType = CallType.General_Assistance;
-                        MyExpiredTime = MyStartTime.AddYears(1);
+                        MyExpiredTime = MyStartTime.AddHours(10);
                         break;
 
                     case int n when (n >= 40 && n < 50):
                         MyCallType = CallType.Non_Urgent;
-                        MyExpiredTime = MyStartTime.AddMonths(2);
+                        MyStartTime = twoHoursAgo;
+                        MyExpiredTime = Config.Clock.AddHours(-rand.Next(1, 2));
+                        
                         break;
 
                     default:
@@ -278,19 +268,29 @@ public static class Initialization
         }
     }
 
-
     private static void createAssignments()
     {
         List<Volunteer>? volunteersList = s_dal.Volunteer.ReadAll()?.ToList();
         List<Call>? callsList = s_dal.Call.ReadAll()?.ToList();
 
+        if (volunteersList == null || callsList == null)
+            return;
+
         for (int i = 0; i < 49; i++)
         {
-            DateTime minTime = callsList[i].StartTime;
-            DateTime maxTime = (DateTime)callsList[i].ExpiredTime;
-            TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
-            DateTime randomTime = minTime.AddMinutes(s_rand.Next(Math.Abs((int)diff.TotalMinutes)));
+            var call = callsList[i % callsList.Count];
+            var volunteer = volunteersList[i % volunteersList.Count];
 
+            DateTime minTime = call.StartTime ?? Config.Clock;
+            DateTime maxTime = call.ExpiredTime ?? Config.Clock;
+
+            TimeSpan diff = maxTime - minTime - TimeSpan.FromHours(2);
+
+            if (diff.TotalMinutes <= 0)
+                continue;
+
+            int totalMinutes = (int)diff.TotalMinutes;
+            DateTime randomTime = minTime.AddMinutes(s_rand.Next(totalMinutes));
 
             CallResolutionStatus typeOfEndTime;
             if (i < 5)
@@ -304,11 +304,11 @@ public static class Initialization
 
             s_dal!.Assignment.Create(new Assignment(
                 Config.NextAssignmentId,
-                callsList[s_rand.Next(callsList.Count - 15)].RadioCallId, // CallId
-                volunteersList[s_rand.Next(volunteersList.Count)].Id, // VolunteerId
-                randomTime, // EntryTime
-                randomTime.AddDays(2), // FinishCompletionTime
-                typeOfEndTime // CallResolutionStatus
+                call.RadioCallId,         
+                volunteer.Id,             
+                randomTime,               
+                randomTime.AddDays(2),    
+                typeOfEndTime             
             ));
         }
     }
@@ -317,8 +317,6 @@ public static class Initialization
     //public static void Do(IDal? dal) //stage 2
     public static void Do() //stage 4
     {
-        //s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!");
-        //s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
         s_dal = DalApi.Factory.Get; //stage 4
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.ResetDB();//stage 2

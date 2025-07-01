@@ -62,11 +62,14 @@ namespace PL
         /// Constructor – initializes the volunteer window and loads data.
         /// </summary>
         /// <param name="volunteerId">The volunteer's ID as string.</param>
+        private Action? observerAction;
+        private int volunteerIdInt;
+
         public VolunteerMainWindow(string volunteerId)
         {
             InitializeComponent();
 
-            if (!int.TryParse(volunteerId, out int volunteerIdInt))
+            if (!int.TryParse(volunteerId, out volunteerIdInt))
             {
                 ErrorHandler.ShowWarning("Invalid Volunteer ID", "Volunteer ID must be a number.");
                 Close();
@@ -77,6 +80,15 @@ namespace PL
             {
                 Volunteer = _bl.Volunteer.GetVolunteerDetails(volunteerId);
                 RefreshCall(volunteerIdInt);
+
+                observerAction = () => Dispatcher.Invoke(() => RefreshCall(volunteerIdInt));
+                _bl.Volunteer.AddObserver(volunteerIdInt, observerAction);
+
+                Closed += (_, __) =>
+                {
+                    if (observerAction != null)
+                        _bl.Volunteer.RemoveObserver(volunteerIdInt, observerAction);
+                };
             }
             catch (Exception)
             {
@@ -93,6 +105,7 @@ namespace PL
             CancelCommand = new RelayCommand(_ => CancelCall(), _ => CanCancelCall);
             DataContext = this;
         }
+
 
         private double? distanceToCall;
         public double? DistanceToCall
@@ -192,6 +205,7 @@ namespace PL
                 ErrorHandler.ShowInfo("Call Finished", $"Call {CurrentCall.Id} marked as Treated.");
                 CurrentCall = null;
                 RefreshCall(Volunteer.Id);
+
             }
             catch (Exception)
             {

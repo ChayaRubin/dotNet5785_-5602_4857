@@ -13,11 +13,12 @@ namespace PL.Call
             if (value is CallInList call && call.Assignments != null)
             {
                 var treated = call.Assignments.LastOrDefault(a => a.EndType == CallStatus.Treated);
-                if (treated?.CompletionTime != null)
+                if (treated?.CompletionTime != null && call.OpenTime.HasValue)
                 {
-                    TimeSpan duration = treated.CompletionTime.Value - call.OpenTime;
+                    TimeSpan duration = treated.CompletionTime.Value - call.OpenTime.Value;
                     return $"{(int)duration.TotalMinutes} min";
                 }
+
             }
 
             return "—";

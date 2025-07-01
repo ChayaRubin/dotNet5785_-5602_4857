@@ -16,7 +16,7 @@ namespace BO
 
         public double Longitude { get; set; }
 
-        public DateTime OpenTime { get; init; }
+        public DateTime? OpenTime { get; init; }
 
         public DateTime? MaxEndTime { get; set; }
 

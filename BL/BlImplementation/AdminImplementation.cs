@@ -65,6 +65,9 @@ internal class AdminImplementation : IAdmin
     {
         AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.ResetDB(); //stage 7
+        VolunteerManager.Observers.NotifyListUpdated();
+        CallManager.Observers.NotifyListUpdated();
+        AssignmentManager.Observers.NotifyListUpdated();
     }
 
     /// <summary>
@@ -78,6 +81,9 @@ internal class AdminImplementation : IAdmin
         //ClockManager.UpdateClock(ClockManager.Now);
         AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.InitializeDB(); //stage 7
+        VolunteerManager.Observers.NotifyListUpdated();
+        CallManager.Observers.NotifyListUpdated();
+        AssignmentManager.Observers.NotifyListUpdated();
 
     }
     public void StopSimulator()

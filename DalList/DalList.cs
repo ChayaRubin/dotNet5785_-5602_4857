@@ -47,10 +47,10 @@ sealed internal class DalList : IDal
     /// </summary>
     public void ResetDB()
     {
-        Assignment.DeleteAll();  // Deletes all assignments
-        Volunteer.DeleteAll();   // Deletes all volunteers
-        Call.DeleteAll();        // Deletes all calls
-        Config.Reset();          // Resets configuration settings
+        Assignment.DeleteAll(); 
+        Volunteer.DeleteAll();   
+        Call.DeleteAll();        
+        Config.Reset();          
     }
 }
 

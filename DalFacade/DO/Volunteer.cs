@@ -47,10 +47,6 @@ public record Volunteer
     public Volunteer(int MyId, string MyName, string MyPhone, string MyEmail, string? MyPassword, string? MyAddress,
     double? MyLatitude, double? MyLongitude, PositionEnum MyPosition, bool MyActive, double? MyMaxResponseDistance, DistanceTypeEnum MyTypeOfDistance/* = DistanceTypeEnum.AirDistance*/)
     {
-        //if (!IsValidPassword(MyPassword))
-        //{
-        //    return;
-        //}
 
         Id = MyId;
         Name = MyName;
@@ -65,11 +61,6 @@ public record Volunteer
         MaxResponseDistance = MyMaxResponseDistance;
         TypeOfDistance = MyTypeOfDistance;
     }
-
-    /*public override string ToString()
-    {
-        return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, Password:{Password},Active: {Active}, MaxResponseDistance: {MaxResponseDistance}";
-    }*/
 }
 
 

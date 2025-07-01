@@ -403,91 +403,6 @@ internal static class VolunteerManager
             throw new BlSendingEmailException($"Error calculating call status: {ex.Message}");
         }
     }
-    /*internal static void SimulateVolunteerAssignmentsAndCallHandling()
-    {
-        Thread.CurrentThread.Name = $"Simulator{Thread.CurrentThread.ManagedThreadId}";
-
-        List<int> updatedVolunteerIds = new();
-        List<int> updatedCallIds = new();
-
-        List<DO.Volunteer> activeVolunteers;
-        lock (AdminManager.BlMutex)
-        {
-            activeVolunteers = DalApi.Factory.Get.Volunteer.ReadAll(v => v.Active).ToList(); // ToList מיד
-        }
-
-        foreach (var volunteer in activeVolunteers)
-        {
-            DO.Assignment? currentAssignment;
-            lock (AdminManager.BlMutex)
-            {
-                currentAssignment = DalApi.Factory.Get.Assignment
-                    .ReadAll(a => a.VolunteerId == volunteer.Id && a.FinishCompletionTime == null)
-                    .FirstOrDefault();
-            }
-
-            if (currentAssignment == null)
-            {
-                List<BO.OpenCallInList> openCalls = new CallImplementation().GetAvailableOpenCalls(volunteer.Id).ToList();
-
-
-
-                if (!openCalls.Any() || Random.Shared.NextDouble() > 0.2) continue;
-
-                var selectedCall = openCalls[Random.Shared.Next(openCalls.Count)];
-                try
-                {
-                    new CallImplementation().AssignCall(volunteer.Id, selectedCall.Id);
-                    updatedVolunteerIds.Add(volunteer.Id);
-                    updatedCallIds.Add(selectedCall.Id);
-                }
-                catch { continue; }
-            }
-            else
-            {
-                DO.Call? call;
-                lock (AdminManager.BlMutex)
-                {
-                    call = DalApi.Factory.Get.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
-                }
-
-                if (call is null) continue;
-
-                double distance = Tools.CalculateDistance(volunteer.Latitude!, volunteer.Longitude!, call.Latitude, call.Longitude);
-                TimeSpan baseTime = TimeSpan.FromMinutes(distance * 2);
-                TimeSpan extra = TimeSpan.FromMinutes(Random.Shared.Next(1, 5));
-                TimeSpan totalNeeded = baseTime + extra;
-                TimeSpan actual = AdminManager.Now - currentAssignment.EntryTime;
-
-                if (actual >= totalNeeded)
-                {
-                    try
-                    {
-                        new CallImplementation().CloseCall(volunteer.Id, currentAssignment.Id);
-                        updatedVolunteerIds.Add(volunteer.Id);
-                        updatedCallIds.Add(call.RadioCallId);
-                    }
-                    catch { continue; }
-                }
-                else if (Random.Shared.NextDouble() < 0.1)
-                {
-                    try
-                    {
-                        new CallImplementation().CancelCall(volunteer.Id, currentAssignment.Id);
-                        updatedVolunteerIds.Add(volunteer.Id);
-                        updatedCallIds.Add(call.RadioCallId);
-                    }
-                    catch { continue; }
-                }
-            }
-        }
-
-        foreach (var id in updatedVolunteerIds.Distinct())
-            VolunteerManager.Observers.NotifyItemUpdated(id);
-
-        foreach (var id in updatedCallIds.Distinct())
-            CallManager.Observers.NotifyItemUpdated(id);
-    }*/
     internal static void SimulateVolunteerAssignmentsAndCallHandling()
     {
         Thread.CurrentThread.Name = $"Simulator{Thread.CurrentThread.ManagedThreadId}";
@@ -540,7 +455,7 @@ internal static class VolunteerManager
                 TimeSpan baseTime = TimeSpan.FromMinutes(distance * 2);
                 TimeSpan extra = TimeSpan.FromMinutes(Random.Shared.Next(1, 5));
                 TimeSpan totalNeeded = baseTime + extra;
-                TimeSpan actual = AdminManager.Now - currentAssignment.EntryTime;
+                TimeSpan? actual = AdminManager.Now - currentAssignment.EntryTime;
 
                 double r = Random.Shared.NextDouble();
                 if (r < 0.4)
@@ -572,6 +487,8 @@ internal static class VolunteerManager
 
         foreach (var id in updatedCallIds.Distinct())
             CallManager.Observers.NotifyItemUpdated(id);
+
+        VolunteerManager.Observers.NotifyListUpdated();
     }
 
     // הבעיות שזיהיתי ותיקונן:

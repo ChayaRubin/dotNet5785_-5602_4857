@@ -7,9 +7,9 @@ static class DalConfig
     /// internal PDS class
     /// </summary>
     internal record DalImplementation
-    (string Package,   // package/dll name
-     string Namespace, // namespace where DAL implementation class is contained in
-     string Class   // DAL implementation class name
+    (string Package, 
+     string Namespace, 
+     string Class   
     );
 
     internal static string s_dalName;

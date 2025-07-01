@@ -24,11 +24,10 @@ public enum PositionEnum
 /// </summary>
 public enum CallResolutionStatus
 {
-    Treated,       // בטיפול - בטיפול כרגע על ידי מתנדב           // סגורה - מתנדב סיים לטפל בה
+    Treated,       
     SelfCanceled,
     Canceled,
-    Expired,             // פג תוקף - לא נבחרה לטיפול או לא הסתיימה בזמן
-    // בטיפול בסיכון - קריאה בטיפול שמתקרבת לזמן הסיום
+    Expired,            
 }
 
 /// <summary>

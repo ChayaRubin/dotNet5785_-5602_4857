@@ -19,8 +19,8 @@ public record Call
     public string Address { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-    public DateTime StartTime { get; set; }
-    public DateTime ExpiredTime { get; set; }
+    public DateTime? StartTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
 
     /// <summary>
     /// Default constructor that initializes the object with default values.
@@ -41,10 +41,6 @@ public record Call
         StartTime = startTime;
         ExpiredTime = expiredTime;
     }
- /*   public override string ToString()
-    {
-        return $"Id: {RadioCallId}, CallType: {CallType}, Description: {Description}, Address: {Address}, Latitude: {Latitude}, Longitude: {Longitude},StartTime:{StartTime},ExpiredTime:{ExpiredTime}";
-    }*/
 }
 
 
