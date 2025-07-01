@@ -26,19 +26,32 @@ internal class CallImplementation : ICall
     {
         try
         {
-            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+            AdminManager.ThrowOnSimulatorIsRunning();  // שלב הגנה מסימולטור
+
             var call = _dal.Call.Read(c => c.RadioCallId == callId);
             if (call == null)
                 throw new DalDoesNotExistException($"Call with ID {callId} does not exist.");
 
-            var existingAssignment = _dal.Assignment.Read(a => a.CallId == callId && (a.CallResolutionStatus == CallResolutionStatus.Treated));
+            var assignments = _dal.Assignment.ReadAll(a => a.CallId == callId).ToList();
 
-            if (existingAssignment != null)
-                throw new DalAlreadyExistsException($"The call {callId} is already assigned or completed.");
+            // לא לאפשר אם הקריאה כבר טופלה
+            if (assignments.Any(a => a.CallResolutionStatus == CallResolutionStatus.Treated))
+                throw new DalAlreadyExistsException($"Call {callId} has already been treated.");
 
-            if (call.ExpiredTime < _dal.Config.Clock)
+            // לא לאפשר אם יש הקצאה פתוחה שלא בוטלה או לא הסתיימה
+            if (assignments.Any(a =>
+                a.FinishCompletionTime == null &&
+                a.CallResolutionStatus != CallResolutionStatus.SelfCanceled &&
+                a.CallResolutionStatus != CallResolutionStatus.Canceled))
+            {
+                throw new DalAlreadyExistsException($"Call {callId} is currently being handled by another volunteer.");
+            }
+
+            // לא ניתן להקצות קריאה שפג תוקפה
+            if (call.ExpiredTime < AdminManager.Now)
                 throw new DalArgumentException($"Call {callId} has expired.");
 
+            // יצירת הקצאה חדשה
             var newAssignment = new Assignment
             {
                 Id = Config.NextAssignmentId,
@@ -50,13 +63,14 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Create(newAssignment);
-            CallManager.Observers.NotifyListUpdated();  // כמו בשאר המקומות
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (Exception ex)
         {
             CallManager.HandleDalException(ex);
         }
     }
+
 
     /// <summary>
     /// returns calls by status
@@ -577,14 +591,19 @@ internal class CallImplementation : ICall
             CurrentAddress = volunteerDO.Address
         };
 
-        var allAssignments = _dal.Assignment.ReadAll();
+        var allAssignments = _dal.Assignment.ReadAll().ToList();
 
         var openCalls = _dal.Call.ReadAll()
             .Where(call =>
                 call.ExpiredTime > AdminManager.Now &&
                 !allAssignments.Any(a =>
                     a.CallId == call.RadioCallId &&
-                    a.CallResolutionStatus == DO.CallResolutionStatus.Treated))
+                    (
+                        a.CallResolutionStatus == DO.CallResolutionStatus.Treated ||  // כבר טופלה
+                        (a.FinishCompletionTime == null &&                           // מוקצית עכשיו
+                         a.CallResolutionStatus != DO.CallResolutionStatus.SelfCanceled &&
+                         a.CallResolutionStatus != DO.CallResolutionStatus.Canceled)
+                    )))
             .Select(call => new BO.Call
             {
                 Id = call.RadioCallId,
@@ -612,6 +631,8 @@ internal class CallImplementation : ICall
 
         return openCalls;
     }
+
+
     public void AddObserver(Action listObserver) =>
     CallManager.Observers.AddListObserver(listObserver); //stage 5
     public void AddObserver(int id, Action observer) =>
