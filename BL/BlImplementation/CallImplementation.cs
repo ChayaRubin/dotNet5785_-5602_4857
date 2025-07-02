@@ -228,7 +228,7 @@ internal class CallImplementation : ICall
             {
                 CallField.Id => callList.OrderBy(c => c.Id).ToList(),
                 CallField.FullName => callList.OrderBy(c => c.Description).ToList(),
-                CallField.TotalHandledCalls => callList.OrderByDescending(c => c.OpenTime).ToList(),
+                CallField   .TotalHandledCalls => callList.OrderByDescending(c => c.OpenTime).ToList(),
                 CallField.TotalCanceledCalls => callList.OrderByDescending(c => c.MaxEndTime).ToList(),
                 CallField.TotalExpiredCalls => callList.OrderByDescending(c => c.Type).ToList(),
                 CallField.CurrentCallId => callList.OrderBy(c => c.Id).ToList(),
@@ -342,71 +342,62 @@ internal class CallImplementation : ICall
         {
             AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             Console.WriteLine($"Checking Assignment ID: {assignmentId}");
-
-            DO.Assignment originalAssignment = _dal.Assignment.Read(a => a.Id == assignmentId)
+            DO.Assignment assignment = _dal.Assignment.Read(a => a.Id == assignmentId)
                 ?? throw new DalDoesNotExistException("The requested assignment does not exist");
 
-            Console.WriteLine($"Assignment found: {originalAssignment.Id}, Volunteer: {originalAssignment.VolunteerId}");
+            Console.WriteLine($"Assignment found: {assignment.Id}, Volunteer: {assignment.VolunteerId}");
 
-            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == originalAssignment.VolunteerId)
+            Console.WriteLine($"Checking Volunteer ID: {assignment.VolunteerId}");
+            DO.Volunteer volunteer = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId)
                 ?? throw new DalDoesNotExistException("The volunteer was not found in the system");
 
-            DO.Volunteer requestor = _dal.Volunteer.Read(v => v.Id == requestorId)
-                ?? throw new DalDoesNotExistException("The requestor was not found in the system");
+            Console.WriteLine($"Volunteer found: {volunteer.Id}, Position: {volunteer.Position}");
 
-            bool isAdmin = requestor.Position == DO.PositionEnum.Manager;
-            bool isVolunteer = (originalAssignment.VolunteerId == requestorId);
+            DO.Volunteer M = _dal.Volunteer.Read(v => v.Id == requestorId)
+                ?? throw new DalDoesNotExistException("The requestor was not found in the system");
+            bool isAdmin = M.Position == DO.PositionEnum.Manager;
+            bool isVolunteer = (assignment.VolunteerId == requestorId);
 
             Console.WriteLine($"Requestor ID: {requestorId}, IsAdmin: {isAdmin}, IsVolunteer: {isVolunteer}");
 
             if (!isAdmin && !isVolunteer)
                 throw new DalNoPermitionException("You do not have permission to cancel this call");
 
-            if (originalAssignment.FinishCompletionTime < AdminManager.Now)
-                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been expired");
+            if (assignment.FinishCompletionTime < AdminManager.Now)
+                throw new DalGeneralDatabaseException("Cannot cancel a call that has already been Expired");
 
-            // במקום עדכון - ניצור הקצאה חדשה
-            var canceledAssignment = new DO.Assignment
-            {
-                Id = Config.NextAssignmentId,
-                CallId = originalAssignment.CallId,
-                VolunteerId = originalAssignment.VolunteerId,
-                EntryTime = AdminManager.Now,
-                FinishCompletionTime = AdminManager.Now,
-                CallResolutionStatus = isVolunteer
-                    ? DO.CallResolutionStatus.SelfCanceled
-                    : DO.CallResolutionStatus.Canceled
-            };
+            assignment.EntryTime = AdminManager.Now;
 
-            _dal.Assignment.Create(canceledAssignment);
+            assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
 
-            // עדכון תצוגה
-            AssignmentManager.Observers.NotifyItemUpdated(canceledAssignment.Id);
-            AssignmentManager.Observers.NotifyListUpdated();
+            _dal.Assignment.Update(assignment);
+            AssignmentManager.Observers.NotifyItemUpdated(assignment.Id);  //stage 5
+            AssignmentManager.Observers.NotifyListUpdated();  //stage 5
             CallManager.Observers.NotifyListUpdated();
             CallManager.Observers.NotifyItemUpdated(requestorId);
 
-            // שליחת מייל אם המבטל הוא מנהל
+
+
             if (isAdmin)
             {
-                BO.Call call = GetCallDetails(originalAssignment.CallId);
-                BO.Volunteer volunteerBO = VolunteerManager.ConvertToBO(volunteer);
-                SendCancellationEmailAsync(call, volunteerBO);
+                BO.Call call = GetCallDetails(assignment.CallId);
+                DO.Volunteer volunteer1 = _dal.Volunteer.Read(v => v.Id == assignment.VolunteerId) ?? throw new DalDoesNotExistException("The requested volunteer does not exist");
+                BO.Volunteer volunteer2 = VolunteerManager.ConvertToBO(volunteer1);
+                SendCancellationEmailAsync(call, volunteer2);
             }
-
             Console.WriteLine("Call cancelled successfully.");
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new BlUnauthorizedAccessException($"Canceling failed: {ex.Message}");
+            throw new BlUnauthorizedAccessException($"canceling failed: {ex.Message}");
         }
         catch (DalNoPermitionException ex)
         {
-            throw new BlNoPermitionException($"Canceling failed: {ex.Message}");
+            throw new BlNoPermitionException($"canceling failed: {ex.Message}");
         }
         catch (DalGeneralDatabaseException ex)
         {
-            throw new BlGeneralDatabaseException($"Canceling failed: {ex.Message}");
+            throw new BlGeneralDatabaseException($"canceling failed: {ex.Message}");
         }
         catch (Exception ex)
         {

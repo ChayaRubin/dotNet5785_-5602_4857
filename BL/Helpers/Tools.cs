@@ -47,7 +47,7 @@ namespace Helpers
         /// <exception cref="InvalidOperationException">Thrown when geocoding fails or returns invalid results</exception>
         public static (double latitude, double longitude) GetCoordinatesFromAddress(string address)
         {
-            string apiKey = "PK.83B935C225DF7E2F9B1ee90A6B46AD86";
+            string apiKey = "pk.2c8ee1e2c0361af3c52d5073f44ab9ef";
             using var client = new HttpClient();
             string url = $"https://us1.locationiq.com/v1/search.php?key={apiKey}&q={Uri.EscapeDataString(address)}&format=json";
 

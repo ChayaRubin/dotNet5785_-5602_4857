@@ -105,7 +105,7 @@ namespace PL
                     ButtonText = "Update";
 
                     s_bl.Volunteer.AddObserver(CurrentVolunteer.Id, OnVolunteerChanged);
-                    MessageBox.Show($"{CurrentVolunteer.Id}");
+
                     RefreshCall(CurrentVolunteer.Id);
 
                 }
@@ -170,7 +170,6 @@ namespace PL
             }
             catch (Exception)
             {
-                ErrorHandler.ShowError("Call Loading Error", "Could not load available calls. Please try again later.");
                 CurrentCallInProgress = null;
                 MapLink = string.Empty;
             }

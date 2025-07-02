@@ -178,7 +178,6 @@ namespace PL
             }
             catch (Exception)
             {
-                ErrorHandler.ShowError("Call Loading Error", "Could not load available calls. Please try again later.");
                 CurrentCall = null;
                 MapLink = string.Empty;
             }

@@ -54,30 +54,6 @@ internal static class CallManager
         };
     }
 
-    /*    internal static BO.CallInList CreateCallInList(DO.Call call, IEnumerable<DO.Assignment> assignments, Dictionary<int, string> volunteers)
-        {
-            var callAssignments = assignments.Where(a => a.CallId == call.RadioCallId).OrderByDescending(a => a.EntryTime).ToList();
-            var latestAssignment = callAssignments.FirstOrDefault();
-
-            return new BO.CallInList
-            {
-                Description=call.Description,
-                Id = call.RadioCallId,
-                Type = (BO.CallTypeEnum)call.CallType,
-                OpenTime = call.StartTime,
-                Status = CallManager.CalculateCallStatus(call.RadioCallId),
-                AssignmentId = latestAssignment?.Id ?? 0,
-                LastVolunteerName = latestAssignment?.VolunteerId != null && volunteers.TryGetValue(latestAssignment!.VolunteerId, out var name) ? name : null,
-                TotalAssignments = callAssignments.Count,
-                MaxEndTime = call.ExpiredTime.HasValue
-                ? call.ExpiredTime - AdminManager.Now
-                : null,
-                completeTime = latestAssignment?.FinishCompletionTime.HasValue == true
-                ? latestAssignment.FinishCompletionTime.Value - latestAssignment.EntryTime
-                : null,
-
-            };
-        }*/
     internal static BO.CallStatus CalculateCallStatus(int callId)
 
     {
@@ -109,7 +85,7 @@ internal static class CallManager
             if (activeAssignment == null)
             {
                 var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
-                return successfulAssignment ? BO.CallStatus.Closed : BO.CallStatus.Open;
+                return successfulAssignment ? BO.CallStatus.Treated : BO.CallStatus.Open;
             }
 
 
