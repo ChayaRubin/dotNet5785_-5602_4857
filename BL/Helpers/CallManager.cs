@@ -546,7 +546,8 @@ internal static class CallManager
                 .ReadAll(c => c.ExpiredTime < AdminManager.Now)
                 .ToList();
         }
-
+        if(expiredCalls.Count()>0)
+            CallManager.Observers.NotifyListUpdated();
         foreach (var call in expiredCalls)
         {
             DO.Assignment? openAssignment;
