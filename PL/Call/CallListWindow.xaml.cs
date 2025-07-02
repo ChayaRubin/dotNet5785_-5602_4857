@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using BlApi;
 using BO;
+using System.Windows.Controls;
 
 namespace PL.Call
 {
@@ -92,7 +93,7 @@ namespace PL.Call
 
         private void DeleteCall_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is FrameworkElement fe && fe.DataContext is CallInList call)
+            if (e.Source is Button button && button.CommandParameter is CallInList call)
             {
                 try
                 {
@@ -106,9 +107,10 @@ namespace PL.Call
             }
         }
 
+
         private void CancelAssignment_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is FrameworkElement fe && fe.DataContext is CallInList call)
+            if (e is RoutedEventArgs { Source: Button button } && button.CommandParameter is CallInList call)
             {
                 try
                 {
@@ -127,6 +129,7 @@ namespace PL.Call
                 }
             }
         }
+
 
         private void CallsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

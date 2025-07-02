@@ -57,17 +57,30 @@ namespace PL.Call
             try
             {
                 if (isEditMode)
-                    bl.Call.UpdateCallDetails(CurrentCall); // sync method
+                {
+                    bl.Call.UpdateCallDetails(CurrentCall);
+                }
                 else
-                    await bl.Call.AddCall(CurrentCall);     // async method
+                {
+                    await bl.Call.AddCall(CurrentCall);
+                }
 
-                Close(); // auto-close
+                Close();
+            }
+            catch (ArgumentException argEx)
+            {
+                ErrorHandler.ShowError("Invalid Input", "Please check the call data");
+            }
+            catch (TaskCanceledException tcEx)
+            {
+                ErrorHandler.ShowError("Timeout", "The operation timed out: ");
             }
             catch (Exception ex)
             {
-                ErrorHandler.ShowError("Save Error", $"Failed to save call: {ex.Message}");
+                ErrorHandler.ShowError("Save Error", "Failed to save call");
             }
         }
+
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e) => Close();
 

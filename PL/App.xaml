@@ -5,7 +5,6 @@
              StartupUri="LoginWindow.xaml">
     <Application.Resources>
         <local:CallTypeEnumToStringConverter x:Key="CallTypeEnumToStringConverter" />
-        <!--<local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->
     </Application.Resources>
 </Application>
 

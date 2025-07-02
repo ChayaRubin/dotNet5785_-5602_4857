@@ -41,11 +41,11 @@
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
                     <TextBlock Text="Manager Dashboard"
-           FontSize="36"
-           FontWeight="Bold"
-           Foreground="#0F425F"
-           HorizontalAlignment="Center"
-           Margin="0 0 0 20"/>
+                               FontSize="36"
+                               FontWeight="Bold"
+                               Foreground="#0F425F"
+                               HorizontalAlignment="Center"
+                               Margin="0 0 0 20"/>
 
                     <!-- Time and Date Display -->
                     <TextBlock Text="{Binding CurrentTime, StringFormat=MM/dd/yyyy HH:mm:ss}"
@@ -57,11 +57,16 @@
 
                     <!-- Time advance buttons -->
                     <UniformGrid Columns="5" Margin="0 0 0 30" HorizontalAlignment="Center">
-                        <Button Content="Add One Minute" Click="BtnAddOneMinute_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Hour" Click="BtnAddOneHour_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Day" Click="BtnAddOneDay_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Month" Click="BtnAddOneMonth_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Add One Year" Click="BtnAddOneYear_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Add One Minute" Click="BtnAddOneMinute_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="Add One Hour" Click="BtnAddOneHour_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="Add One Day" Click="BtnAddOneDay_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="Add One Month" Click="BtnAddOneMonth_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="Add One Year" Click="BtnAddOneYear_Click" Background="#C25C9E" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
                     </UniformGrid>
 
                     <!-- Configuration variables area -->
@@ -74,7 +79,7 @@
                                  TextAlignment="Center"
                                  VerticalContentAlignment="Center"
                                  BorderBrush="#F9B350"/>
-                        <Button Content="Update Config Variable" Click="BtnUpdateMaxYearRange_Click" Background="#F9B350" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Update Config Variable" Click="BtnUpdateMaxYearRange_Click" Background="#F9B350" Style="{StaticResource RoundedButtonStyle}" IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
                     </StackPanel>
 
                     <!-- Simulator controls -->
@@ -119,13 +124,15 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+
                     <!-- Extra Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button Content="Volunteer List" Click="BtnVolunteers_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
                         <Button Content="Call List" Click="BtnCalls_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Initialize DB" Click="BtnInitializeDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
-                        <Button Content="Reset DB" Click="BtnResetDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
+                        <Button Content="Initialize DB" Click="BtnInitializeDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="Reset DB" Click="BtnResetDB_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"
+                                IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
                         <Button Content="Logout" Click="BtnLogout_Click" Background="#B9D15F" Style="{StaticResource RoundedButtonStyle}"/>
                     </StackPanel>
 

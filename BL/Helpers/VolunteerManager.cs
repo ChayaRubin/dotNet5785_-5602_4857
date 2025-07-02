@@ -146,14 +146,12 @@ internal static class VolunteerManager
                 .Count();
         }
 
-        // רק המתנדב עצמו או מנהל יכולים לעדכן פרטים
         if (requesterId != existingVolunteer.Id.ToString() &&
             requester.Position.ToString() != BO.PositionEnum.Manager.ToString())
         {
             return false;
         }
 
-        // מניעת הסרת המנהל האחרון
         if (existingVolunteer.Position == DO.PositionEnum.Manager &&
             volunteerToUpdate.Role != BO.PositionEnum.Manager &&
             currentManagers <= 1)
@@ -250,20 +248,18 @@ internal static class VolunteerManager
     /// <returns>True if ID is valid, false otherwise</returns>
     public static bool IsValidIdNumber(string idNumber)
     {
-        // בדיקת אורך וסוג התו (האם כל התו הוא ספרה)
         if (idNumber.Length != 9 || !idNumber.All(char.IsDigit))
         {
             return false;
         }
 
-        // המרת המספר למערך של ספרות
+        
         int[] digits = new int[9];
         for (int i = 0; i < 9; i++)
         {
-            digits[i] = idNumber[i] - '0'; // המרת תו לספרה
+            digits[i] = idNumber[i] - '0'; 
         }
 
-        // חישוב סכום לפי אלגוריתם מספר הזהות
         int sum = 0;
         for (int i = 0; i < 8; i++)
         {
@@ -272,10 +268,8 @@ internal static class VolunteerManager
             sum += product > 9 ? product - 9 : product;
         }
 
-        // חישוב ספרת ביקורת
         int checkDigit = (10 - sum % 10) % 10;
 
-        // בדיקה אם ספרת הביקורת נכונה
         return checkDigit == digits[8];
     }
 
@@ -403,9 +397,10 @@ internal static class VolunteerManager
             throw new BlSendingEmailException($"Error calculating call status: {ex.Message}");
         }
     }
+    private static int threadIndex = 0;
     internal static void SimulateVolunteerAssignmentsAndCallHandling()
     {
-        Thread.CurrentThread.Name = $"Simulator{Thread.CurrentThread.ManagedThreadId}";
+        Thread.CurrentThread.Name = $"Simulator{threadIndex++}";
 
         List<int> updatedVolunteerIds = new();
         List<int> updatedCallIds = new();
@@ -430,7 +425,7 @@ internal static class VolunteerManager
             {
                 List<BO.OpenCallInList> openCalls = new CallImplementation().GetAvailableOpenCalls(volunteer.Id).ToList();
 
-                if (!openCalls.Any() || Random.Shared.NextDouble() > 0.5) continue;
+                if (!openCalls.Any() || Random.Shared.NextDouble() > 0.7) continue;
 
                 var selectedCall = openCalls[Random.Shared.Next(openCalls.Count)];
                 try
@@ -478,7 +473,7 @@ internal static class VolunteerManager
                     }
                     catch { continue; }
                 }
-                // else: 20% לא קורה כלום
+                
             }
         }
 
@@ -490,173 +485,5 @@ internal static class VolunteerManager
 
         VolunteerManager.Observers.NotifyListUpdated();
     }
-
-    // הבעיות שזיהיתי ותיקונן:
-
-    /*internal static void SimulateVolunteerAssignmentsAndCallHandling()
-    {
-        Thread.CurrentThread.Name = $"Simulator{Thread.CurrentThread.ManagedThreadId}";
-
-        List<int> updatedVolunteerIds = new();
-        List<int> updatedCallIds = new();
-
-        List<DO.Volunteer> activeVolunteers;
-        lock (AdminManager.BlMutex)
-        {
-            activeVolunteers = DalApi.Factory.Get.Volunteer.ReadAll(v => v.Active).ToList();
-        }
-
-        // הוספת לוג לבדיקה
-        Console.WriteLine($"Found {activeVolunteers.Count} active volunteers");
-
-        foreach (var volunteer in activeVolunteers)
-        {
-            try
-            {
-                DO.Assignment? currentAssignment;
-                lock (AdminManager.BlMutex)
-                {
-                    currentAssignment = DalApi.Factory.Get.Assignment
-                        .ReadAll(a => a.VolunteerId == volunteer.Id && a.FinishCompletionTime == null)
-                        .FirstOrDefault();
-                }
-
-                if (currentAssignment == null)
-                {
-                    // בעיה 1: השימוש ב-CallImplementation ללא ממשק עלול לגרום לבעיות
-                    // בעיה 2: אין הדפסת שגיאות להבנת מה קורה
-
-                    List<BO.OpenCallInList> openCalls;
-                    try
-                    {
-                        // במקום CallImplementation ישירות, עדיף להשתמש בממשק
-                        var callImplementation = new CallImplementation();
-                        openCalls = callImplementation.GetAvailableOpenCalls(volunteer.Id).ToList();
-
-                        Console.WriteLine($"Volunteer {volunteer.Id} has {openCalls.Count} available calls");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error getting open calls for volunteer {volunteer.Id}: {ex.Message}");
-                        continue;
-                    }
-
-                    // בעיה 3: הסיכוי של 0.2 (20%) עלול להיות נמוך מדי לבדיקה
-                    // העלה ל-50% או יותר לבדיקה
-                    if (!openCalls.Any() || Random.Shared.NextDouble() > 0.5) // שונה מ-0.2 ל-0.5
-                    {
-                        if (!openCalls.Any())
-                            Console.WriteLine($"No open calls for volunteer {volunteer.Id}");
-                        else
-                            Console.WriteLine($"Random skip assignment for volunteer {volunteer.Id}");
-                        continue;
-                    }
-
-                    var selectedCall = openCalls[Random.Shared.Next(openCalls.Count)];
-                    try
-                    {
-                        Console.WriteLine($"Attempting to assign call {selectedCall.Id} to volunteer {volunteer.Id}");
-
-                        var callImplementation = new CallImplementation();
-                        callImplementation.AssignCall(volunteer.Id, selectedCall.Id);
-
-                        updatedVolunteerIds.Add(volunteer.Id);
-                        updatedCallIds.Add(selectedCall.Id);
-
-                        Console.WriteLine($"Successfully assigned call {selectedCall.Id} to volunteer {volunteer.Id}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to assign call {selectedCall.Id} to volunteer {volunteer.Id}: {ex.Message}");
-                        continue;
-                    }
-                }
-                else
-                {
-                    // בעיה 4: אין הדפסות לוג כדי לראות מה קורה בחלק הזה
-                    Console.WriteLine($"Volunteer {volunteer.Id} has active assignment {currentAssignment.Id}");
-
-                    DO.Call? call;
-                    lock (AdminManager.BlMutex)
-                    {
-                        call = DalApi.Factory.Get.Call.Read(c => c.RadioCallId == currentAssignment.CallId);
-                    }
-
-                    if (call is null)
-                    {
-                        Console.WriteLine($"Call {currentAssignment.CallId} not found for assignment {currentAssignment.Id}");
-                        continue;
-                    }
-
-                    // בדיקת מרחק וזמן
-                    double distance = Tools.CalculateDistance(volunteer.Latitude!, volunteer.Longitude!, call.Latitude, call.Longitude);
-                    TimeSpan baseTime = TimeSpan.FromMinutes(distance * 2);
-                    TimeSpan extra = TimeSpan.FromMinutes(Random.Shared.Next(1, 5));
-                    TimeSpan totalNeeded = baseTime + extra;
-                    TimeSpan actual = AdminManager.Now - currentAssignment.EntryTime;
-
-                    Console.WriteLine($"Assignment {currentAssignment.Id}: Distance={distance:F2}km, " +
-                                    $"TotalNeeded={totalNeeded.TotalMinutes:F1}min, Actual={actual.TotalMinutes:F1}min");
-
-                    if (actual >= totalNeeded)
-                    {
-                        try
-                        {
-                            Console.WriteLine($"Attempting to close assignment {currentAssignment.Id}");
-
-                            var callImplementation = new CallImplementation();
-                            callImplementation.CloseCall(volunteer.Id, currentAssignment.Id);
-
-                            updatedVolunteerIds.Add(volunteer.Id);
-                            updatedCallIds.Add(call.RadioCallId);
-
-                            Console.WriteLine($"Successfully closed assignment {currentAssignment.Id}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Failed to close assignment {currentAssignment.Id}: {ex.Message}");
-                            continue;
-                        }
-                    }
-                    else if (Random.Shared.NextDouble() < 0.2) // 10% chance to cancel
-                    {
-                        try
-                        {
-                            Console.WriteLine($"Attempting to cancel assignment {currentAssignment.Id}");
-
-                            var callImplementation = new CallImplementation();
-                            callImplementation.CancelCall(volunteer.Id, currentAssignment.Id);
-
-                            updatedVolunteerIds.Add(volunteer.Id);
-                            updatedCallIds.Add(call.RadioCallId);
-
-                            Console.WriteLine($"Successfully canceled assignment {currentAssignment.Id}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Failed to cancel assignment {currentAssignment.Id}: {ex.Message}");
-                            continue;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error processing volunteer {volunteer.Id}: {ex.Message}");
-                continue;
-            }
-        }
-
-        // Notify observers
-        Console.WriteLine($"Notifying updates for {updatedVolunteerIds.Distinct().Count()} volunteers and {updatedCallIds.Distinct().Count()} calls");
-
-        foreach (var id in updatedVolunteerIds.Distinct())
-            VolunteerManager.Observers.NotifyItemUpdated(id);
-
-        foreach (var id in updatedCallIds.Distinct())
-            CallManager.Observers.NotifyItemUpdated(id);
-    }
-
-*/
 
 }

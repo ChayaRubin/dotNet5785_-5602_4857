@@ -18,41 +18,66 @@ internal static class CallManager
     internal static ObserverManager Observers = new(); //stage 5 
     private static IDal s_dal = Factory.Get; // stage 4
 
-    //public static List<CallInList> GetCallList(IEnumerable<DO.Call> calls)
-    //{
-    //    var callList = calls.Select(ConvertToBO).ToList();
-
-    //    var uniqueCalls = callList
-    //        .GroupBy(call => call.Id) 
-    //        .Select(group => group.OrderByDescending(call => call.OpenTime).First()) 
-    //        .ToList();
-
-    //    return uniqueCalls;
-    //}
     internal static BO.CallInList CreateCallInList(DO.Call call, IEnumerable<DO.Assignment> assignments, Dictionary<int, string> volunteers)
     {
-        var callAssignments = assignments.Where(a => a.CallId == call.RadioCallId).OrderByDescending(a => a.EntryTime).ToList();
+        var callAssignments = assignments
+            .Where(a => a.CallId == call.RadioCallId)
+            .OrderByDescending(a => a.EntryTime)
+            .ToList();
+
         var latestAssignment = callAssignments.FirstOrDefault();
+
+        BO.CallStatus status;
+        lock (AdminManager.BlMutex)
+        {
+            status = CallManager.CalculateCallStatus(call.RadioCallId);
+        }
 
         return new BO.CallInList
         {
-            Description=call.Description,
+            Description = call.Description,
             Id = call.RadioCallId,
             Type = (BO.CallTypeEnum)call.CallType,
             OpenTime = call.StartTime,
-            Status = CallManager.CalculateCallStatus(call.RadioCallId),
+            Status = status,
             AssignmentId = latestAssignment?.Id ?? 0,
-            LastVolunteerName = latestAssignment?.VolunteerId != null && volunteers.TryGetValue(latestAssignment!.VolunteerId, out var name) ? name : null,
+            LastVolunteerName = latestAssignment?.VolunteerId != null &&
+                                volunteers.TryGetValue(latestAssignment!.VolunteerId, out var name)
+                                ? name : null,
             TotalAssignments = callAssignments.Count,
             MaxEndTime = call.ExpiredTime.HasValue
-            ? call.ExpiredTime - AdminManager.Now
-            : null,
+                ? call.ExpiredTime - AdminManager.Now
+                : null,
             completeTime = latestAssignment?.FinishCompletionTime.HasValue == true
-            ? latestAssignment.FinishCompletionTime.Value - latestAssignment.EntryTime
-            : null,
-
+                ? latestAssignment.FinishCompletionTime.Value - latestAssignment.EntryTime
+                : null,
         };
     }
+
+    /*    internal static BO.CallInList CreateCallInList(DO.Call call, IEnumerable<DO.Assignment> assignments, Dictionary<int, string> volunteers)
+        {
+            var callAssignments = assignments.Where(a => a.CallId == call.RadioCallId).OrderByDescending(a => a.EntryTime).ToList();
+            var latestAssignment = callAssignments.FirstOrDefault();
+
+            return new BO.CallInList
+            {
+                Description=call.Description,
+                Id = call.RadioCallId,
+                Type = (BO.CallTypeEnum)call.CallType,
+                OpenTime = call.StartTime,
+                Status = CallManager.CalculateCallStatus(call.RadioCallId),
+                AssignmentId = latestAssignment?.Id ?? 0,
+                LastVolunteerName = latestAssignment?.VolunteerId != null && volunteers.TryGetValue(latestAssignment!.VolunteerId, out var name) ? name : null,
+                TotalAssignments = callAssignments.Count,
+                MaxEndTime = call.ExpiredTime.HasValue
+                ? call.ExpiredTime - AdminManager.Now
+                : null,
+                completeTime = latestAssignment?.FinishCompletionTime.HasValue == true
+                ? latestAssignment.FinishCompletionTime.Value - latestAssignment.EntryTime
+                : null,
+
+            };
+        }*/
     internal static BO.CallStatus CalculateCallStatus(int callId)
 
     {
@@ -508,54 +533,6 @@ internal static class CallManager
         }
     }
     private static int s_periodicCounter = 0;
-    /*internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
-    {
-        Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}"; //stage 7 (optional)
-        List<DO.Call> expiredCalls;
-        List<DO.Assignment> assignments;
-        List<DO.Assignment> assignmentsWithNull;
-        lock (AdminManager.BlMutex) //stage 7
-            expiredCalls = s_dal.Call.ReadAll(c => c.ExpiredTime < newClock).ToList();
-        expiredCalls.ForEach(call =>
-        {
-            lock (AdminManager.BlMutex)
-            {//stage 7
-                assignments = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId).ToList();
-                if (!assignments.Any())
-                {
-                    s_dal.Assignment.Create(new DO.Assignment(
-                        id: 0,
-                        callId: call.RadioCallId,
-                        volunteerId: 0,
-                        entryTime: AdminManager.Now,
-                        finishCompletionTime: AdminManager.Now,
-                        callResolutionStatus: DO.CallResolutionStatus.SelfCanceled
-                    ));
-                }
-            }
-            Observers.NotifyItemUpdated(call.RadioCallId);
-
-
-            lock (AdminManager.BlMutex) //stage 7
-                assignmentsWithNull = s_dal.Assignment.ReadAll(a => a.CallId == call.RadioCallId && a.CallResolutionStatus is null).ToList();
-            if (assignmentsWithNull.Any())
-            {
-                lock (AdminManager.BlMutex) //stage 7
-                    foreach (var assignment in assignmentsWithNull)
-                    {
-                        s_dal.Assignment.Update(assignment with
-                        {
-                            FinishCompletionTime = AdminManager.Now,
-                            CallResolutionStatus = (DO.CallResolutionStatus)BO.CallStatus.SelfCanceled
-                        });
-                    }
-
-                Observers.NotifyItemUpdated(call.RadioCallId);
-            }
-
-        });
-
-    }*/
     internal static void PeriodicCallsUpdates(DateTime oldClock, DateTime newClock)
     {
         Thread.CurrentThread.Name = $"Periodic{++s_periodicCounter}";

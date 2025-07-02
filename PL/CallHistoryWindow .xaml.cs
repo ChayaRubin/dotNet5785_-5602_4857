@@ -54,7 +54,6 @@ namespace PL
             allCalls = _bl.Call.GetClosedCallsByVolunteer(volunteerId).OrderByDescending(c => c.EndTreatmentTime).ToList();
             SelectedStatusFilter = "All";
 
-            // 👇 ADD THIS:
             _bl.Call.AddObserver(volunteerId, RefreshHistory);
             Closed += (_, __) => _bl.Call.RemoveObserver(volunteerId, RefreshHistory);
         }
