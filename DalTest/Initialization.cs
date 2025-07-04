@@ -47,53 +47,54 @@ public static class Initialization
 
         public static void CreateVolunteerEntries()
         {
-            int MIN_ID = 100000000;
-            int MAX_ID = 999999999;
-            int MAX_DISTANCE = 50;
-
-            int minLength = Math.Min(Math.Min(names.Length, addresses.Length), Math.Min(latitudes.Length, longitudes.Length));
-            for (int i = 0; i < minLength; i++)
+            // Create volunteers from XML data
+            var volunteersFromXml = new[]
             {
-                string name = names[i];
-                int id;
+                new { Id = 621662838, Name = "Yaakov Cohen", Phone = "056036018", Email = "yaakov.cohen@email.com", Password = "d7c52e3caf30a785b4c59b89ea5a4bfe2bfbaeecb732dab2278562bfb8b11c6c", Address = "Etsel 13, Jerusalem", Latitude = 31.7511651, Longitude = 34.9819467, Position = PositionEnum.Manager, MaxResponseDistance = 31.67534935371749, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 817875406, Name = "Miriam Levy", Phone = "052084623", Email = "miriam.levy@email.com", Password = "12ce56b36b78c99c87aaf096420fad885dda898fa5d5b2330c03d0e19289f685", Address = "King David Street 7, Jerusalem", Latitude = 31.70954, Longitude = 35.205725, Position = PositionEnum.Volunteer, MaxResponseDistance = 6.914661921350146, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 592103913, Name = "Avraham Ben-David", Phone = "052143059", Email = "avraham.ben-david@email.com", Password = "d07ee81f3fc78347420bfdfc57481583d315e6c25ae8eb6f3db1cafd9b9ae6d3", Address = "Ben Yehuda Street 45, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 13.626726168685693, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 706485399, Name = "Sarah Shalom", Phone = "051034944", Email = "sarah.shalom@email.com", Password = "48ec0135c8fbb667cdfd7ce858da86e2db7dbb5550c22e97f29dd53bc63b9c05", Address = "Jaffa Street 56, Jerusalem", Latitude = 31.78168, Longitude = 35.220332, Position = PositionEnum.Volunteer, MaxResponseDistance = 21.154270913962563, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 116366798, Name = "Chaim Adler", Phone = "054060951", Email = "chaim.adler@email.com", Password = "31306ee7c582931c75a78d381824248ddd9e018bf0c8878fe90af5b5e95f3e20", Address = "Agrippas Street 22, Jerusalem", Latitude = 31.69916, Longitude = 35.196286, Position = PositionEnum.Volunteer, MaxResponseDistance = 1.9111417006922593, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 979539050, Name = "Ruth Klein", Phone = "052493767", Email = "ruth.klein@email.com", Password = "5bb2345a31d8f6b9784729f7ac0d776870c6e7700bef324f760c64604204b335", Address = "Shmuel Hanavi Street 5, Jerusalem", Latitude = 31.7959211, Longitude = 35.2197757, Position = PositionEnum.Volunteer, MaxResponseDistance = 18.882628874722577, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 506371448, Name = "David Katz", Phone = "056416322", Email = "david.katz@email.com", Password = "ae824c3ce490d07f5c6db2cf1da8816f23b38b93619f72993f278520343ec32c", Address = "Yehuda Halevi Street 3, Jerusalem", Latitude = 31.7513601, Longitude = 34.9811379, Position = PositionEnum.Volunteer, MaxResponseDistance = 22.44583719455538, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 197318211, Name = "Esther Goldstein", Phone = "053587658", Email = "esther.goldstein@email.com", Password = "96c685e1bd3c7cd24b5e8cd6a921722e2f26d5b015298dd2d1732def431107f7", Address = "Hillel Street 19, Jerusalem", Latitude = 31.780094, Longitude = 35.218297, Position = PositionEnum.Volunteer, MaxResponseDistance = 28.876821568556228, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 340194993, Name = "Moshe Fogel", Phone = "058672420", Email = "moshe.fogel@email.com", Password = "3f072a0ac2b99dff31361d886e0c2e17bae59fa272a8ca6449d3e1a56e1a0849", Address = "Ramban Street 9, Jerusalem", Latitude = 31.528593, Longitude = 35.103687, Position = PositionEnum.Volunteer, MaxResponseDistance = 32.501537531213586, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 335198765, Name = "Tova Levi", Phone = "054534200", Email = "tova.levi@email.com", Password = "0b58cb58a6d28d3e070aaba81d621fbdd0860615cc73b4f5038ce100c26bceb5", Address = "Strauss Street 12, Jerusalem", Latitude = 31.906037, Longitude = 35.203005, Position = PositionEnum.Volunteer, MaxResponseDistance = 44.32661590097071, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 119785600, Name = "Yitzhak Mizrahi", Phone = "052712994", Email = "yitzhak.mizrahi@email.com", Password = "5d9e7bb65a5e2216023e649ddd06d7ac5c28d8d91ebb90cc000feabd9cf478a6", Address = "Yafo Road 34, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 2.1154350392300514, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 824706269, Name = "Naomi Rosen", Phone = "056970859", Email = "naomi.rosen@email.com", Password = "82d33f1ac5f403fbe5ca8e0924fa30618f4580d1494157ce3a793b6d8635659c", Address = "Kehilat Yaakov Street 8, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 31.178321844100182, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 690931779, Name = "Yehuda Friedman", Phone = "058999962", Email = "yehuda.friedman@email.com", Password = "b5056d7939a78155c604feff9be3635cb286ffd2a58f3342029db5d5c23ab966", Address = "Mordechai Ben Hillel Street 11, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 25.81193005468694, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 914689136, Name = "Shoshana Cohen", Phone = "051635145", Email = "shoshana.cohen@email.com", Password = "359ce90df34dbbb56326ffcd4ddb755fc651883651e1196cafe0be4d5c571765", Address = "Keren Hayesod Street 16, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 48.087094533852, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 245962634, Name = "Eliezer Glick", Phone = "058093862", Email = "eliezer.glick@email.com", Password = "ba0535b80407b53c6347ff29a5797681164cf4cf03690019579508bd57febebf", Address = "Shazar Boulevard 21, Jerusalem", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 31.169077415008424, TypeOfDistance = DistanceTypeEnum.AirDistance },
+                new { Id = 648377993, Name = "Chava Shapiro", Phone = "054124530", Email = "chava.shapiro@email.com", Password = "c78468d681d7e6983700f50705d1c044f87fb1a414e884c5a95511fd9d0c206a", Address = "25 Shlomzion Hamalka Street, Jerusalem:", Latitude = 31.759595, Longitude = 35.215315, Position = PositionEnum.Volunteer, MaxResponseDistance = 7.707261513926877, TypeOfDistance = DistanceTypeEnum.AirDistance }
+            };
 
-                do
-                {
-                    id = s_rand.Next(MIN_ID, MAX_ID);
-                } while (s_dal.Volunteer.Read(v => v.Id == id) != null);
+            // Add the two new volunteers specified by the user
+            var additionalVolunteers = new[]
+            {
+                new { Id = 218431161, Name = "Zevi Rubin", Phone = "0548428809", Email = "shanirubin6@gmail.com", Password = "8b69b3186291b9955fb5d53a498c5e8c50b966142d72e6de9fc027c1c30dba8d", Address = "Etsel 13, jerusalim", Latitude = 31.7511651, Longitude = 34.9819467, Position = PositionEnum.Volunteer, MaxResponseDistance = 30.0, TypeOfDistance = DistanceTypeEnum.WalkingDistance },
+                new { Id = 327006516, Name = "Ma", Phone = "0548428809", Email = "shanirubin2@gmail.com", Password = "e8fce29f0c9d3d8faaf1e8539b5612b671213f129457add0e7a928e5dc9e1301", Address = "Etsel 13, jerusalem", Latitude = 31.7511651, Longitude = 34.9819467, Position = PositionEnum.Manager, MaxResponseDistance = 1000.0, TypeOfDistance = DistanceTypeEnum.AirDistance }
+            };
 
+            // Combine all volunteers
+            var allVolunteers = volunteersFromXml.Concat(additionalVolunteers);
 
-                Random rand = new Random();
-                string phoneNumber;
-                int phoneNumberInt;
-                do
-                {
-                    phoneNumber = $"05{rand.Next(1000000, 10000000)}";
-                    phoneNumberInt = int.Parse(phoneNumber);
-                } while (s_dal.Volunteer.Read(v => v.Phone == phoneNumber) != null);
-
-                string email = $"{name.ToLower().Replace(" ", ".")}@email.com";
-                string address = addresses[i];
-                double latitude = latitudes[i];
-                double longitude = longitudes[i];
-                PositionEnum position = i == 0 ? PositionEnum.Manager : PositionEnum.Volunteer;
-                string password = GenerateStrongPassword();
-                string encryptedPassword = Encrypt(password);
-
+            // Create all volunteers
+            foreach (var vol in allVolunteers)
+            {
                 Volunteer volunteer = new Volunteer
                 {
-                    Id = id,
-                    Name = name,
-                    Phone = phoneNumber,
-                    Email = email,
-                    Address = address,
-                    Latitude = latitude,
-                    Longitude = longitude,
-                    Position = position,
+                    Id = vol.Id,
+                    Name = vol.Name,
+                    Phone = vol.Phone,
+                    Email = vol.Email,
+                    Address = vol.Address,
+                    Latitude = vol.Latitude,
+                    Longitude = vol.Longitude,
+                    Position = vol.Position,
                     Active = true,
-                    MaxResponseDistance = s_rand.NextDouble() * MAX_DISTANCE,
-                    TypeOfDistance = DistanceTypeEnum.AirDistance,
-                    Password = encryptedPassword,
+                    MaxResponseDistance = vol.MaxResponseDistance,
+                    TypeOfDistance = vol.TypeOfDistance,
+                    Password = vol.Password,
                 };
 
                 s_dal.Volunteer.Create(volunteer);
@@ -315,7 +316,7 @@ public static class Initialization
 
 
     //public static void Do(IDal? dal) //stage 2
-    public static void Do() //stage 4
+    public static void Do(bool createAssignments = true) //stage 4
     {
         s_dal = DalApi.Factory.Get; //stage 4
         Console.WriteLine("Reset Configuration values and List values...");
@@ -327,9 +328,11 @@ public static class Initialization
         Console.WriteLine("Initializing Calls...");
         CreateCall.CreateCallEntries();
 
-        Console.WriteLine("Initializing Assignments...");
-        createAssignments();
-
+        if (createAssignments)
+        {
+            Console.WriteLine("Initializing Assignments...");
+            createAssignments();
+        }
     }
 
 }

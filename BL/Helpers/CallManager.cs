@@ -85,7 +85,15 @@ internal static class CallManager
             if (activeAssignment == null)
             {
                 var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
-                return successfulAssignment ? BO.CallStatus.Treated : BO.CallStatus.Open;
+                if (successfulAssignment)
+                    return BO.CallStatus.Treated;
+                
+                // No active assignments and no treated assignments - check if call is at risk
+                TimeSpan timeToExpiration = (DateTime)call.ExpiredTime! - AdminManager.Now;
+                if (timeToExpiration <= AdminManager.RiskRange)
+                    return BO.CallStatus.OpenAtRisk;
+                
+                return BO.CallStatus.Open;
             }
 
 
@@ -483,29 +491,32 @@ internal static class CallManager
             if (callData.ExpiredTime < AdminManager.Now)
                 return CallStatus.Expired;
 
+            // Check if there are any active assignments (no EndType)
+            var activeAssignment = assignmentData.FirstOrDefault(a => a.EndType == null);
+            if (activeAssignment != null)
+            {
+                // There is an active assignment - check if it's at risk
+                if (callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
+                    callData.ExpiredTime > AdminManager.Now)
+                {
+                    return CallStatus.InProgressAtRisk;
+                }
+                return CallStatus.InProgress;
+            }
+
+            // No active assignments - check if there are any treated assignments
             if (assignmentData.Any(a => a.EndType.ToString() == DO.CallResolutionStatus.Treated.ToString()))
                 return CallStatus.Treated;
 
-            if (assignmentData.Any(a => a.EndType == null) &&
-                (callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
-                callData.ExpiredTime > AdminManager.Now))
-            {
-                return CallStatus.InProgressAtRisk;
-            }
-
-            if (assignmentData.Any(a => a.EndType == null))
-            {
-                return CallStatus.InProgress;
-            }
-            if ((callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
-                callData.ExpiredTime > AdminManager.Now))
+            // No active assignments and no treated assignments - check if call is at risk
+            // This can happen when there are no assignments OR when there are only canceled assignments
+            if (callData.ExpiredTime - AdminManager.Now <= AdminManager.RiskRange &&
+                callData.ExpiredTime > AdminManager.Now)
             {
                 return CallStatus.OpenAtRisk;
             }
-            else
-            {
-                return CallStatus.Open;
-            }
+            
+            return CallStatus.Open;
         }
     }
     private static int s_periodicCounter = 0;

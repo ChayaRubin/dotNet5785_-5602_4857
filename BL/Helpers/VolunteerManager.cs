@@ -383,7 +383,7 @@ internal static class VolunteerManager
             if (activeAssignment == null)
             {
                 var successfulAssignment = assignments.Any(a => a.CallResolutionStatus == DO.CallResolutionStatus.Treated);
-                return successfulAssignment ? BO.CallStatus.Closed : BO.CallStatus.Open;
+                return successfulAssignment ? BO.CallStatus.Treated : BO.CallStatus.Open;
             }
 
             var remainingTime = (DateTime)call.ExpiredTime - AdminManager.Now;

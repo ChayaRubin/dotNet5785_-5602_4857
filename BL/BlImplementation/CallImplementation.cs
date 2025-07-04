@@ -1,5 +1,4 @@
-﻿
-using BlApi;
+﻿using BlApi;
 using BO;
 using Dal;
 using DO;
@@ -366,6 +365,7 @@ internal class CallImplementation : ICall
             if (assignment.FinishCompletionTime < AdminManager.Now)
                 throw new DalGeneralDatabaseException("Cannot cancel a call that has already been Expired");
 
+            assignment.FinishCompletionTime = AdminManager.Now;
             assignment.EntryTime = AdminManager.Now;
 
             assignment.CallResolutionStatus = assignment.VolunteerId == requestorId ? DO.CallResolutionStatus.SelfCanceled : DO.CallResolutionStatus.Canceled;
@@ -650,11 +650,8 @@ internal class CallImplementation : ICall
                 call.ExpiredTime > AdminManager.Now &&
                 !allAssignments.Any(a =>
                     a.CallId == call.RadioCallId &&
-                    (
-                        a.CallResolutionStatus == DO.CallResolutionStatus.Treated ||
-                        a.CallResolutionStatus == DO.CallResolutionStatus.Canceled ||
-                        a.CallResolutionStatus == DO.CallResolutionStatus.SelfCanceled
-                    )))
+                    (a.CallResolutionStatus == DO.CallResolutionStatus.Treated ||
+                     a.FinishCompletionTime == null)))
             .Select(call => new BO.Call
             {
                 Id = call.RadioCallId,

@@ -343,7 +343,7 @@ namespace DalTest
 
                             case MainMenuOption.InitializeData:
                                 //Initialization.Do(s_dal); //stage 2
-                                Initialization.Do(); //stage 4
+                                Initialization.Do(false); //stage 4
 
                                 break;
 
