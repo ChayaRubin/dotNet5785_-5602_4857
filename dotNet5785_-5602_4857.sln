@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E96E0E78-1EDB-4C7F-BC14-16C09567F282}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		דוט נט תשפ_ה - דוח סיום פרויקט - למילוי על ידי הסטודנטים - סמינרים.docx = דוט נט תשפ_ה - דוח סיום פרויקט - למילוי על ידי הסטודנטים - סמינרים.docx
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalFacade", "DalFacade\DalFacade.csproj", "{1D350B90-C047-43B7-A9C9-E9E0555965F3}"
@@ -31,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{EF8B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlTest", "BlTest\BlTest.csproj", "{9D3A83D9-F2E8-4309-AC4A-8EDD02486B20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PL", "PL\PL.csproj", "{D2A2836F-C551-6A4C-E9A2-BA95D2EEFD3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PL", "PL\PL.csproj", "{D2A2836F-C551-6A4C-E9A2-BA95D2EEFD3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
