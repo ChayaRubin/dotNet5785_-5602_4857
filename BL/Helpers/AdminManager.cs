@@ -28,6 +28,7 @@ internal static class AdminManager //stage 4
         {
             s_dal.Config.RiskRange = value;
             ConfigUpdatedObservers?.Invoke(); // stage 5
+            CallManager.Observers.NotifyListUpdated(); // notify observers when risk range changes
         }
     }
 
@@ -77,6 +78,9 @@ internal static class AdminManager //stage 4
         //StudentManager.PeriodicStudentsUpdates(oldClock, newClock); //stage 4
         if (_periodicTask is null || _periodicTask.IsCompleted) //stage 7
             _periodicTask = Task.Run(() => CallManager.PeriodicCallsUpdates(oldClock, newClock));
+
+        // Force immediate UI update so expired calls show right away
+        CallManager.Observers.NotifyListUpdated();
 
         //Calling all the observers of clock update
         ClockUpdatedObservers?.Invoke(); //prepared for stage 5
@@ -162,7 +166,7 @@ private static void clockRunner()
             //TO_DO:
             //Add calls here to any logic simulation that was required in stage 7
             //for example: course registration simulation
-            //etc…
+            //etcï¿½
             if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
                 _simulateTask = Task.Run(() => VolunteerManager.SimulateVolunteerAssignmentsAndCallHandling());
             try

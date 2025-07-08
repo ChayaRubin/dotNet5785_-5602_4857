@@ -328,11 +328,11 @@ public static class Initialization
         Console.WriteLine("Initializing Calls...");
         CreateCall.CreateCallEntries();
 
-        if (createAssignments)
+        /*if (createAssignments)
         {
             Console.WriteLine("Initializing Assignments...");
             createAssignments();
-        }
+        }*/
     }
 
 }

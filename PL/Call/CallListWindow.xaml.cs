@@ -7,6 +7,7 @@ using System.Windows.Input;
 using BlApi;
 using BO;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace PL.Call
 {
@@ -18,8 +19,8 @@ namespace PL.Call
         
         private volatile bool _observerWorking = false;
 
-        private IEnumerable<CallInList> callsListView = new List<CallInList>();
-        public IEnumerable<CallInList> CallsListView
+        private ObservableCollection<CallInList> callsListView = new ObservableCollection<CallInList>();
+        public ObservableCollection<CallInList> CallsListView
         {
             get => callsListView;
             set
@@ -83,7 +84,9 @@ namespace PL.Call
                 if (filterStatus.HasValue)
                     calls = calls.Where(c => c.Status == filterStatus.Value);
 
-                CallsListView = calls.ToList();
+                CallsListView.Clear();
+                foreach (var call in calls)
+                    CallsListView.Add(call);
             }
             catch (Exception ex)
             {
