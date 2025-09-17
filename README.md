@@ -44,7 +44,7 @@ dotNet5785_-5602_4857.sln
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/dotNet5785_-5602_4857.git
+   git clone https://github.com/ChayaRubin/dotNet5785_-5602_4857.git
    ```
 
 2. **Open the solution in Visual Studio**:
@@ -61,11 +61,11 @@ dotNet5785_-5602_4857.sln
 
 ### Running
 
-- From Visual Studio: Press **F5** to build and run.  
+- From Visual Studio: Press **F5** to build and run, or press Green arrow after choosing PL.
 - From CLI:
    ```bash
    dotnet build
-   dotnet run --project <YourMainProject>
+   dotnet run --project PL
    ```
 
 ---
