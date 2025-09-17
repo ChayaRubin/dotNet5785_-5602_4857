@@ -41,6 +41,7 @@ internal class VolunteerImplementation : IVolunteer
                 return volunteer.Position.ToString();
             }
         }
+
         catch (DalUnauthorizedAccessException ex)
         {
             throw new BlUnauthorizedAccessException($"Login failed: {ex.Message}");

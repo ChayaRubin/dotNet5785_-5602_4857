@@ -59,7 +59,6 @@ internal static class CallManager
     {
         try
         {
-
             // Get the call from database
             DO.Call call;
             IEnumerable<DO.Assignment> assignments;
