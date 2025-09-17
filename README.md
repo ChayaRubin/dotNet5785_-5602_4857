@@ -105,3 +105,10 @@ Publish your first package
 
 ## Languages
 - **C#** 100%
+
+---
+
+## To enter as an Admin
+ID: 327006516
+Password: Ct3227200@
+
