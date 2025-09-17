@@ -1,7 +1,16 @@
-﻿# dotNet5785_-5602_4857
+# dotNet5785_-5602_4857
 
 This repository contains a **.NET solution** built with Visual Studio.  
-It includes multiple projects organized into layers to demonstrate clean architecture and modular design.
+It includes multiple projects organized into layers to demonstrate clean architecture and modular design.  
+
+This project is a **volunteer and call management system** built in C# with a WPF interface.  
+It allows managers to register calls, assign them to volunteers, and track their progress in real time.  
+
+- Volunteers are stored in XML with details like availability and maximum response distance.  
+- Calls can be created, assigned, canceled, or tracked.  
+- The system notifies and updates volunteers based on their eligibility.  
+- Managers can view and manage volunteer lists, calls, and assignments through the WPF interface.  
+- The architecture is split into **DAL**, **BL**, and **PL** layers, making it modular and easy to test.  
 
 ---
 
